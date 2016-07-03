@@ -1,0 +1,4 @@
+*.xcuserdatad
+*.xcuserdatad/*
+*.pbxuser
+*.perspectivev3
