@@ -172,6 +172,8 @@
 		m_strContent = @"";
 	}
 	
+	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
+	
 	NSRange find7 = [m_strHtml rangeOfString:@"<p align=center><img onload=\"resizeImage2(this)\""];
 	NSString *imageString = nil;
 	if (find7.location != NSNotFound) {
@@ -241,7 +243,9 @@
 		NSString *resizeStr = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}}</script>";
 		//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
 		
-		m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+		m_strContent = [NSString stringWithFormat:@"%@%@%@%@", resizeStr, m_strContent, imageString, strAttach];
+	} else {
+		m_strContent = [NSString stringWithFormat:@"%@%@", m_strContent, strAttach];
 	}
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;

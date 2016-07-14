@@ -10,7 +10,7 @@
 
 @import GoogleMobileAds;
 
-@interface ArticleView : UIViewController <UIWebViewDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate>
+@interface ArticleView : UIViewController <UIWebViewDelegate, UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, UIDocumentInteractionControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
@@ -22,4 +22,5 @@
 @property (strong, nonatomic) NSString *m_strLink;
 @property id target;
 @property SEL selector;
+@property (nonatomic, retain) UIDocumentInteractionController *doic;
 @end
