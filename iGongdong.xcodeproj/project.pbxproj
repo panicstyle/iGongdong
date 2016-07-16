@@ -504,7 +504,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "4521424f-becf-4592-86e4-a1ee53795de9";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Distribution;
@@ -633,7 +633,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "4521424f-becf-4592-86e4-a1ee53795de9";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -654,7 +654,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "4521424f-becf-4592-86e4-a1ee53795de9";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

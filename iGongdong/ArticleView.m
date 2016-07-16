@@ -443,21 +443,37 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
-	NSURL *url = request.URL;
-	NSString *urlString = url.absoluteString;
-
-	NSLog(@"request = %@", urlString);
-/*
-	//Check if special link
-	if ( [ urlString isEqualToString: @"MYLocation://GoThere" ] ) {
-		//Here present the new view controller
-		MyViewController *controller = [[MyViewController alloc] init];
-		[self presentViewController:controller animated:YES];
+	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		return NO;
+		NSURL *url = request.URL;
+		NSString *urlString = url.absoluteString;
+
+		NSLog(@"request = %@", urlString);
+		NSString *fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
+		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		
+		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+		} else {
+			
+		}
+			
 	}
-*/
-	return YES;
+ 	return YES;
 }
 
 #pragma mark Data Function
