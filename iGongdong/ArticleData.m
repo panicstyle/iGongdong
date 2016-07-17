@@ -165,7 +165,6 @@
 	NSError *error = NULL;
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	NSString *contentString;
 	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
 		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
 	} else {

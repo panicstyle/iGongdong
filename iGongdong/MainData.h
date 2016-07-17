@@ -10,6 +10,7 @@
 
 @interface MainData : NSObject
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
+@property (strong, nonatomic) NSMutableArray *m_arrayMain;
 @property id target;
 @property SEL selector;
 

@@ -366,7 +366,7 @@
 	
 	if (numberOfMatches > 0) {
 		NSLog(@"write article success");
-		[target performSelector:selector withObject:nil];
+		[target performSelector:selector withObject:nil afterDelay:0];
 		[[self navigationController] popViewControllerAnimated:YES];
 	} else {
 		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=window.alert\\(\\\").*?(?=\\\")" options:NSRegularExpressionDotMatchesLineSeparators error:&error];

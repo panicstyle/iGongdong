@@ -22,6 +22,7 @@
 
 @implementation BoardView
 @synthesize m_strCommNo;
+@synthesize m_nMode;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,6 +45,7 @@
 
 	m_boardData = [[BoardData alloc] init];
 	m_boardData.m_strCommNo = m_strCommNo;
+	m_boardData.m_nMode = m_nMode;
 	m_boardData.target = self;
 	m_boardData.selector = @selector(didFetchItems);
     [m_boardData fetchItems];
