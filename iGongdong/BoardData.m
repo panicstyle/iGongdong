@@ -27,6 +27,7 @@
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
+	// m_nMode 가 CENTER 일 경우 커뮤니티가 아닌 공동육아 홈페이지 관련 게시판을 표시한다.
 	if ([m_nMode intValue] == CENTER) {
 	
 		NSArray *ingMain = @[

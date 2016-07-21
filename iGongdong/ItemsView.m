@@ -19,7 +19,7 @@
 	NSString *m_strTitle;
 	int m_nPage;
 	ItemsData *m_itemsData;
-	int m_nMode;
+	int m_intMode;
 
 	CGRect m_rectScreen;
 	
@@ -35,13 +35,14 @@
 
 @synthesize m_strCommNo;
 @synthesize m_strLink;
+@synthesize m_nMode;
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
-	m_nMode = NormalItems;
+	m_intMode = [m_nMode intValue];
 	
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
@@ -61,6 +62,7 @@
 	m_itemsData = [[ItemsData alloc] init];
 	m_itemsData.m_strCommNo = m_strCommNo;
 	m_itemsData.m_strLink = m_strLink;
+	m_itemsData.m_nMode = m_nMode;
 	m_itemsData.target = self;
 	m_itemsData.selector = @selector(didFetchItems:);
 	m_nPage = 1;
@@ -92,7 +94,7 @@
 	if ([indexPath row] == [m_arrayItems count]) {
 		return 50.0f;
 	} else {
-		if (m_nMode == NormalItems) {
+		if (m_intMode == NormalItems) {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			NSNumber *height = [item valueForKey:@"height"];
 			return [height floatValue];
@@ -126,7 +128,7 @@
 		[cell addSubview:title1];
 		return cell;
 	} else {
-		if (m_nMode == NormalItems) {
+		if (m_intMode == NormalItems || m_intMode == CAFE_TYPE_CENTER) {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			int isRe = [[item valueForKey:@"isRe"] intValue];
 			if (isRe == 0) {
@@ -393,7 +395,8 @@
 		[self presentViewController:alert animated:YES completion:nil];
 	} else {
 		if (m_nPage == 1) {
-			m_nMode = [m_itemsData.m_nMode intValue];
+			m_nMode = m_itemsData.m_nMode;
+			m_intMode = [m_nMode intValue];
 			m_arrayItems = [NSMutableArray arrayWithArray:m_itemsData.m_arrayItems];
 		} else {
 			[m_arrayItems addObjectsFromArray:m_itemsData.m_arrayItems];

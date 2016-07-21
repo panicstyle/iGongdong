@@ -18,6 +18,7 @@
 	BOOL m_isLogin;
 	int m_nPage;
 	LoginToService *m_login;
+	int m_intMode;
 }
 @end
 
@@ -35,13 +36,19 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 	m_isLogin = FALSE;
 	m_nPage = nPage;
+	m_intMode = [m_nMode intValue];
 
 	[self fetchItems2];
 }
 
 - (void)fetchItems2
 {
-	NSString *url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
+	NSString *url;
+	if (m_intMode == CAFE_TYPE_TITLE) {
+		url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
+	} else {
+		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strLink, m_nPage];
+	}
 	
 	m_receiveData = [[NSMutableData alloc] init];
 	m_connection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
@@ -85,13 +92,20 @@
 	
 	// <div id="board-content">
 	// <form action="/cafe.php" method=get name=frmEdit >
-	
-	if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
-		m_nMode = [NSNumber numberWithInt:NormalItems];
-		[self getNormaltems:str];
-	} else {
-		m_nMode = [NSNumber numberWithInt:PictureItems];
-		[self getPictureItems:str];
+	if (m_intMode == CAFE_TYPE_TITLE) {
+		if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
+			m_nMode = [NSNumber numberWithInt:NormalItems];
+			[self getNormaltems:str];
+		} else {
+			m_nMode = [NSNumber numberWithInt:PictureItems];
+			[self getPictureItems:str];
+		}
+	} else if (m_intMode == CAFE_TYPE_CENTER) {
+		[self getCenterItems:str];
+	} else if (m_intMode == CAFE_TYPE_ING) {
+//		[self getIngItems:str];
+	} else if (m_intMode == CAFE_TYPE_TEACHER) {
+//		[self getTeacherItems:str];
 	}
 }
 
@@ -240,5 +254,68 @@
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 }
 
+- (void)getCenterItems:(NSString *)str
+{
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<tr class=).*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
+	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
+	NSMutableDictionary *currItem;
+	for (NSTextCheckingResult *match in matches) {
+		NSRange matchRange = [match range];
+		NSString *str2 = [str substringWithRange:matchRange];
+		BOOL isPNotice = FALSE;
+		BOOL isNotice = FALSE;
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isPNotice"];
+		// find [공지]
+		if ([Utils numberOfMatches:str2 regex:@"<td class=\\\"notice"] > 0) {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isNotice"];
+			NSLog(@"isNotice");
+			isNotice = TRUE;
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNotice"];
+		}
+		
+		// subject
+		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\\\"title).*?(</a>)"];
+		strSubject = [Utils replaceStringHtmlTag:strSubject];
+		[currItem setValue:strSubject forKey:@"subject"];
+		
+		// find link
+		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
+		[currItem setValue:strLink forKey:@"link"];
+		
+		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=Replies\\\">\\[).*?(?=\\]</span>)"];
+		[currItem setValue:strComment forKey:@"comment"];
+		
+		// isNew
+		[currItem setValue:@"0" forKey:@"isNew"];
+		
+		if (isNotice == 1) {
+			[currItem setValue:@"공지" forKey:@"name"];
+			[currItem setValue:@"공지" forKey:@"id"];
+		} else {
+			[currItem setValue:@"" forKey:@"name"];
+			[currItem setValue:@"" forKey:@"id"];
+		}
+		
+		// date
+		NSString *strDate = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"date\\\">).*?(?=</td>)"];
+//		strDate = [Utils replaceStringHtmlTag:strDate];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		// Hit
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"reading\\\">).*?(?=</td>)"];
+//		strHit = [Utils replaceStringHtmlTag:strHit];
+		[currItem setValue:strHit forKey:@"hit"];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+}
 
 @end

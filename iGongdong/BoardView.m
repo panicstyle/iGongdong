@@ -144,6 +144,7 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommNo = m_strCommNo;
 		view.m_strLink = [item valueForKey:@"link"];
+		view.m_nMode = [item valueForKey:@"type"];
 	} else if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
