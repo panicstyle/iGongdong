@@ -42,8 +42,9 @@
 #define CAFE_TYPE_LINK		2
 #define CAFE_TYPE_TITLE		1
 #define CAFE_TYPE_CENTER	3
-#define CAFE_TYPE_ING		4
-#define CAFE_TYPE_TEACHER	5
+#define CAFE_TYPE_NOTICE	4
+#define CAFE_TYPE_ING		5
+#define CAFE_TYPE_TEACHER	6
 
 #define COMMUNITY		1
 #define CENTER			2
@@ -54,7 +55,8 @@
 #define BOARD_TEACHER	4
 
 #define CAFE_TYPE_CENTER_STR	@"3"
-#define CAFE_TYPE_ING_STR		@"4"
-#define CAFE_TYPE_TEACHER_STR	@"5"
+#define CAFE_TYPE_NOTICE_STR	@"4"
+#define CAFE_TYPE_ING_STR		@"5"
+#define CAFE_TYPE_TEACHER_STR	@"6"
 
 #endif

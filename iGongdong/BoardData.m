@@ -33,7 +33,7 @@
 		NSArray *ingMain = @[
 							 @"ing", @"공동육아 ING", CAFE_TYPE_ING_STR,
 							 @"ask", @"무엇이든 물어보세요", CAFE_TYPE_CENTER_STR,
-							 @"notice", @"공지사항", CAFE_TYPE_CENTER_STR,
+							 @"notice", @"공지사항", CAFE_TYPE_NOTICE_STR,
 							 @"teacher", @"교사모집/구직", CAFE_TYPE_TEACHER_STR,
 							 @"johap", @"조합원모집", CAFE_TYPE_TEACHER_STR,
 							 @"eboard", @"알리고싶어요", CAFE_TYPE_CENTER_STR,

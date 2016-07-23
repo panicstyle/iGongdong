@@ -82,7 +82,7 @@
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br/>" withString:@"\n"];
 	dest = [dest stringByReplacingOccurrencesOfString:@"<br />" withString:@"\n"];
-	dest = [dest stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 	dest = [dest stringByReplacingOccurrencesOfString:@"&lt;" withString:@""];
 	dest = [dest stringByReplacingOccurrencesOfString:@"&gt;" withString:@""];
 	dest = [dest stringByReplacingOccurrencesOfString:@"&amp;" withString:@""];

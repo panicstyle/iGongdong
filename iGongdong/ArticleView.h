@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *m_strDate;
 @property (strong, nonatomic) NSString *m_strName;
 @property (strong, nonatomic) NSString *m_strLink;
+@property (strong, nonatomic) NSNumber *m_nMode;
 @property id target;
 @property SEL selector;
 @property (nonatomic, retain) UIDocumentInteractionController *doic;

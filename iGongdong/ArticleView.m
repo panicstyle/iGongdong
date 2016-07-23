@@ -40,7 +40,7 @@
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	NSString *m_strHit;
-	int m_nMode;
+	int m_intMode;
 	
 	NSString *DeleteBoardID;
 	NSString *DeleteBoardNO;
@@ -60,6 +60,7 @@
 @synthesize m_strDate;
 @synthesize m_strName;
 @synthesize m_strLink;
+@synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
 
@@ -68,6 +69,8 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	
+	m_intMode = [m_nMode intValue];
 	
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
@@ -137,6 +140,7 @@
 	m_articleData = [[ArticleData alloc] init];
 	m_articleData.m_isPNotice = m_isPNotice;
 	m_articleData.m_strLink = m_strLink;
+	m_articleData.m_nMode = m_nMode;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -553,7 +557,6 @@
 
 - (void)WriteComment
 {
-	m_nMode = CommentWrite;
 	m_strCommentNo = @"";
 	m_strComment = @"";
 	
@@ -568,7 +571,6 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	m_strComment = [item valueForKey:@"comment"];
-	m_nMode = CommentModify;
 
 	[self performSegueWithIdentifier:@"Comment" sender:self];
 }
@@ -628,7 +630,6 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	m_strComment = @"";
-	m_nMode = CommentReply;
 	
 	[self performSegueWithIdentifier:@"Comment" sender:self];
 }

@@ -44,7 +44,7 @@
 - (void)fetchItems2
 {
 	NSString *url;
-	if (m_intMode == CAFE_TYPE_TITLE) {
+	if (m_intMode == CAFE_TYPE_NORMAL) {
 		url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
 	} else {
 		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strLink, m_nPage];
@@ -92,7 +92,7 @@
 	
 	// <div id="board-content">
 	// <form action="/cafe.php" method=get name=frmEdit >
-	if (m_intMode == CAFE_TYPE_TITLE) {
+	if (m_intMode == CAFE_TYPE_NORMAL) {
 		if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
 			m_nMode = [NSNumber numberWithInt:NormalItems];
 			[self getNormaltems:str];
@@ -100,7 +100,7 @@
 			m_nMode = [NSNumber numberWithInt:PictureItems];
 			[self getPictureItems:str];
 		}
-	} else if (m_intMode == CAFE_TYPE_CENTER) {
+	} else if (m_intMode == CAFE_TYPE_CENTER || m_intMode == CAFE_TYPE_NOTICE) {
 		[self getCenterItems:str];
 	} else if (m_intMode == CAFE_TYPE_ING) {
 //		[self getIngItems:str];
@@ -284,6 +284,8 @@
 		
 		// find link
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
+		// 링크 중간에 & 가 &amp; 로 표시되어 있음. 변환해야 함.
+		strLink = [strLink stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 		[currItem setValue:strLink forKey:@"link"];
 		
 		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=Replies\\\">\\[).*?(?=\\]</span>)"];
@@ -292,17 +294,25 @@
 		// isNew
 		[currItem setValue:@"0" forKey:@"isNew"];
 		
-		if (isNotice == 1) {
-			[currItem setValue:@"공지" forKey:@"name"];
-			[currItem setValue:@"공지" forKey:@"id"];
+		if (m_intMode == CAFE_TYPE_NOTICE) {
+			if (isNotice == 1) {
+				[currItem setValue:@"공지" forKey:@"name"];
+				[currItem setValue:@"공지" forKey:@"id"];
+			} else {
+				[currItem setValue:@"" forKey:@"name"];
+				[currItem setValue:@"" forKey:@"id"];
+			}
 		} else {
-			[currItem setValue:@"" forKey:@"name"];
-			[currItem setValue:@"" forKey:@"id"];
+			// name
+			NSString *strName = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"author\\\">).*?(?=</td>)"];
+			strName = [Utils replaceStringHtmlTag:strName];
+			[currItem setValue:strName forKey:@"name"];
+			
 		}
-		
+
 		// date
 		NSString *strDate = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"date\\\">).*?(?=</td>)"];
-//		strDate = [Utils replaceStringHtmlTag:strDate];
+		//		strDate = [Utils replaceStringHtmlTag:strDate];
 		[currItem setValue:strDate forKey:@"date"];
 		
 		// Hit

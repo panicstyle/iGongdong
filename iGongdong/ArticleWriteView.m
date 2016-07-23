@@ -17,6 +17,7 @@
 	UITableViewCell *m_contentCell;
 	UITableViewCell *m_imageCell;
 	int m_nAddPic;
+	int m_intMode;
 }
 
 @end
