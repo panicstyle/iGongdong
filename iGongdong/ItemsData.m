@@ -100,12 +100,10 @@
 			m_nMode = [NSNumber numberWithInt:PictureItems];
 			[self getPictureItems:str];
 		}
-	} else if (m_intMode == CAFE_TYPE_CENTER || m_intMode == CAFE_TYPE_NOTICE) {
+	} else if (m_intMode == CAFE_TYPE_CENTER || m_intMode == CAFE_TYPE_NOTICE || m_intMode == CAFE_TYPE_TEACHER) {
 		[self getCenterItems:str];
 	} else if (m_intMode == CAFE_TYPE_ING) {
-//		[self getIngItems:str];
-	} else if (m_intMode == CAFE_TYPE_TEACHER) {
-//		[self getTeacherItems:str];
+		[self getIngItems:str];
 	}
 }
 
@@ -263,8 +261,8 @@
 	for (NSTextCheckingResult *match in matches) {
 		NSRange matchRange = [match range];
 		NSString *str2 = [str substringWithRange:matchRange];
-		BOOL isPNotice = FALSE;
 		BOOL isNotice = FALSE;
+		NSString *strStatus = @"";
 		currItem = [[NSMutableDictionary alloc] init];
 		
 		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isPNotice"];
@@ -279,7 +277,20 @@
 		
 		// subject
 		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\\\"title).*?(</a>)"];
+		if (m_intMode == CAFE_TYPE_TEACHER) {
+			if ([Utils numberOfMatches:strSubject regex:@"teacher_icon01.gif"] > 0) {
+				strStatus = @"[모집중]";
+			} else {
+				strStatus = @"[완료]";
+			}
+		}
+		if (isNotice) {
+			strSubject = [Utils replaceStringRegex:strSubject regex:@"(<strong).*?(/strong>)" replace:@""];
+		}
 		strSubject = [Utils replaceStringHtmlTag:strSubject];
+		if (m_intMode == CAFE_TYPE_TEACHER) {
+			strSubject = [NSString stringWithFormat:@"%@ %@", strStatus, strSubject];
+		}
 		[currItem setValue:strSubject forKey:@"subject"];
 		
 		// find link
@@ -318,6 +329,59 @@
 		// Hit
 		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"reading\\\">).*?(?=</td>)"];
 //		strHit = [Utils replaceStringHtmlTag:strHit];
+		[currItem setValue:strHit forKey:@"hit"];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+}
+
+- (void)getIngItems:(NSString *)str
+{
+	NSArray *arrayItems = [str componentsSeparatedByString:@"<li style="];
+	
+	NSMutableDictionary *currItem;
+	
+	for (int i = 1; i < [arrayItems count]; i++) {
+		NSString *str2 = [arrayItems objectAtIndex:i];
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isPNotice"];
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNotice"];
+		
+		// subject
+		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<div class=\\\"title).*?(</a>)"];
+		strSubject = [Utils replaceStringHtmlTag:strSubject];
+		[currItem setValue:strSubject forKey:@"subject"];
+		
+		// find link
+		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
+		// 링크 중간에 & 가 &amp; 로 표시되어 있음. 변환해야 함.
+		strLink = [strLink stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+		[currItem setValue:strLink forKey:@"link"];
+
+		// Comment 가 없음
+		[currItem setValue:@"" forKey:@"comment"];
+		
+		// isNew
+		[currItem setValue:@"0" forKey:@"isNew"];
+		
+		// name
+		NSString *strName = [Utils findStringRegex:str2 regex:@"(<li class=\\\"author).*?(</a>)"];
+		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// date
+		NSString *strDate = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"date\\\">).*?(?=</li>)"];
+		//		strDate = [Utils replaceStringHtmlTag:strDate];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		// Hit
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수.).*?(?=</li>)"];
+		//		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
 		
 		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];

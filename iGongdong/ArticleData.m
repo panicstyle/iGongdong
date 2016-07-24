@@ -144,6 +144,10 @@
 		[self parsePNotice];
 	} else if (m_intMode == CAFE_TYPE_CENTER) {
 		[self parseCenter];
+	} else if (m_intMode == CAFE_TYPE_ING) {
+		[self parseIng];
+	} else if (m_intMode == CAFE_TYPE_TEACHER) {
+		[self parseTeacher];
 	}
 }
 	
@@ -184,6 +188,7 @@
 	} else {
 		m_strContent = @"";
 	}
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
 	
@@ -252,14 +257,11 @@
 
 	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 	
-	if (imageString != nil) {
-		NSString *resizeStr = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}}</script>";
-		//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
-		
-		m_strContent = [NSString stringWithFormat:@"%@%@%@%@", resizeStr, m_strContent, imageString, strAttach];
-	} else {
-		m_strContent = [NSString stringWithFormat:@"%@%@", m_strContent, strAttach];
-	}
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@%@", resizeStr, m_strContent, imageString, strAttach];
+
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
 }
@@ -300,7 +302,8 @@
 		m_strContent = @"";
 	}
 	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	[Utils replaceStringRegex:m_strContent regex:@"<!--AfterDocument" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
@@ -352,12 +355,11 @@
 	
 	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 	
-	if (imageString != nil) {
-		NSString *resizeStr = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}}</script>";
-		//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
-		
-		m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
-	}
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
 }
@@ -398,7 +400,104 @@
 		m_strContent = @"";
 	}
 	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	[Utils replaceStringRegex:m_strContent regex:@"<!--AfterDocument" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	
+	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(<ul class=\"files).*?(</ul>)"];
+	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
+	
+	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
+	
+	NSMutableDictionary *currItem;
+	
+	int isReply = 0;
+	for (int i = 1; i < [commentItems count]; i++) {
+		NSString *s = [commentItems objectAtIndex:i];
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
+		// number
+		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
+		if ([strNumber length] <= 0) {
+			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
+		}
+		[currItem setValue:strNumber forKey:@"no"];
+		
+		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+			isReply = 0;
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
+			isReply = 1;
+		}
+		
+		// Name
+		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
+		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// Date
+		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
+		strDate = [Utils replaceStringHtmlTag:strDate];
+		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
+		strComm = [Utils replaceStringHtmlTag:strComm];
+		[currItem setValue:strComm forKey:@"comment"];
+		
+		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
+
+- (void)parseIng
+{
+	//<!---- contents start ---->
+	//<!---- contents end ---->
+	
+	/*
+	 if ([m_nServerType intValue] == 1) {
+		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
+	 } else {
+		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
+	 }
+	 */
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title_ing\">).*?(?=</h3>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+
+	// m_strName은 넘어온 값을 그대로 사용함. 본문에는 작성자가 없음.
+	
+	// m_strDate도 넘어온 값을 그대로 사용함. 본문에는 날짜가 없음.
+	
+	// m_strHit도 넘오온 값을 그대로 사용함. 본문에는 조회수가 없음.
+	
+	NSString *strContent;
+	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
+	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
+	} else {
+		m_strContent = @"";
+	}
+	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
@@ -450,16 +549,116 @@
 	
 	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 	
-	if (imageString != nil) {
-		NSString *resizeStr = @"<script>function resizeImage2(mm){var width = eval(mm.width);var height = eval(mm.height);if( width > 300 ){var p_height = 300 / width;var new_height = height * p_height;eval(mm.width = 300);eval(mm.height = new_height);}}</script>";
-		//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
-		
-		m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
-	}
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
 }
 
+- (void)parseTeacher
+{
+	//<!---- contents start ---->
+	//<!---- contents end ---->
+	
+	/*
+	 if ([m_nServerType intValue] == 1) {
+		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
+	 } else {
+		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
+	 }
+	 */
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	
+	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
+	m_strName = [Utils replaceStringHtmlTag:m_strName];
+	
+	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
+	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
+	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
+	
+	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
+	
+	NSString *strContent;
+	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
+	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
+	} else {
+		m_strContent = @"";
+	}
+	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	
+	NSString *strStatus;
+	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</td>)"];
+	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
+	
+	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
+	
+	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
+	
+	NSMutableDictionary *currItem;
+	
+	int isReply = 0;
+	for (int i = 1; i < [commentItems count]; i++) {
+		NSString *s = [commentItems objectAtIndex:i];
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
+		// number
+		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
+		if ([strNumber length] <= 0) {
+			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
+		}
+		[currItem setValue:strNumber forKey:@"no"];
+		
+		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+			isReply = 0;
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
+			isReply = 1;
+		}
+		
+		// Name
+		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
+		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// Date
+		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
+		strDate = [Utils replaceStringHtmlTag:strDate];
+		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
+		strComm = [Utils replaceStringHtmlTag:strComm];
+		[currItem setValue:strComm forKey:@"comment"];
+		
+		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
 
 - (bool)DeleteArticle:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo
 {

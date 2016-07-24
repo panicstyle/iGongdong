@@ -12,6 +12,7 @@
 #import "env.h"
 #import "Utils.h"
 #import "ArticleData.h"
+#import "WebLinkView.h"
 
 @interface ArticleView ()
 {
@@ -48,6 +49,8 @@
 	NSString *m_strEditableTitle;
 	NSString *m_strEditableContent;
 
+	NSString *m_strWebLink;
+	
 	NSURLConnection *conn;
 }
 @end
@@ -447,12 +450,12 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
+	NSURL *url = request.URL;
+	NSString *urlString = url.absoluteString;
+	NSLog(@"request = %@", urlString);
+	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		NSURL *url = request.URL;
-		NSString *urlString = url.absoluteString;
-
-		NSLog(@"request = %@", urlString);
 		NSString *fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
 		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
@@ -473,9 +476,11 @@
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
 		} else {
+			m_strWebLink = urlString;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
 			
+			return NO;
 		}
-			
 	}
  	return YES;
 }
@@ -754,11 +759,14 @@
 		view.m_strBoardNo = m_strBoardNo;
 		view.m_strArticleNo = m_strArticleNo;
 		NSString *strEditableTitle = [Utils replaceStringHtmlTag:m_strTitle];
-//		NSString *strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+		//		NSString *strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 		view.m_strTitle = strEditableTitle;
 		view.m_strContent = m_strEditableContent;
 		view.target = self;
 		view.selector = @selector(didWrite:);
+	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
+		WebLinkView *view = [segue destinationViewController];
+		view.m_strLink = m_strWebLink;
 	}
 }
 
