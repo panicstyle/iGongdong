@@ -47,6 +47,7 @@
 		
 		[NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 			imageView.image = [UIImage imageWithData:data];
+			[imageView sizeToFit];
 		}];
 		
 	} else {

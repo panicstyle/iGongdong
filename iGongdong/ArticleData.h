@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *m_strLink;
 @property (strong, nonatomic) NSNumber *m_nMode;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
+@property (strong, nonatomic) NSDictionary *m_attachItems;
 @property id target;
 @property SEL selector;
 

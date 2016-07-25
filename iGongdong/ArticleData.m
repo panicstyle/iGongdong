@@ -33,6 +33,7 @@
 @synthesize m_isPNotice;
 @synthesize m_strLink;
 @synthesize m_arrayItems;
+@synthesize m_attachItems;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
@@ -266,6 +267,26 @@
 	return;
 }
 
+- (NSDictionary *)parseAttach:(NSString *)strAttach
+{
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<li).*?(</li>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
+	NSArray *matches = [regex matchesInString:strAttach options:0 range:NSMakeRange(0, [strAttach length])];
+	NSMutableDictionary *currItem = [[NSMutableDictionary alloc] init];
+	for (NSTextCheckingResult *match in matches) {
+		NSRange matchRange = [match range];
+		NSString *str = [strAttach substringWithRange:matchRange];
+		
+		NSString *strKey = [Utils findStringRegex:str regex:@"(?<=href=\").*?(?=\">)"];
+		strKey = [strKey stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+
+		NSString *strValue= [Utils findStringRegex:str regex:@"(?<=\">).*?(?=<span class)"];
+		strValue = [strValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		[currItem setValue:strValue forKey:strKey];
+	}
+	return currItem;
+}
+
 - (void)parsePNotice
 {
 	//<!---- contents start ---->
@@ -306,6 +327,9 @@
 	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+	
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
 	
 	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
@@ -404,6 +428,9 @@
 	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(<ul class=\"files).*?(</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
 	
 	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
@@ -500,6 +527,9 @@
 	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
 	
 	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
@@ -602,6 +632,9 @@
 	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+
 	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
 	
 	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];

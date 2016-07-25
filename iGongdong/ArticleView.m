@@ -23,6 +23,7 @@
 	CGRect m_rectScreen;
 	
 	NSMutableArray *m_arrayItems;
+	NSDictionary *m_attachItems;
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
@@ -457,10 +458,16 @@
 	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		NSString *fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
-		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		NSString *fileName;
+		if (m_intMode == CAFE_TYPE_TITLE) {
+			fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
+			fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		} else {
+			fileName = [m_attachItems valueForKey:urlString];
+		}
+		NSString *suffix = [[fileName substringFromIndex:[fileName length] - 4] lowercaseString];
 		
-		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+		if ([suffix hasSuffix:@"hwp"]|| [suffix hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
 			NSString *documentDirectory = [paths objectAtIndex:0];
@@ -477,7 +484,8 @@
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
 		} else {
-			if ([fileName hasSuffix:@".png"] || [fileName hasSuffix:@".jpg"]) {
+			if ([suffix hasSuffix:@"png"] || [suffix hasSuffix:@"jpg"]
+				|| [suffix hasSuffix:@"jpeg"]|| [suffix hasSuffix:@"gif"]) {
 				m_nFileType = FILE_TYPE_IMAGE;
 			} else {
 				m_nFileType = FILE_TYPE_HTML;
@@ -519,12 +527,14 @@
 	} else {
 		m_strContent = m_articleData.m_strContent;
 		m_arrayItems = m_articleData.m_arrayItems;
+		m_attachItems = m_articleData.m_attachItems;
 		m_strEditableContent = m_articleData.m_strEditableContent;
 		m_strEditableTitle = m_articleData.m_strTitle;
 		m_strTitle = m_articleData.m_strTitle;
 		m_strName = m_articleData.m_strName;
 		m_strDate = m_articleData.m_strDate;
 		m_strHit = m_articleData.m_strHit;
+		
 		
 		NSLog(@"htmlString = [%@]", m_strContent);
 		
@@ -534,7 +544,7 @@
 		m_webView.scrollView.bounces = NO;
 		[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
 
-		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
+//		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];
 	}
 }
