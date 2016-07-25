@@ -17,8 +17,9 @@
 @end
 
 @implementation WebLinkView
-@synthesize webView;
+@synthesize mainView;
 @synthesize m_strLink;
+@synthesize m_nFileType;
 
 #pragma mark - View lifecycle
 
@@ -39,8 +40,24 @@
 							];
 	[self.bannerView loadRequest:request];
 	
-	webView.delegate = self;
-	webView.scrollView.scrollEnabled = YES;
-	[webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
+	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
+		
+		[mainView addSubview:imageView];
+		
+		[NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+			imageView.image = [UIImage imageWithData:data];
+		}];
+		
+	} else {
+		UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
+		
+		[mainView addSubview:webView];
+		
+		webView.delegate = self;
+		webView.scalesPageToFit = TRUE;
+		webView.scrollView.scrollEnabled = YES;
+		[webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
+	}
 }
 @end

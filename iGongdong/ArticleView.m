@@ -50,6 +50,7 @@
 	NSString *m_strEditableContent;
 
 	NSString *m_strWebLink;
+	int m_nFileType;
 	
 	NSURLConnection *conn;
 }
@@ -476,6 +477,11 @@
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
 		} else {
+			if ([fileName hasSuffix:@".png"] || [fileName hasSuffix:@".jpg"]) {
+				m_nFileType = FILE_TYPE_IMAGE;
+			} else {
+				m_nFileType = FILE_TYPE_HTML;
+			}
 			m_strWebLink = urlString;
 			[self performSegueWithIdentifier:@"WebLink" sender:self];
 			
@@ -766,6 +772,7 @@
 		view.selector = @selector(didWrite:);
 	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
 		WebLinkView *view = [segue destinationViewController];
+		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
 		view.m_strLink = m_strWebLink;
 	}
 }

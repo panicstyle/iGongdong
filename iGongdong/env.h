@@ -59,4 +59,7 @@
 #define CAFE_TYPE_ING_STR		@"5"
 #define CAFE_TYPE_TEACHER_STR	@"6"
 
+#define FILE_TYPE_HTML	0
+#define FILE_TYPE_IMAGE	1
+
 #endif

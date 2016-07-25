@@ -12,8 +12,9 @@
 
 @interface WebLinkView : UIViewController <UIWebViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UIWebView *webView;
+@property (nonatomic, weak) IBOutlet UIView *mainView;
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strLink;
+@property (strong, nonatomic) NSNumber *m_nFileType;
 
 @end
