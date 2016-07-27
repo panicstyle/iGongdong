@@ -12,6 +12,7 @@
 #import "env.h"
 #import "Utils.h"
 #import "ArticleData.h"
+#import "WebLinkView.h"
 
 @interface ArticleView ()
 {
@@ -22,6 +23,7 @@
 	CGRect m_rectScreen;
 	
 	NSMutableArray *m_arrayItems;
+	NSDictionary *m_attachItems;
 	long m_lContentHeight;
 	float m_fTitleHeight;
 	
@@ -40,7 +42,7 @@
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	NSString *m_strHit;
-	int m_nMode;
+	int m_intMode;
 	
 	NSString *DeleteBoardID;
 	NSString *DeleteBoardNO;
@@ -48,6 +50,9 @@
 	NSString *m_strEditableTitle;
 	NSString *m_strEditableContent;
 
+	NSString *m_strWebLink;
+	int m_nFileType;
+	
 	NSURLConnection *conn;
 }
 @end
@@ -60,6 +65,7 @@
 @synthesize m_strDate;
 @synthesize m_strName;
 @synthesize m_strLink;
+@synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
 
@@ -68,6 +74,8 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	
+	m_intMode = [m_nMode intValue];
 	
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
@@ -101,10 +109,16 @@
 																			  target:self
 																		  action:@selector(showMenu:)];
 */
+	if (m_intMode != CAFE_TYPE_NORMAL) {
+		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
+		[self.buttonArticleModify setEnabled:FALSE];
+		[self.buttonArticleDelete setEnabled:FALSE];
+	}
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	if ([m_isPNotice intValue] == 0) {
+	if (m_intMode == CAFE_TYPE_NORMAL) {
 		NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
 		if (a1.count != 2) { return; };
 		
@@ -126,17 +140,24 @@
 			}
 		}
 	} else {
-		NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
-		NSLog(@"linkArray = [%@]", linkArray);
-		
-		m_strCommNo = @"";
-		m_strBoardNo = @"";
-		m_strArticleNo = [linkArray objectAtIndex:4];
+		if ([m_strLink containsString:@"index.php"]) {
+			m_strCommNo = @"";
+			m_strBoardNo = @"";
+			m_strArticleNo = [Utils findStringRegex:m_strLink regex:@"(?<=document_srl=).*?(?=$)"];
+		} else {
+			NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
+			NSLog(@"linkArray = [%@]", linkArray);
+			
+			m_strCommNo = @"";
+			m_strBoardNo = @"";
+			m_strArticleNo = [linkArray objectAtIndex:4];
+		}
 		
 	}
 	m_articleData = [[ArticleData alloc] init];
 	m_articleData.m_isPNotice = m_isPNotice;
 	m_articleData.m_strLink = m_strLink;
+	m_articleData.m_nMode = m_nMode;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -443,16 +464,22 @@
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
 	
+	NSURL *url = request.URL;
+	NSString *urlString = url.absoluteString;
+	NSLog(@"request = %@", urlString);
+	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		NSURL *url = request.URL;
-		NSString *urlString = url.absoluteString;
-
-		NSLog(@"request = %@", urlString);
-		NSString *fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
-		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		NSString *fileName;
+		if (m_intMode == CAFE_TYPE_TITLE) {
+			fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
+			fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		} else {
+			fileName = [m_attachItems valueForKey:urlString];
+		}
+		NSString *suffix = [[fileName substringFromIndex:[fileName length] - 4] lowercaseString];
 		
-		if ([fileName hasSuffix:@".hwp"] || [fileName hasSuffix:@".pdf"]) {
+		if ([suffix hasSuffix:@"hwp"]|| [suffix hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
 			NSString *documentDirectory = [paths objectAtIndex:0];
@@ -469,9 +496,17 @@
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
 		} else {
+			if ([suffix hasSuffix:@"png"] || [suffix hasSuffix:@"jpg"]
+				|| [suffix hasSuffix:@"jpeg"]|| [suffix hasSuffix:@"gif"]) {
+				m_nFileType = FILE_TYPE_IMAGE;
+			} else {
+				m_nFileType = FILE_TYPE_HTML;
+			}
+			m_strWebLink = urlString;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
 			
+			return NO;
 		}
-			
 	}
  	return YES;
 }
@@ -504,6 +539,7 @@
 	} else {
 		m_strContent = m_articleData.m_strContent;
 		m_arrayItems = m_articleData.m_arrayItems;
+		m_attachItems = m_articleData.m_attachItems;
 		m_strEditableContent = m_articleData.m_strEditableContent;
 		m_strEditableTitle = m_articleData.m_strTitle;
 		m_strTitle = m_articleData.m_strTitle;
@@ -511,7 +547,10 @@
 		m_strDate = m_articleData.m_strDate;
 		m_strHit = m_articleData.m_strHit;
 		
+		
 		NSLog(@"htmlString = [%@]", m_strContent);
+		
+		CGFloat width = m_contentCell.frame.size.width;
 		
 		m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
 		m_webView.delegate = self;
@@ -519,7 +558,7 @@
 		m_webView.scrollView.bounces = NO;
 		[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
 
-		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
+//		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];
 	}
 }
@@ -553,7 +592,6 @@
 
 - (void)WriteComment
 {
-	m_nMode = CommentWrite;
 	m_strCommentNo = @"";
 	m_strComment = @"";
 	
@@ -568,7 +606,6 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	m_strComment = [item valueForKey:@"comment"];
-	m_nMode = CommentModify;
 
 	[self performSegueWithIdentifier:@"Comment" sender:self];
 }
@@ -602,7 +639,7 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue]];
+	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:m_intMode];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -628,7 +665,6 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	m_strComment = @"";
-	m_nMode = CommentReply;
 	
 	[self performSegueWithIdentifier:@"Comment" sender:self];
 }
@@ -701,7 +737,8 @@
 	// Pass the selected object to the new view controller.
 	if ([[segue identifier] isEqualToString:@"Comment"]) {
 		CommentWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
+		view.m_nModify = [NSNumber numberWithInt:CommentWrite];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -719,7 +756,8 @@
 //		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentModify];
+		view.m_nModify = [NSNumber numberWithInt:CommentModify];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -737,7 +775,8 @@
 //		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentReply];
+		view.m_nModify = [NSNumber numberWithInt:CommentReply];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -748,16 +787,21 @@
 		view.selector = @selector(didWrite:);
 	} else if ([[segue identifier] isEqualToString:@"ArticleModify"]) {
 		ArticleWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:ArticleModify];
+		view.m_nModify = [NSNumber numberWithInt:ArticleModify];
+		view.m_nMode = m_nMode;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
 		view.m_strArticleNo = m_strArticleNo;
 		NSString *strEditableTitle = [Utils replaceStringHtmlTag:m_strTitle];
-//		NSString *strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+		//		NSString *strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 		view.m_strTitle = strEditableTitle;
 		view.m_strContent = m_strEditableContent;
 		view.target = self;
 		view.selector = @selector(didWrite:);
+	} else if ([[segue identifier] isEqualToString:@"WebLink"]) {
+		WebLinkView *view = [segue destinationViewController];
+		view.m_nFileType = [NSNumber numberWithInt:m_nFileType];
+		view.m_strLink = m_strWebLink;
 	}
 }
 

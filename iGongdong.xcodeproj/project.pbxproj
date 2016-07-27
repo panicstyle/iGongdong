@@ -35,6 +35,7 @@
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
+		ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECE8A0231D44E4F900D2680A /* WebLinkView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,8 @@
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
 		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
 		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		ECE8A0221D44E4F900D2680A /* WebLinkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebLinkView.h; sourceTree = "<group>"; };
+		ECE8A0231D44E4F900D2680A /* WebLinkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebLinkView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +214,8 @@
 				EC717E951C87C68800C1888B /* Supporting Files */,
 				EC938BC21C90534E006BEF9E /* Utils.h */,
 				EC938BC31C90534E006BEF9E /* Utils.m */,
+				ECE8A0221D44E4F900D2680A /* WebLinkView.h */,
+				ECE8A0231D44E4F900D2680A /* WebLinkView.m */,
 			);
 			path = iGongdong;
 			sourceTree = "<group>";
@@ -380,6 +385,7 @@
 				EC717F511C89313400C1888B /* AboutView.m in Sources */,
 				EC717F531C89313400C1888B /* ItemsView.m in Sources */,
 				EC717F2F1C882F3E00C1888B /* SetView.m in Sources */,
+				ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */,
 				EC3AA6381C994623006BFE5B /* RecentData.m in Sources */,
 				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,
 				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,

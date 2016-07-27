@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="PfV-XL-rbF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="PfV-XL-rbF">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -587,6 +587,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="bannerView" destination="gdt-M2-Uwi" id="8oC-2a-Kqf"/>
+                        <outlet property="m_newArticle" destination="HsL-He-HS2" id="w6h-qG-xw2"/>
                         <outlet property="tbView" destination="XdS-eN-sZI" id="IT6-E4-vdi"/>
                     </connections>
                 </viewController>
@@ -651,6 +652,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="93"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="RYP-JY-2Iq" kind="show" identifier="WebLink" id="Kgp-nX-dKC"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Reply" rowHeight="120" id="8KD-8h-YHk">
                                         <rect key="frame" x="0.0" y="263" width="600" height="120"/>
@@ -858,6 +862,7 @@
                     <connections>
                         <outlet property="bannerView" destination="P9s-7m-CeD" id="GhL-bb-iLA"/>
                         <outlet property="buttonArticleDelete" destination="Qsc-Bb-dgr" id="THK-DU-pM6"/>
+                        <outlet property="buttonArticleModify" destination="uke-Ky-AW5" id="8ji-dg-abx"/>
                         <outlet property="tbView" destination="hAg-3x-6Wu" id="NBF-Vc-B1p"/>
                     </connections>
                 </viewController>
@@ -991,7 +996,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WxE-PJ-lob" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2937" y="-65"/>
+            <point key="canvasLocation" x="2946" y="-65"/>
         </scene>
         <!--Recent View-->
         <scene sceneID="GJo-at-EJl">
@@ -1091,8 +1096,6 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="9D0-w9-uva"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="320" id="JL1-NK-7WV"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="mLT-iH-JLq"/>
                                     <constraint firstAttribute="width" constant="320" id="nNk-u3-K3W"/>
                                 </constraints>
                             </view>
@@ -1138,11 +1141,7 @@
                                 <rect key="frame" x="140" y="550" width="320" height="50"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="F0b-DP-hkG"/>
-                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="320" id="aGP-Ax-k8g"/>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="50" id="fQX-wz-QZs"/>
                                     <constraint firstAttribute="width" constant="320" id="lVd-kh-Nnd"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="320" id="tS2-Jt-gZz"/>
                                     <constraint firstAttribute="height" constant="50" id="utp-gA-tN3"/>
                                 </constraints>
                             </view>
@@ -1168,13 +1167,60 @@
             </objects>
             <point key="canvasLocation" x="2190" y="-74"/>
         </scene>
+        <!--Web Link View-->
+        <scene sceneID="B3h-YM-vf5">
+            <objects>
+                <viewController id="RYP-JY-2Iq" customClass="WebLinkView" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xZ2-hr-4UM"/>
+                        <viewControllerLayoutGuide type="bottom" id="T8d-RQ-JC1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fpl-RP-4bI">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XlL-dL-zWJ" customClass="GADBannerView">
+                                <rect key="frame" x="140" y="550" width="320" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Lni-Pl-kTM"/>
+                                    <constraint firstAttribute="width" constant="320" id="rfA-n8-7eW"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N2L-t1-srL">
+                                <rect key="frame" x="0.0" y="64" width="600" height="478"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="centerX" secondItem="fpl-RP-4bI" secondAttribute="centerX" id="0rV-mF-LjN"/>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="centerX" secondItem="fpl-RP-4bI" secondAttribute="centerX" id="3lV-hH-0CJ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="N2L-t1-srL" secondAttribute="trailing" constant="-20" id="8VZ-EU-cWk"/>
+                            <constraint firstItem="N2L-t1-srL" firstAttribute="top" secondItem="xZ2-hr-4UM" secondAttribute="bottom" id="Sjq-KQ-9v9"/>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="top" secondItem="N2L-t1-srL" secondAttribute="bottom" constant="8" id="UTl-dU-1pA"/>
+                            <constraint firstItem="N2L-t1-srL" firstAttribute="centerX" secondItem="fpl-RP-4bI" secondAttribute="centerX" id="Vk1-Fm-XcU"/>
+                            <constraint firstItem="N2L-t1-srL" firstAttribute="leading" secondItem="fpl-RP-4bI" secondAttribute="leadingMargin" constant="-20" id="jed-q4-cfv"/>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="bottom" secondItem="fpl-RP-4bI" secondAttribute="bottomMargin" id="piw-1v-vpH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="yk7-RH-sz1"/>
+                    <connections>
+                        <outlet property="bannerView" destination="XlL-dL-zWJ" id="5ze-Vp-5XK"/>
+                        <outlet property="mainView" destination="N2L-t1-srL" id="hUX-od-9Pq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IJv-dY-1vg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3651" y="-65"/>
+        </scene>
     </scenes>
     <resources>
         <image name="re" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="uqU-iQ-6El"/>
-        <segue reference="SZI-aq-hc2"/>
+        <segue reference="fjI-1J-ra1"/>
+        <segue reference="eIp-xT-7Fl"/>
         <segue reference="lGd-hv-6il"/>
     </inferredMetricsTieBreakers>
 </document>

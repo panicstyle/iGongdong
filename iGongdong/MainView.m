@@ -18,6 +18,7 @@
 @interface MainView ()
 {
 	NSMutableArray *m_arrayItems;
+	NSMutableArray *m_arrayMain;
 	LoginToService *m_login;
 	MainData *m_mainData;
 }
@@ -96,15 +97,38 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
+	return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [m_arrayItems count];
+	// Return the number of rows in the section.
+	switch (section) {
+		case 0 :
+			return [m_arrayMain count];
+			break;
+		case 1 :
+			return [m_arrayItems count];
+			break;
+	}
+	return 0;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	// Return the number of rows in the section.
+	switch (section) {
+		case 0 :
+			return @"공동육아와 공동체교육";
+			break;
+		case 1 :
+			return @"내 커뮤니티";
+			break;
+	}
+	return nil;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	long section = indexPath.section;
 	static NSString *CellIdentifier = @"reuseIdentifier";
 	
 	UITableViewCell *cell = [tableView
@@ -113,11 +137,20 @@
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
 									  reuseIdentifier:CellIdentifier];
 	}
-	// Configure the cell...
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	cell.textLabel.text = [item valueForKey:@"title"];
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	
+	NSMutableDictionary *item;
+	switch (section) {
+		case 0 :
+			item = [m_arrayMain objectAtIndex:[indexPath row]];
+			cell.textLabel.text = [item valueForKey:@"title"];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			break;
+		case 1:
+			// Configure the cell...
+			item = [m_arrayItems objectAtIndex:[indexPath row]];
+			cell.textLabel.text = [item valueForKey:@"title"];
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			break;
+	}
 	return cell;
 }
 
@@ -130,9 +163,17 @@
 	if ([[segue identifier] isEqualToString:@"Board"]) {
 		BoardView *viewController = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
+		long sec = currentIndexPath.section;
 		long row = currentIndexPath.row;
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		viewController.m_strCommNo = [item valueForKey:@"code"];
+		if (sec == 0) {
+			NSMutableDictionary *item = [m_arrayMain objectAtIndex:row];
+			viewController.m_strCommNo = [item valueForKey:@"code"];
+			viewController.m_nMode = [NSNumber numberWithInt:CENTER];
+		} else {
+			NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
+			viewController.m_strCommNo = [item valueForKey:@"code"];
+			viewController.m_nMode = [NSNumber numberWithInt:COMMUNITY];
+		}
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {
 		SetView *viewController = [segue destinationViewController];
 		viewController.target = self;
@@ -149,7 +190,9 @@
 
 - (void)didFetchItems
 {
-	m_arrayItems = [NSMutableArray arrayWithArray:m_mainData.m_arrayItems];
+	//	m_arrayItems = [NSMutableArray arrayWithArray:m_mainData.m_arrayItems];
+	m_arrayItems = m_mainData.m_arrayItems;
+	m_arrayMain = m_mainData.m_arrayMain;
 	[self.tbView reloadData];
 }
 

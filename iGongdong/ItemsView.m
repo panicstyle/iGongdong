@@ -19,7 +19,7 @@
 	NSString *m_strTitle;
 	int m_nPage;
 	ItemsData *m_itemsData;
-	int m_nMode;
+	int m_intMode;
 
 	CGRect m_rectScreen;
 	
@@ -35,13 +35,14 @@
 
 @synthesize m_strCommNo;
 @synthesize m_strLink;
+@synthesize m_nMode;
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
-	m_nMode = NormalItems;
+	m_intMode = [m_nMode intValue];
 	
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
@@ -56,11 +57,17 @@
 							];
 	[self.bannerView loadRequest:request];
 	
+	if (m_intMode != CAFE_TYPE_NORMAL) {
+		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
+		[self.m_newArticle setEnabled:FALSE];
+	}
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_itemsData = [[ItemsData alloc] init];
 	m_itemsData.m_strCommNo = m_strCommNo;
 	m_itemsData.m_strLink = m_strLink;
+	m_itemsData.m_nMode = m_nMode;
 	m_itemsData.target = self;
 	m_itemsData.selector = @selector(didFetchItems:);
 	m_nPage = 1;
@@ -92,12 +99,12 @@
 	if ([indexPath row] == [m_arrayItems count]) {
 		return 50.0f;
 	} else {
-		if (m_nMode == NormalItems) {
+		if (m_intMode == PictureItems) {
+			return 100.0f;
+		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			NSNumber *height = [item valueForKey:@"height"];
 			return [height floatValue];
-		} else {
-			return 100.0f;
 		}
 	}
 }
@@ -126,7 +133,52 @@
 		[cell addSubview:title1];
 		return cell;
 	} else {
-		if (m_nMode == NormalItems) {
+		if (m_intMode == PictureItems) {
+			// 사진첩 보기
+			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
+			
+			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierPicItem];
+			if (cell == nil) {
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierPicItem];
+			}
+			cell.showsReorderControl = YES;
+			
+			UIImageView *imageNew = (UIImageView *)[cell viewWithTag:210];
+			if ([[item valueForKey:@"isNew"] intValue] == 0) {
+				[imageNew setImage:[UIImage imageNamed:@"circle-blank"]];
+			} else {
+				[imageNew setImage:[UIImage imageNamed:@"circle"]];
+			}
+			
+			UIImageView *imageView = (UIImageView *)[cell viewWithTag:200];
+			NSString *strPicLink = [item valueForKey:@"piclink"];
+			NSURL *url = [NSURL URLWithString:strPicLink];
+			imageView.image = [UIImage imageWithCIImage:[CIImage imageWithContentsOfURL:url]];
+			
+			UITextView *textSubject = (UITextView *)[cell viewWithTag:201];
+			textSubject.text = [item valueForKey:@"subject"];
+			
+			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
+			NSString *strName = [item valueForKey:@"name"];
+			NSString *strDate = [item valueForKey:@"date"];
+			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
+			
+			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
+			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
+			labelName.attributedText = textName;
+			
+			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
+			NSString *strComment = [item valueForKey:@"comment"];
+			if ([strComment isEqualToString:@""]) {
+				[labelComment setHidden:YES];
+			} else {
+				[labelComment setHidden:NO];
+				labelComment.layer.cornerRadius = 8;
+				labelComment.layer.borderWidth = 1.0;
+				labelComment.layer.borderColor = labelComment.textColor.CGColor;
+				labelComment.text = strComment;
+			}
+		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			int isRe = [[item valueForKey:@"isRe"] intValue];
 			if (isRe == 0) {
@@ -184,7 +236,7 @@
 					[labelComment setHidden:NO];
 					labelComment.layer.cornerRadius = 8;
 					labelComment.layer.borderWidth = 1.0;
-//					labelComment.layer.borderColor = [UIColor orangeColor].CGColor;
+					//					labelComment.layer.borderColor = [UIColor orangeColor].CGColor;
 					labelComment.layer.borderColor = labelComment.textColor.CGColor;
 					labelComment.text = strComment;
 				}
@@ -201,7 +253,7 @@
 				} else {
 					[imageNew setImage:[UIImage imageNamed:@"circle"]];
 				}
-
+				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:300];
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
@@ -247,51 +299,6 @@
 					labelComment.text = strComment;
 				}
 			}
-		} else {
-			// 사진첩 보기
-			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-			
-			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierPicItem];
-			if (cell == nil) {
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierPicItem];
-			}
-			cell.showsReorderControl = YES;
-			
-			UIImageView *imageNew = (UIImageView *)[cell viewWithTag:210];
-			if ([[item valueForKey:@"isNew"] intValue] == 0) {
-				[imageNew setImage:[UIImage imageNamed:@"circle-blank"]];
-			} else {
-				[imageNew setImage:[UIImage imageNamed:@"circle"]];
-			}
-			
-			UIImageView *imageView = (UIImageView *)[cell viewWithTag:200];
-			NSString *strPicLink = [item valueForKey:@"piclink"];
-			NSURL *url = [NSURL URLWithString:strPicLink];
-			imageView.image = [UIImage imageWithCIImage:[CIImage imageWithContentsOfURL:url]];
-			
-			UITextView *textSubject = (UITextView *)[cell viewWithTag:201];
-			textSubject.text = [item valueForKey:@"subject"];
-			
-			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
-			NSString *strName = [item valueForKey:@"name"];
-			NSString *strDate = [item valueForKey:@"date"];
-			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-			
-			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
-			labelName.attributedText = textName;
-			
-			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
-			NSString *strComment = [item valueForKey:@"comment"];
-			if ([strComment isEqualToString:@""]) {
-				[labelComment setHidden:YES];
-			} else {
-				[labelComment setHidden:NO];
-				labelComment.layer.cornerRadius = 8;
-				labelComment.layer.borderWidth = 1.0;
-				labelComment.layer.borderColor = labelComment.textColor.CGColor;
-				labelComment.text = strComment;
-			}
 		}
 	}
 	return cell;
@@ -325,6 +332,7 @@
 		view.m_strDate = [item valueForKey:@"date"];
 		view.m_strName = [item valueForKey:@"name"];
 		view.m_strLink = [item valueForKey:@"link"];
+		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {
@@ -335,6 +343,7 @@
 		view.m_strArticleNo = @"";
 		view.m_strTitle = @"";
 		view.m_strContent = @"";
+		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);
 	}
@@ -393,7 +402,8 @@
 		[self presentViewController:alert animated:YES completion:nil];
 	} else {
 		if (m_nPage == 1) {
-			m_nMode = [m_itemsData.m_nMode intValue];
+			m_nMode = m_itemsData.m_nMode;
+			m_intMode = [m_nMode intValue];
 			m_arrayItems = [NSMutableArray arrayWithArray:m_itemsData.m_arrayItems];
 		} else {
 			[m_arrayItems addObjectsFromArray:m_itemsData.m_arrayItems];

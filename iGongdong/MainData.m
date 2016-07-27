@@ -18,11 +18,27 @@
 
 @implementation MainData
 @synthesize m_arrayItems;
+@synthesize m_arrayMain;
 @synthesize target;
 @synthesize selector;
 
 - (void)fetchItems
 {
+	m_arrayMain = [[NSMutableArray alloc] init];
+	
+	NSArray *arrayMain = @[
+					  @"ing", @"소통과참여",
+					  ];
+	
+	NSMutableDictionary *currItem;
+	int i;
+	for (i = 0; i < arrayMain.count; i+=2) {
+		currItem= [[NSMutableDictionary alloc] init];
+		[currItem setValue:arrayMain[i] forKey:@"code"];
+		[currItem setValue:arrayMain[i + 1] forKey:@"title"];
+		[m_arrayMain addObject:currItem];
+	}
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	NSString *url = [NSString stringWithFormat:@"%@/index.php?code=mypage", WWW_SERVER];

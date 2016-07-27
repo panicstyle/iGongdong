@@ -13,6 +13,8 @@
 @interface ItemsView : UIViewController <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *m_newArticle;
 @property (strong, nonatomic) NSString *m_strCommNo;
 @property (strong, nonatomic) NSString *m_strLink;
+@property (strong, nonatomic) NSNumber *m_nMode;
 @end

@@ -16,6 +16,7 @@
 @end
 
 @implementation BoardData
+@synthesize m_nMode;
 @synthesize m_strCommNo;
 @synthesize m_arrayItems;
 @synthesize target;
@@ -23,13 +24,50 @@
 
 - (void)fetchItems
 {
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
+	
+	// m_nMode 가 CENTER 일 경우 커뮤니티가 아닌 공동육아 홈페이지 관련 게시판을 표시한다.
+	if ([m_nMode intValue] == CENTER) {
+	
+		NSArray *ingMain = @[
+							 @"ing", @"공동육아 ING", CAFE_TYPE_ING_STR,
+							 @"ask", @"무엇이든 물어보세요", CAFE_TYPE_CENTER_STR,
+							 @"notice", @"공지사항", CAFE_TYPE_NOTICE_STR,
+							 @"teacher", @"교사모집/구직", CAFE_TYPE_TEACHER_STR,
+							 @"johap", @"조합원모집", CAFE_TYPE_TEACHER_STR,
+							 @"eboard", @"알리고싶어요", CAFE_TYPE_CENTER_STR,
+							 @"coop2", @"사회적협동조합 소식", CAFE_TYPE_CENTER_STR,
+							 @"eCommunity", @"터전소식", CAFE_TYPE_CENTER_STR,
+							 @"b20sign", @"간판사진/연혁", CAFE_TYPE_CENTER_STR,
+							 @"b20story", @"스토리사진/놀이소재", CAFE_TYPE_CENTER_STR,
+							 @"b20movie", @"터전동영상", CAFE_TYPE_CENTER_STR,
+							   ];
 
-	NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommNo];
+		NSArray *tmp;
+		if ([m_strCommNo isEqualToString:@"ing"]) {
+			tmp = ingMain;
+		}
+		
+		NSMutableDictionary *currItem;
+		int i;
+		for (i = 0; i < tmp.count; i+=3) {
+			currItem= [[NSMutableDictionary alloc] init];
+			[currItem setValue:tmp[i] forKey:@"link"];
+			[currItem setValue:tmp[i + 1] forKey:@"title"];
+			[currItem setValue:@([tmp[i + 2] intValue]) forKey:@"type"];
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isCal"];
+			[m_arrayItems addObject:currItem];
+		}
+		[target performSelector:selector withObject:nil afterDelay:0];
+	} else {
+		NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommNo];
 
-	m_receiveData = [[NSMutableData alloc] init];
-	m_connection = [[NSURLConnection alloc]
-			initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
+		m_receiveData = [[NSMutableData alloc] init];
+		m_connection = [[NSURLConnection alloc]
+				initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
+	}
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data

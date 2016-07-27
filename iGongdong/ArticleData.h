@@ -18,12 +18,14 @@
 @property (strong, nonatomic) NSString *m_strEditableContent;
 @property (strong, nonatomic) NSNumber *m_isPNotice;
 @property (strong, nonatomic) NSString *m_strLink;
+@property (strong, nonatomic) NSNumber *m_nMode;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
+@property (strong, nonatomic) NSDictionary *m_attachItems;
 @property id target;
 @property SEL selector;
 
 - (void)fetchItems;
 - (bool)DeleteArticle:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo;
-- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)m_isPNotice;
+- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)m_isPNotice Mode:(int)nMode;
 
 @end

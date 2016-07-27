@@ -41,5 +41,25 @@
 #define CAFE_TYPE_NORMAL	0
 #define CAFE_TYPE_LINK		2
 #define CAFE_TYPE_TITLE		1
+#define CAFE_TYPE_CENTER	3
+#define CAFE_TYPE_NOTICE	4
+#define CAFE_TYPE_ING		5
+#define CAFE_TYPE_TEACHER	6
+
+#define COMMUNITY		1
+#define CENTER			2
+
+#define BOARD_NORMAL	1
+#define BOARD_CENTER	2
+#define BOARD_ING		3
+#define BOARD_TEACHER	4
+
+#define CAFE_TYPE_CENTER_STR	@"3"
+#define CAFE_TYPE_NOTICE_STR	@"4"
+#define CAFE_TYPE_ING_STR		@"5"
+#define CAFE_TYPE_TEACHER_STR	@"6"
+
+#define FILE_TYPE_HTML	0
+#define FILE_TYPE_IMAGE	1
 
 #endif
