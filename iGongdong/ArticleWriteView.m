@@ -23,6 +23,7 @@
 @end
 
 @implementation ArticleWriteView
+@synthesize m_nModify;
 @synthesize m_nMode;
 @synthesize m_strCommNo;
 @synthesize m_strBoardNo;
@@ -37,9 +38,9 @@
 	m_bUpMode = false;
 	m_nAddPic = false;
 	
-	if ([m_nMode intValue] == ArticleWrite) {
+	if ([m_nModify intValue] == ArticleWrite) {
 		[(UILabel *)self.navigationItem.titleView setText:@"글쓰기"];
-	} else if ([m_nMode intValue] == ArticleModify) {
+	} else if ([m_nModify intValue] == ArticleModify) {
 		[(UILabel *)self.navigationItem.titleView setText:@"글수정"];
 	}
 
@@ -236,7 +237,7 @@
 	}
 	
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
-	if ([m_nMode intValue] == ArticleModify) {
+	if ([m_nModify intValue] == ArticleModify) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=edit&p2=&p1=%@&sort=%@",
 				   CAFE_SERVER, m_strCommNo, m_strBoardNo];
 	} else {

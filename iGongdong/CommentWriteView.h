@@ -10,6 +10,7 @@
 
 @interface CommentWriteView : UIViewController
 @property (nonatomic, weak) IBOutlet UITextView *m_textView;
+@property (nonatomic, strong) NSNumber *m_nModify;
 @property (nonatomic, strong) NSNumber *m_nMode;
 @property (nonatomic, strong) NSNumber *m_isPNotice;
 @property (nonatomic, strong) NSString *m_strCommNo;

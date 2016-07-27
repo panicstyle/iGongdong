@@ -40,18 +40,26 @@
 							];
 	[self.bannerView loadRequest:request];
 	
+}
+
+- (void)viewDidLayoutSubviews
+{
 	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {
-		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
+		
+		CGFloat width = mainView.bounds.size.width;
+		CGFloat height = mainView.bounds.size.height;
+		
+		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
 		
 		[mainView addSubview:imageView];
 		
 		[NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 			imageView.image = [UIImage imageWithData:data];
-			[imageView sizeToFit];
+			imageView.contentMode = UIViewContentModeScaleAspectFit;
 		}];
 		
 	} else {
-		UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, mainView.frame.size.height)];
+		UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
 		
 		[mainView addSubview:webView];
 		
@@ -61,4 +69,5 @@
 		[webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:m_strLink]]];
 	}
 }
+
 @end

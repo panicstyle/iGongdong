@@ -19,6 +19,7 @@
 @end
 
 @implementation CommentWriteView
+@synthesize m_nModify;
 @synthesize m_nMode;
 @synthesize m_isPNotice;
 @synthesize m_textView;
@@ -64,9 +65,9 @@
 	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
 	m_lContentHeight = rectScreen.size.height;
 	
-	if ([m_nMode intValue] == CommentWrite) {
+	if ([m_nModify intValue] == CommentWrite) {
 		[(UILabel *)self.navigationItem.titleView setText:@"댓글쓰기"];
-	} else if ([m_nMode intValue] == CommentModify) {
+	} else if ([m_nModify intValue] == CommentModify) {
 		[(UILabel *)self.navigationItem.titleView setText:@"댓글수정"];
 		m_textView.text = m_strComment;
 	} else {
@@ -224,8 +225,12 @@
 
 - (BOOL)writeComment
 {
-	if ([m_isPNotice intValue] == 0) {
-		return [self writeCommentNormal];
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+		if ([m_isPNotice intValue] == 0) {
+			return [self writeCommentNormal];
+		} else {
+			return [self writeCommentPNotice];
+		}
 	} else {
 		return [self writeCommentPNotice];
 	}
@@ -236,10 +241,10 @@
 	NSString *url;
 	
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
-	if ([m_nMode intValue] == CommentWrite || [m_nMode intValue] == CommentReply) {
+	if ([m_nModify intValue] == CommentWrite || [m_nModify intValue] == CommentReply) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=up_add&sort=%@&sub_sort=&p1=%@&p2=",
 			   CAFE_SERVER, m_strBoardNo, m_strCommNo];
-	} else if ([m_nMode intValue] == CommentModify) {
+	} else if ([m_nModify intValue] == CommentModify) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=edit_reply&sort=%@&sub_sort=&p1=%@&p2=",
 			   CAFE_SERVER, m_strBoardNo, m_strCommNo];
 	}
@@ -252,9 +257,9 @@
 	
 	NSMutableData *body = [NSMutableData data];
 	
-	if ([m_nMode intValue] == CommentWrite) {
+	if ([m_nModify intValue] == CommentWrite) {
 		[body appendData:[[NSString stringWithFormat:@"number=%@&content=%@", m_strArticleNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
-	} else if ([m_nMode intValue] == CommentModify) {
+	} else if ([m_nModify intValue] == CommentModify) {
 		[body appendData:[[NSString stringWithFormat:@"number=%@&content=%@", m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	} else {	// CommentReply
 		[body appendData:[[NSString stringWithFormat:@"number=%@&number_re=%@&content=%@", m_strArticleNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -296,7 +301,7 @@
 	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Origin"];
 	[request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
 	
-	if ([m_nMode intValue] == CommentWrite) {
+	if ([m_nModify intValue] == CommentWrite) {
 		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/notice/%@", m_strArticleNo];
 		[request setValue:strReferer forHTTPHeaderField:@"Referer"];
 		[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
@@ -313,7 +318,7 @@
 						   "<act><![CDATA[procBoardInsertComment]]></act>\n"
 						   "</params>\n"
 						   "</methodCall>", m_strArticleNo, m_strArticleNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
-	} else if ([m_nMode intValue] == CommentModify) {
+	} else if ([m_nModify intValue] == CommentModify) {
 		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardModifyComment&comment_srl=%@", m_strArticleNo, m_strCommentNo];
 		[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 		[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"

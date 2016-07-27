@@ -109,10 +109,16 @@
 																			  target:self
 																		  action:@selector(showMenu:)];
 */
+	if (m_intMode != CAFE_TYPE_NORMAL) {
+		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
+		[self.buttonArticleModify setEnabled:FALSE];
+		[self.buttonArticleDelete setEnabled:FALSE];
+	}
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	if ([m_isPNotice intValue] == 0) {
+	if (m_intMode == CAFE_TYPE_NORMAL) {
 		NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
 		if (a1.count != 2) { return; };
 		
@@ -134,12 +140,18 @@
 			}
 		}
 	} else {
-		NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
-		NSLog(@"linkArray = [%@]", linkArray);
-		
-		m_strCommNo = @"";
-		m_strBoardNo = @"";
-		m_strArticleNo = [linkArray objectAtIndex:4];
+		if ([m_strLink containsString:@"index.php"]) {
+			m_strCommNo = @"";
+			m_strBoardNo = @"";
+			m_strArticleNo = [Utils findStringRegex:m_strLink regex:@"(?<=document_srl=).*?(?=$)"];
+		} else {
+			NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
+			NSLog(@"linkArray = [%@]", linkArray);
+			
+			m_strCommNo = @"";
+			m_strBoardNo = @"";
+			m_strArticleNo = [linkArray objectAtIndex:4];
+		}
 		
 	}
 	m_articleData = [[ArticleData alloc] init];
@@ -538,6 +550,8 @@
 		
 		NSLog(@"htmlString = [%@]", m_strContent);
 		
+		CGFloat width = m_contentCell.frame.size.width;
+		
 		m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
@@ -625,7 +639,7 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue]];
+	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:m_intMode];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -723,7 +737,8 @@
 	// Pass the selected object to the new view controller.
 	if ([[segue identifier] isEqualToString:@"Comment"]) {
 		CommentWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:CommentWrite];
+		view.m_nModify = [NSNumber numberWithInt:CommentWrite];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -741,7 +756,8 @@
 //		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentModify];
+		view.m_nModify = [NSNumber numberWithInt:CommentModify];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -759,7 +775,8 @@
 //		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = clickedButtonPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_nMode = [NSNumber numberWithInt:CommentReply];
+		view.m_nModify = [NSNumber numberWithInt:CommentReply];
+		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
@@ -770,7 +787,8 @@
 		view.selector = @selector(didWrite:);
 	} else if ([[segue identifier] isEqualToString:@"ArticleModify"]) {
 		ArticleWriteView *view = [segue destinationViewController];
-		view.m_nMode = [NSNumber numberWithInt:ArticleModify];
+		view.m_nModify = [NSNumber numberWithInt:ArticleModify];
+		view.m_nMode = m_nMode;
 		view.m_strCommNo = m_strCommNo;
 		view.m_strBoardNo = m_strBoardNo;
 		view.m_strArticleNo = m_strArticleNo;

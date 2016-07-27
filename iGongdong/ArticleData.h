@@ -26,6 +26,6 @@
 
 - (void)fetchItems;
 - (bool)DeleteArticle:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo;
-- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)m_isPNotice;
+- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)m_isPNotice Mode:(int)nMode;
 
 @end

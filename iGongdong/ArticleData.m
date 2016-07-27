@@ -734,10 +734,14 @@
 	}
 }
 
-- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice
+- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice Mode:(int)nMode
 {
-	if (isPNotice == 0) {
-		return [self DeleteCommentNormal:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+	if (nMode == CAFE_TYPE_NORMAL) {
+		if (isPNotice == 0) {
+			return [self DeleteCommentNormal:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+		} else {
+			return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+		}
 	} else {
 		return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
 	}

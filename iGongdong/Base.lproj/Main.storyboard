@@ -587,6 +587,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="bannerView" destination="gdt-M2-Uwi" id="8oC-2a-Kqf"/>
+                        <outlet property="m_newArticle" destination="HsL-He-HS2" id="w6h-qG-xw2"/>
                         <outlet property="tbView" destination="XdS-eN-sZI" id="IT6-E4-vdi"/>
                     </connections>
                 </viewController>
@@ -861,6 +862,7 @@
                     <connections>
                         <outlet property="bannerView" destination="P9s-7m-CeD" id="GhL-bb-iLA"/>
                         <outlet property="buttonArticleDelete" destination="Qsc-Bb-dgr" id="THK-DU-pM6"/>
+                        <outlet property="buttonArticleModify" destination="uke-Ky-AW5" id="8ji-dg-abx"/>
                         <outlet property="tbView" destination="hAg-3x-6Wu" id="NBF-Vc-B1p"/>
                     </connections>
                 </viewController>
@@ -1217,8 +1219,8 @@
         <image name="re" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zoG-b2-QE8"/>
+        <segue reference="fjI-1J-ra1"/>
         <segue reference="eIp-xT-7Fl"/>
-        <segue reference="sgI-vn-LdG"/>
+        <segue reference="lGd-hv-6il"/>
     </inferredMetricsTieBreakers>
 </document>

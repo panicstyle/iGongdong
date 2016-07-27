@@ -57,6 +57,11 @@
 							];
 	[self.bannerView loadRequest:request];
 	
+	if (m_intMode != CAFE_TYPE_NORMAL) {
+		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
+		[self.m_newArticle setEnabled:FALSE];
+	}
+	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_itemsData = [[ItemsData alloc] init];
