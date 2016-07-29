@@ -42,7 +42,6 @@
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	NSString *m_strHit;
-	int m_intMode;
 	
 	NSString *DeleteBoardID;
 	NSString *DeleteBoardNO;
@@ -74,8 +73,6 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	
-	m_intMode = [m_nMode intValue];
 	
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
@@ -109,7 +106,7 @@
 																			  target:self
 																		  action:@selector(showMenu:)];
 */
-	if (m_intMode != CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] != CAFE_TYPE_NORMAL) {
 		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
 		[self.buttonArticleModify setEnabled:FALSE];
 		[self.buttonArticleDelete setEnabled:FALSE];
@@ -118,7 +115,7 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	if (m_intMode == CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
 		if (a1.count != 2) { return; };
 		
@@ -471,7 +468,7 @@
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
 		NSString *fileName;
-		if (m_intMode == CAFE_TYPE_TITLE) {
+		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 			fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
 			fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		} else {
@@ -639,7 +636,7 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:m_intMode];
+	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";

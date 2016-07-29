@@ -19,7 +19,7 @@
 	NSString *m_strTitle;
 	int m_nPage;
 	ItemsData *m_itemsData;
-	int m_intMode;
+	NSNumber *m_nItemMode;
 
 	CGRect m_rectScreen;
 	
@@ -42,7 +42,6 @@
 	[super viewDidLoad];
 	
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
-	m_intMode = [m_nMode intValue];
 	
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
@@ -57,7 +56,7 @@
 							];
 	[self.bannerView loadRequest:request];
 	
-	if (m_intMode != CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] != CAFE_TYPE_NORMAL) {
 		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
 		[self.m_newArticle setEnabled:FALSE];
 	}
@@ -99,7 +98,7 @@
 	if ([indexPath row] == [m_arrayItems count]) {
 		return 50.0f;
 	} else {
-		if (m_intMode == PictureItems) {
+		if ([m_nItemMode intValue] == PictureItems) {
 			return 100.0f;
 		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
@@ -133,7 +132,7 @@
 		[cell addSubview:title1];
 		return cell;
 	} else {
-		if (m_intMode == PictureItems) {
+		if ([m_nItemMode intValue] == PictureItems) {
 			// 사진첩 보기
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			
@@ -402,8 +401,7 @@
 		[self presentViewController:alert animated:YES completion:nil];
 	} else {
 		if (m_nPage == 1) {
-			m_nMode = m_itemsData.m_nMode;
-			m_intMode = [m_nMode intValue];
+			m_nItemMode = m_itemsData.m_nItemMode;
 			m_arrayItems = [NSMutableArray arrayWithArray:m_itemsData.m_arrayItems];
 		} else {
 			[m_arrayItems addObjectsFromArray:m_itemsData.m_arrayItems];

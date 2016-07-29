@@ -56,8 +56,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	NSNumber *nType = [item valueForKey:@"link"];
-	if ([nType intValue] == 1) {
+	NSNumber *nType = [item valueForKey:@"type"];
+	if ([nType intValue] == CAFE_TYPE_TITLE) {
 		return 25.0f;
 	} else {
 		return 44.0f;
@@ -76,61 +76,46 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *CellIdentifierBoard = @"Board";
 	static NSString *CellIdentifierCalendar = @"Calendar";
+	static NSString *CellIdentifierTitle = @"Title";
 	
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 	UITableViewCell *cell;
 	
-	int isCal = [[item valueForKey:@"isCal"] intValue];
-	if (isCal == 0) {
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierBoard];
+	if ([[item valueForKey:@"type"] intValue] == CAFE_TYPE_TITLE) {
+		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierTitle];
 		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierTitle];
 		}
 		cell.textLabel.text = [item valueForKey:@"title"];
-		if ([[item valueForKey:@"isNew"] intValue] == 0) {
-			[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
-		} else {
-			[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
-		}
 	} else {
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
-		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
-		}
-		cell.textLabel.text = [item valueForKey:@"title"];
-		if ([[item valueForKey:@"isNew"] intValue] == 0) {
-			[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+		int isCal = [[item valueForKey:@"isCal"] intValue];
+		if (isCal == 0) {
+			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierBoard];
+			if (cell == nil) {
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
+			}
+			cell.textLabel.text = [item valueForKey:@"title"];
+			if ([[item valueForKey:@"isNew"] intValue] == 0) {
+				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+			} else {
+				[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+			}
 		} else {
-			[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
+			if (cell == nil) {
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
+			}
+			cell.textLabel.text = [item valueForKey:@"title"];
+			if ([[item valueForKey:@"isNew"] intValue] == 0) {
+				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+			} else {
+				[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+			}
 		}
-	}
-	NSNumber *nType = [item valueForKey:@"link"];
-	if ([nType intValue] == 1) {
-		cell.accessoryType = UITableViewCellAccessoryNone;
-	} else {
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
 	return cell;
 }
-/*
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-	NSNumber *nType = [item valueForKey:@"link"];
-	
-	switch ([nType intValue]) {
-		case 1:
-			return;
-			break;
-		case 2:
-			// Link 처리
-			return;
-			break;
-		case 0:
-			[self performSegueWithIdentifier:@"Items" sender:self];
-	}
-}
-*/
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

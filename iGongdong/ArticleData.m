@@ -17,7 +17,6 @@
 	BOOL m_isConn;
 	BOOL m_isLogin;
 	LoginToService *m_login;
-	int m_intMode;
 }
 @end
 
@@ -45,8 +44,6 @@
 	m_isConn = TRUE;
 	m_isLogin = FALSE;
 	
-	m_intMode = [m_nMode intValue];
-	
 	[self fetchItems2];
 }
 
@@ -54,7 +51,7 @@
 {
 	NSString *url;
  
-	if (m_intMode == CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		if ([m_isPNotice intValue] == 0) {
 			url = [NSString stringWithFormat:@"%@%@", CAFE_SERVER, m_strLink];
 		} else {
@@ -135,20 +132,26 @@
 		}
 	}
 
-	if (m_intMode == CAFE_TYPE_NORMAL) {
-		if ([m_isPNotice intValue] == 0) {
-			[self parseNormal];
-		} else {
+	switch ([m_nMode intValue]) {
+		case CAFE_TYPE_NORMAL:
+			if ([m_isPNotice intValue] == 0) {
+				[self parseNormal];
+			} else {
+				[self parsePNotice];
+			}
+			break;
+		case CAFE_TYPE_NOTICE:
 			[self parsePNotice];
-		}
-	} else if (m_intMode == CAFE_TYPE_NOTICE){
-		[self parsePNotice];
-	} else if (m_intMode == CAFE_TYPE_CENTER) {
-		[self parseCenter];
-	} else if (m_intMode == CAFE_TYPE_ING) {
-		[self parseIng];
-	} else if (m_intMode == CAFE_TYPE_TEACHER) {
-		[self parseTeacher];
+			break;
+		case CAFE_TYPE_CENTER:
+			[self parseCenter];
+			break;
+		case CAFE_TYPE_ING:
+			[self parseIng];
+			break;
+		case CAFE_TYPE_TEACHER:
+			[self parseTeacher];
+			break;
 	}
 }
 	
@@ -194,7 +197,7 @@
 	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
 	
 	NSRange find7 = [m_strHtml rangeOfString:@"<p align=center><img onload=\"resizeImage2(this)\""];
-	NSString *imageString = nil;
+	NSString *imageString = @"";
 	if (find7.location != NSNotFound) {
 		// 사진이 없을 수 도 있음.
 		NSRange range1 = {find7.location, [m_strHtml length] - find7.location};
