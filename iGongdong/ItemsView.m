@@ -331,6 +331,7 @@
 		view.m_strDate = [item valueForKey:@"date"];
 		view.m_strName = [item valueForKey:@"name"];
 		view.m_strLink = [item valueForKey:@"link"];
+		view.m_strHit = [item valueForKey:@"hit"];
 		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);

@@ -385,7 +385,7 @@
 		[currItem setValue:strDate forKey:@"date"];
 		
 		// Hit
-		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수.).*?(?=</li>)"];
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수 ).*?(?=</li>)"];
 		//		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
 		
