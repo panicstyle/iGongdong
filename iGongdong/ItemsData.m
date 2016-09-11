@@ -18,7 +18,6 @@
 	BOOL m_isLogin;
 	int m_nPage;
 	LoginToService *m_login;
-	int m_intMode;
 }
 @end
 
@@ -28,6 +27,7 @@
 @synthesize m_strLink;
 @synthesize m_arrayItems;
 @synthesize m_nMode;
+@synthesize m_nItemMode;
 @synthesize target;
 @synthesize selector;
 
@@ -36,7 +36,6 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 	m_isLogin = FALSE;
 	m_nPage = nPage;
-	m_intMode = [m_nMode intValue];
 
 	[self fetchItems2];
 }
@@ -44,7 +43,7 @@
 - (void)fetchItems2
 {
 	NSString *url;
-	if (m_intMode == CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
 	} else {
 		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strLink, m_nPage];
@@ -92,18 +91,24 @@
 	
 	// <div id="board-content">
 	// <form action="/cafe.php" method=get name=frmEdit >
-	if (m_intMode == CAFE_TYPE_NORMAL) {
-		if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
-			m_nMode = [NSNumber numberWithInt:NormalItems];
-			[self getNormaltems:str];
-		} else {
-			m_nMode = [NSNumber numberWithInt:PictureItems];
-			[self getPictureItems:str];
-		}
-	} else if (m_intMode == CAFE_TYPE_CENTER || m_intMode == CAFE_TYPE_NOTICE || m_intMode == CAFE_TYPE_TEACHER) {
-		[self getCenterItems:str];
-	} else if (m_intMode == CAFE_TYPE_ING) {
-		[self getIngItems:str];
+	switch ([m_nMode intValue]) {
+		case CAFE_TYPE_NORMAL:
+			if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
+				m_nItemMode = [NSNumber numberWithInt:NormalItems];
+				[self getNormaltems:str];
+			} else {
+				m_nItemMode = [NSNumber numberWithInt:PictureItems];
+				[self getPictureItems:str];
+			}
+			break;
+		case CAFE_TYPE_CENTER:
+		case CAFE_TYPE_NOTICE:
+		case CAFE_TYPE_TEACHER:
+			[self getCenterItems:str];
+			break;
+		case CAFE_TYPE_ING:
+			[self getIngItems:str];
+			break;
 	}
 }
 
@@ -277,7 +282,7 @@
 		
 		// subject
 		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\\\"title).*?(</a>)"];
-		if (m_intMode == CAFE_TYPE_TEACHER) {
+		if ([m_nMode intValue] == CAFE_TYPE_TEACHER) {
 			if ([Utils numberOfMatches:strSubject regex:@"teacher_icon01.gif"] > 0) {
 				strStatus = @"[모집중]";
 			} else {
@@ -288,7 +293,7 @@
 			strSubject = [Utils replaceStringRegex:strSubject regex:@"(<strong).*?(/strong>)" replace:@""];
 		}
 		strSubject = [Utils replaceStringHtmlTag:strSubject];
-		if (m_intMode == CAFE_TYPE_TEACHER) {
+		if ([m_nMode intValue] == CAFE_TYPE_TEACHER) {
 			strSubject = [NSString stringWithFormat:@"%@ %@", strStatus, strSubject];
 		}
 		[currItem setValue:strSubject forKey:@"subject"];
@@ -305,7 +310,7 @@
 		// isNew
 		[currItem setValue:@"0" forKey:@"isNew"];
 		
-		if (m_intMode == CAFE_TYPE_NOTICE) {
+		if ([m_nMode intValue] == CAFE_TYPE_NOTICE) {
 			if (isNotice == 1) {
 				[currItem setValue:@"공지" forKey:@"name"];
 				[currItem setValue:@"공지" forKey:@"id"];
@@ -380,7 +385,7 @@
 		[currItem setValue:strDate forKey:@"date"];
 		
 		// Hit
-		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수.).*?(?=</li>)"];
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수 ).*?(?=</li>)"];
 		//		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
 		

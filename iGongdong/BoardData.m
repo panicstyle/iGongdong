@@ -31,17 +31,17 @@
 	if ([m_nMode intValue] == CENTER) {
 	
 		NSArray *ingMain = @[
-							 @"ing", @"공동육아 ING", CAFE_TYPE_ING_STR,
-							 @"ask", @"무엇이든 물어보세요", CAFE_TYPE_CENTER_STR,
-							 @"notice", @"공지사항", CAFE_TYPE_NOTICE_STR,
-							 @"teacher", @"교사모집/구직", CAFE_TYPE_TEACHER_STR,
-							 @"johap", @"조합원모집", CAFE_TYPE_TEACHER_STR,
-							 @"eboard", @"알리고싶어요", CAFE_TYPE_CENTER_STR,
-							 @"coop2", @"사회적협동조합 소식", CAFE_TYPE_CENTER_STR,
-							 @"eCommunity", @"터전소식", CAFE_TYPE_CENTER_STR,
-							 @"b20sign", @"간판사진/연혁", CAFE_TYPE_CENTER_STR,
-							 @"b20story", @"스토리사진/놀이소재", CAFE_TYPE_CENTER_STR,
-							 @"b20movie", @"터전동영상", CAFE_TYPE_CENTER_STR,
+							 @"ing", @"공동육아 ING", @CAFE_TYPE_ING,
+							 @"ask", @"무엇이든 물어보세요", @CAFE_TYPE_CENTER,
+							 @"notice", @"공지사항", @CAFE_TYPE_NOTICE,
+							 @"teacher", @"교사모집/구직", @CAFE_TYPE_TEACHER,
+							 @"johap", @"조합원모집", @CAFE_TYPE_TEACHER,
+							 @"eboard", @"알리고싶어요", @CAFE_TYPE_CENTER,
+							 @"coop2", @"사회적협동조합 소식", @CAFE_TYPE_CENTER,
+							 @"eCommunity", @"터전소식", @CAFE_TYPE_CENTER,
+							 @"b20sign", @"간판사진/연혁", @CAFE_TYPE_CENTER,
+							 @"b20story", @"스토리사진/놀이소재", @CAFE_TYPE_CENTER,
+							 @"b20movie", @"터전동영상", @CAFE_TYPE_CENTER,
 							   ];
 
 		NSArray *tmp;
@@ -55,7 +55,7 @@
 			currItem= [[NSMutableDictionary alloc] init];
 			[currItem setValue:tmp[i] forKey:@"link"];
 			[currItem setValue:tmp[i + 1] forKey:@"title"];
-			[currItem setValue:@([tmp[i + 2] intValue]) forKey:@"type"];
+			[currItem setValue:tmp[i + 2] forKey:@"type"];
 			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isCal"];
 			[m_arrayItems addObject:currItem];
@@ -103,7 +103,8 @@
 		} else if ([matchstr rangeOfString:@"cafe_sub_menu_title"].location != NSNotFound) {
 			[currItem setValue:[NSNumber numberWithInt:CAFE_TYPE_TITLE] forKey:@"type"];
 		} else if ([matchstr rangeOfString:@"cafe_sub_menu_link"].location != NSNotFound) {
-			[currItem setValue:[NSNumber numberWithInt:CAFE_TYPE_LINK] forKey:@"type"];
+//			[currItem setValue:[NSNumber numberWithInt:CAFE_TYPE_LINK] forKey:@"type"];
+			continue;
 		} else {
 			[currItem setValue:[NSNumber numberWithInt:CAFE_TYPE_NORMAL] forKey:@"type"];
 		}

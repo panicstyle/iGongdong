@@ -41,8 +41,6 @@
 	NSString *m_strArticleNo;
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
-	NSString *m_strHit;
-	int m_intMode;
 	
 	NSString *DeleteBoardID;
 	NSString *DeleteBoardNO;
@@ -65,6 +63,7 @@
 @synthesize m_strDate;
 @synthesize m_strName;
 @synthesize m_strLink;
+@synthesize m_strHit;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
@@ -75,8 +74,6 @@
 {
 	[super viewDidLoad];
 	
-	m_intMode = [m_nMode intValue];
-	
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
 	
@@ -84,7 +81,6 @@
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
 	m_fTitleHeight = 77.0f;
-	m_strHit = @"";
 
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
@@ -109,7 +105,7 @@
 																			  target:self
 																		  action:@selector(showMenu:)];
 */
-	if (m_intMode != CAFE_TYPE_NORMAL) {
+	if ([m_nMode intValue] != CAFE_TYPE_NORMAL) {
 		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.
 		[self.buttonArticleModify setEnabled:FALSE];
 		[self.buttonArticleDelete setEnabled:FALSE];
@@ -118,26 +114,35 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	if (m_intMode == CAFE_TYPE_NORMAL) {
-		NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
-		if (a1.count != 2) { return; };
-		
-		NSArray *linkArray = [[a1 objectAtIndex:1] componentsSeparatedByString:@"&"];
-		NSLog(@"linkArray = [%@]", linkArray);
-		if (linkArray) {
-			id key;
-			for (key in linkArray) {
-				////NSLog(@"key = [%@]", key);
-				NSArray *a = [key componentsSeparatedByString:@"="];
-				NSString *name = [a objectAtIndex:0];
-				if ([name isEqual:@"p1"]) {
-					m_strCommNo = [NSString stringWithString:[a objectAtIndex:1]];
-				} else if ([name isEqual:@"sort"]) {
-					m_strBoardNo = [NSString stringWithString:[a objectAtIndex:1]];
-				} else if ([name isEqual:@"number"]) {
-					m_strArticleNo = [NSString stringWithString:[a objectAtIndex:1]];
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+		if ([m_isPNotice intValue] == 0) {
+			NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
+			if (a1.count != 2) { return; };
+			
+			NSArray *linkArray = [[a1 objectAtIndex:1] componentsSeparatedByString:@"&"];
+			NSLog(@"linkArray = [%@]", linkArray);
+			if (linkArray) {
+				id key;
+				for (key in linkArray) {
+					////NSLog(@"key = [%@]", key);
+					NSArray *a = [key componentsSeparatedByString:@"="];
+					NSString *name = [a objectAtIndex:0];
+					if ([name isEqual:@"p1"]) {
+						m_strCommNo = [NSString stringWithString:[a objectAtIndex:1]];
+					} else if ([name isEqual:@"sort"]) {
+						m_strBoardNo = [NSString stringWithString:[a objectAtIndex:1]];
+					} else if ([name isEqual:@"number"]) {
+						m_strArticleNo = [NSString stringWithString:[a objectAtIndex:1]];
+					}
 				}
 			}
+		} else {
+			NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
+			NSLog(@"linkArray = [%@]", linkArray);
+			
+			m_strCommNo = @"";
+			m_strBoardNo = @"";
+			m_strArticleNo = [linkArray objectAtIndex:4];
 		}
 	} else {
 		if ([m_strLink containsString:@"index.php"]) {
@@ -158,6 +163,9 @@
 	m_articleData.m_isPNotice = m_isPNotice;
 	m_articleData.m_strLink = m_strLink;
 	m_articleData.m_nMode = m_nMode;
+	m_articleData.m_strName = m_strName;
+	m_articleData.m_strDate = m_strDate;
+	m_articleData.m_strHit = m_strHit;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -471,7 +479,7 @@
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
 		NSString *fileName;
-		if (m_intMode == CAFE_TYPE_TITLE) {
+		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 			fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
 			fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		} else {
@@ -639,7 +647,7 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:m_intMode];
+	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
