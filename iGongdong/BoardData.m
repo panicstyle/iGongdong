@@ -44,9 +44,17 @@
 							 @"b20movie", @"터전동영상", @CAFE_TYPE_CENTER,
 							   ];
 
+		NSArray *eduMain = @[
+							 @"edu_app", @"교육신청", @CAFE_TYPE_EDU_APP,
+							 @"edu_app", @"신청결과보기", @CAFE_TYPE_EDU_APP_ADMIN,
+							 ];
+
+		
 		NSArray *tmp;
 		if ([m_strCommNo isEqualToString:@"ing"]) {
 			tmp = ingMain;
+		} else if ([m_strCommNo isEqualToString:@"edu"]) {
+			tmp = eduMain;
 		}
 		
 		NSMutableDictionary *currItem;

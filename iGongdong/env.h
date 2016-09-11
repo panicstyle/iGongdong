@@ -45,19 +45,25 @@
 #define CAFE_TYPE_NOTICE	4
 #define CAFE_TYPE_ING		5
 #define CAFE_TYPE_TEACHER	6
+#define CAFE_TYPE_EDU_APP	7
+#define CAFE_TYPE_EDU_APP_ADMIN		8
 
 #define COMMUNITY		1
 #define CENTER			2
 
-#define BOARD_NORMAL	1
-#define BOARD_CENTER	2
-#define BOARD_ING		3
-#define BOARD_TEACHER	4
+#define BOARD_NORMAL		1
+#define BOARD_CENTER		2
+#define BOARD_ING			3
+#define BOARD_TEACHER		4
+#define BOARD_EDU_APP		5
+#define BOARD_EDU_APP_ADMIN	6
 
-#define CAFE_TYPE_CENTER_STR	@"3"
-#define CAFE_TYPE_NOTICE_STR	@"4"
-#define CAFE_TYPE_ING_STR		@"5"
-#define CAFE_TYPE_TEACHER_STR	@"6"
+#define CAFE_TYPE_CENTER_STR		@"3"
+#define CAFE_TYPE_NOTICE_STR		@"4"
+#define CAFE_TYPE_ING_STR			@"5"
+#define CAFE_TYPE_TEACHER_STR		@"6"
+#define CAFE_TYPE_EDU_APP_STR		@"7"
+#define CAFE_TYPE_EDU_APP_ADMIN_STR	@"8"
 
 #define FILE_TYPE_HTML	0
 #define FILE_TYPE_IMAGE	1

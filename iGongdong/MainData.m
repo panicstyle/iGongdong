@@ -27,7 +27,8 @@
 	m_arrayMain = [[NSMutableArray alloc] init];
 	
 	NSArray *arrayMain = @[
-					  @"ing", @"소통과참여",
+						   @"edu", @"교육사업",
+						   @"ing", @"소통과참여",
 					  ];
 	
 	NSMutableDictionary *currItem;

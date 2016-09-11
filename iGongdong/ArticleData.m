@@ -152,6 +152,12 @@
 		case CAFE_TYPE_TEACHER:
 			[self parseTeacher];
 			break;
+		case CAFE_TYPE_EDU_APP:
+			[self parseEduApp];
+			break;
+		case CAFE_TYPE_EDU_APP_ADMIN:
+			[self parseEduAppAdmin];
+			break;
 	}
 }
 	
@@ -691,6 +697,144 @@
 	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
 	
 	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
+
+- (void)parseEduApp
+{
+	//<!---- contents start ---->
+	//<!---- contents end ---->
+	
+	/*
+	 if ([m_nServerType intValue] == 1) {
+		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
+	 } else {
+		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
+	 }
+	 */
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	
+	NSString *strCategory = [Utils findStringRegex:m_strHtml regex:@"(?<=class=\\\"category\\\">).*?(?=</a>)"];
+	m_strTitle = [NSString stringWithFormat:@"[%@]%@", strCategory, m_strTitle];
+	
+	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
+	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<span).*?(</span>)" replace:@""];
+	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<a href=\\\"h).*?(</a>)" replace:@""];
+	m_strName = [Utils replaceStringHtmlTag:m_strName];
+	
+	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
+	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
+	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
+	
+	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
+	
+	NSString *strContent;
+	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
+	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
+	} else {
+		m_strContent = @"";
+	}
+	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	
+	NSString *strStatus;
+	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</table>)"];
+	
+	if ([Utils numberOfMatches:strStatus regex:@"신청기간중"] > 0) {
+		NSString *strApply;
+		strApply = [Utils findStringRegex:m_strHtml regex:@"(<map name=\\\"Map).*?(</map>)"];
+		strApply = [Utils findStringRegex:strApply regex:@"(?<=href=\\\").*?(?=\\\")"];
+		strApply = [NSString stringWithFormat:@"<tr><td><a href=\"%@\">수강신청 바로가기</a></td></tr></table>", strApply];
+		
+		strStatus = [Utils replaceStringRegex:strStatus regex:@"</table>" replace:strApply];
+	}
+	
+	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
+	
+	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+	
+	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
+	
+	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
+	
+	NSMutableDictionary *currItem;
+	
+	int isReply = 0;
+	for (int i = 1; i < [commentItems count]; i++) {
+		NSString *s = [commentItems objectAtIndex:i];
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
+		// number
+		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
+		if ([strNumber length] <= 0) {
+			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
+		}
+		[currItem setValue:strNumber forKey:@"no"];
+		
+		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+			isReply = 0;
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
+			isReply = 1;
+		}
+		
+		// Name
+		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
+		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// Date
+		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
+		strDate = [Utils replaceStringHtmlTag:strDate];
+		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
+		strComm = [Utils replaceStringHtmlTag:strComm];
+		[currItem setValue:strComm forKey:@"comment"];
+		
+		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
+
+- (void)parseEduAppAdmin
+{
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(<div class=\\\"enroll_content).*?(</h2>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	
+	m_strName = @"";
+
+	m_strContent = [Utils findStringRegex:m_strHtml regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 링크 입력폼 -->)"];
+
+	NSString *strStyle = @"<style type=\"text/css\">.listTable { border-collapse:collapse;  }	.listTable td { border: solid 1px #ccc; font-size: 1.0em; padding: 5px }	</style>";
+	m_strContent = [NSString stringWithFormat:@"%@%@", strStyle, m_strContent];
+	
+	m_strEditableContent = m_strContent;
 	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;

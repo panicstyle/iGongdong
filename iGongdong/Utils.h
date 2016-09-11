@@ -15,5 +15,6 @@
 + (NSString *)findStringRegex:(NSString *)content regex:(NSString *)strRegex;
 + (NSString *)replaceStringRegex:(NSString *)content regex:(NSString *)strRegex replace:(NSString *)strReplace;
 + (NSString *)replaceStringHtmlTag:(NSString *)content;
++ (NSString *)replaceSpecialString:(NSString *)content;
 
 @end
