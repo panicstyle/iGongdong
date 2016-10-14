@@ -107,6 +107,7 @@
 		EC717F701C8ACD6E00C1888B /* ArticleWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleWriteView.h; sourceTree = "<group>"; };
 		EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleWriteView.m; sourceTree = "<group>"; };
 		EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iGongdong.entitlements; sourceTree = "<group>"; };
 		EC938BC21C90534E006BEF9E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		EC938BC31C90534E006BEF9E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
@@ -166,6 +167,7 @@
 		EC717E941C87C68800C1888B /* iGongdong */ = {
 			isa = PBXGroup;
 			children = (
+				EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */,
 				EC717F451C89313400C1888B /* AboutView.h */,
 				EC717F461C89313400C1888B /* AboutView.m */,
 				EC717E981C87C68800C1888B /* AppDelegate.h */,
@@ -314,6 +316,11 @@
 					EC717E911C87C68800C1888B = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 8PG9C7Q5V8;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					EC717EAA1C87C68800C1888B = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -499,6 +506,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -628,6 +636,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -649,6 +658,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

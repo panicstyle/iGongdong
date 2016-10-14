@@ -18,6 +18,9 @@
 }
 - (BOOL)LoginToService;
 - (void)Logout;
+- (void)PushRegister;
+- (void)PushRegisterUpdate;
+
 //- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
 //- (void)didReceiveFinished:(NSString *)result;
 

@@ -21,6 +21,7 @@
 
 #define CAFE_SERVER	@"http://cafe.gongdong.or.kr"
 #define WWW_SERVER @"http://www.gongdong.or.kr"
+#define PUSH_SERVER @"http://www.gongdong.or.kr"
 #define kSampleAdUnitID @"ca-app-pub-9032980304073628/5080394398"
 //#define AdPubID @"a1513842aba33a7"
 
