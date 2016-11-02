@@ -23,8 +23,9 @@
 
 @implementation ItemsData
 
-@synthesize m_strCommNo;
-@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
+//@synthesize m_strLink;
 @synthesize m_arrayItems;
 @synthesize m_nMode;
 @synthesize m_nItemMode;
@@ -42,13 +43,14 @@
 
 - (void)fetchItems2
 {
+	// http://cafe.gongdong.or.kr/cafe.php?sort=35&sub_sort=&keyfield=&key_bs=&p1=menbal&p2=&p3=&page=1&startpage=1
 	NSString *url;
 	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
-		url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
+		url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&keyfield=&key_bs=&p1=%@&p2=&p3=&page=%d", CAFE_SERVER, m_strCommId, m_strBoardId, m_nPage];
 	} else if ([m_nMode intValue] == CAFE_TYPE_EDU_APP_ADMIN) {
-		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d&module=admin&act=dispEnrollCourse", WWW_SERVER, m_strLink, m_nPage];
+		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d&module=admin&act=dispEnrollCourse", WWW_SERVER, m_strBoardId, m_nPage];
 	} else {
-		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strLink, m_nPage];
+		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strBoardId, m_nPage];
 	}
 	
 	m_receiveData = [[NSMutableData alloc] init];
@@ -119,6 +121,55 @@
 			break;
 	}
 }
+
+/*
+ // link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+ if ([m_isPNotice intValue] == 0) {
+ NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
+ if (a1.count != 2) { return; };
+ 
+ NSArray *linkArray = [[a1 objectAtIndex:1] componentsSeparatedByString:@"&"];
+ NSLog(@"linkArray = [%@]", linkArray);
+ if (linkArray) {
+ id key;
+ for (key in linkArray) {
+ ////NSLog(@"key = [%@]", key);
+ NSArray *a = [key componentsSeparatedByString:@"="];
+ NSString *name = [a objectAtIndex:0];
+ if ([name isEqual:@"p1"]) {
+ m_strCommNo = [NSString stringWithString:[a objectAtIndex:1]];
+ } else if ([name isEqual:@"sort"]) {
+ m_strBoardNo = [NSString stringWithString:[a objectAtIndex:1]];
+ } else if ([name isEqual:@"number"]) {
+ m_strArticleNo = [NSString stringWithString:[a objectAtIndex:1]];
+ }
+ }
+ }
+ } else {
+ NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
+ NSLog(@"linkArray = [%@]", linkArray);
+ 
+ m_strCommNo = @"";
+ m_strBoardNo = @"";
+ m_strArticleNo = [linkArray objectAtIndex:4];
+ }
+	} else {
+ if ([m_strLink containsString:@"index.php"]) {
+ m_strCommNo = @"";
+ m_strBoardNo = @"";
+ m_strArticleNo = [Utils findStringRegex:m_strLink regex:@"(?<=document_srl=).*?(?=$)"];
+ } else {
+ NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
+ NSLog(@"linkArray = [%@]", linkArray);
+ 
+ m_strCommNo = @"";
+ m_strBoardNo = @"";
+ m_strArticleNo = [linkArray objectAtIndex:4];
+ }
+ 
+	}
+*/
 
 - (void)getNormaltems:(NSString *)str
 {

@@ -30,7 +30,10 @@
 @synthesize m_strContent;
 @synthesize m_strEditableContent;
 @synthesize m_isPNotice;
-@synthesize m_strLink;
+//@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
+@synthesize m_strBoardNo;
 @synthesize m_arrayItems;
 @synthesize m_attachItems;
 @synthesize m_nMode;
@@ -50,15 +53,17 @@
 - (void)fetchItems2
 {
 	NSString *url;
- 
+ //http://cafe.gongdong.or.kr/cafe.php?sort=35&sub_sort=&page=2&startpage=1&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1283064&mode=view
 	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		if ([m_isPNotice intValue] == 0) {
-			url = [NSString stringWithFormat:@"%@%@", CAFE_SERVER, m_strLink];
+			url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&page=1&startpage=1&keyfield=&key_bs=&p1=%@&p2=&p3=&number=%@&mode=view", CAFE_SERVER, m_strBoardId, m_strCommId, m_strBoardNo];
 		} else {
-			url = m_strLink;
+			// http://www.gongdong.or.kr/notice/342940
+			url = [NSString stringWithFormat:@"www.gongdong.or.kr/notice/%@", m_strBoardNo];
 		}
 	} else {
-		url = m_strLink;
+		// http://www.gongdong.or.kr/ing/343335
+		url = [NSString stringWithFormat:@"www.gongdong.or.kr/%@/%@", m_strBoardId, m_strBoardNo];
 	}
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
@@ -840,14 +845,14 @@
 	return;
 }
 
-- (bool)DeleteArticle:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo
+- (bool)DeleteArticle:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo
 {
 	// POST http://cafe.gongdong.or.kr/cafe.php?mode=del&sort=1225&sub_sort=&p1=tuntun&p2=
 	// number=977381&passwd=
 	
 	NSString *url;
 	url = [NSString stringWithFormat:@"%@/cafe.php?mode=del&sort=%@&sub_sort=&p1=%@&p2=",
-			   CAFE_SERVER, strBoardNo, strCommNo];
+			   CAFE_SERVER, strBoardId, strCommId];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -856,7 +861,7 @@
 	
 	NSMutableData *body = [NSMutableData data];
 	// usetag = n
-	[body appendData:[[NSString stringWithFormat:@"number=%@&passwd=", strArticleNo] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"number=%@&passwd=", strBoardNo] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -881,23 +886,23 @@
 	}
 }
 
-- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice Mode:(int)nMode
+- (bool)DeleteComment:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice Mode:(int)nMode
 {
 	if (nMode == CAFE_TYPE_NORMAL) {
 		if (isPNotice == 0) {
-			return [self DeleteCommentNormal:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+			return [self DeleteCommentNormal:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 		} else {
-			return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+			return [self DeleteCommentPNotice:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 		}
 	} else {
-		return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+		return [self DeleteCommentPNotice:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 	}
 }
 
-- (bool)DeleteCommentNormal:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
+- (bool)DeleteCommentNormal:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo
 {
 	NSLog(@"DeleteArticleConfirm start");
-	NSLog(@"commID=[%@], boardID=[%@], numberID=[%@]", strCommNo, strBoardNo, strCommentNo);
+	NSLog(@"commId=[%@], boardId=[%@], boardNo=[%@], commentID=[%@]", strCommId, strBoardId, strBoardNo, strCommentNo);
 	
 	// POST http://cafe.gongdong.or.kr/cafe.php?mode=del_reply&sort=1225&sub_sort=&p1=tuntun&p2=
 	// number=1588986&passwd=
@@ -906,7 +911,7 @@
 	s = @"%@/cafe.php?mode=del_reply&sort=%@&sub_sort=&p1=%@&p2=";
 	
 	NSString *url = [NSString stringWithFormat:s,
-					 CAFE_SERVER, strBoardNo, strCommNo];
+					 CAFE_SERVER, strBoardId, strCommId];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -940,10 +945,10 @@
 	}
 }
 
-- (bool)DeleteCommentPNotice:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
+- (bool)DeleteCommentPNotice:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo
 {
 	NSLog(@"DeleteCommentPNotice start");
-	NSLog(@"articleNo=[%@], numberID=[%@]", strArticleNo, strCommentNo);
+	NSLog(@"articleNo=[%@], numberID=[%@]", strBoardNo, strCommentNo);
 	
 	NSString *url = @"http://www.gongdong.or.kr/index.php";
 	NSLog(@"url = [%@]", url);
@@ -954,7 +959,7 @@
 	
 	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Origin"];
 	[request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-	NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardDeleteComment&comment_srl=%@", strArticleNo, strCommentNo];
+	NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardDeleteComment&comment_srl=%@", strBoardNo, strCommentNo];
 	[request setValue:strReferer forHTTPHeaderField:@"Referer"];
 	
 	NSMutableData *body = [NSMutableData data];
@@ -971,7 +976,7 @@
 					   "<comment_srl><![CDATA[%@]]></comment_srl>\n"
 					   "<module><![CDATA[board]]></module>\n"
 					   "</params>\n"
-					   "</methodCall>", strArticleNo, strCommentNo, strArticleNo, strCommentNo] dataUsingEncoding:NSUTF8StringEncoding]];
+					   "</methodCall>", strBoardNo, strCommentNo, strBoardNo, strCommentNo] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	

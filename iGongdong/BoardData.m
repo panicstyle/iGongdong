@@ -17,7 +17,7 @@
 
 @implementation BoardData
 @synthesize m_nMode;
-@synthesize m_strCommNo;
+@synthesize m_strCommId;
 @synthesize m_arrayItems;
 @synthesize target;
 @synthesize selector;
@@ -51,9 +51,9 @@
 
 		
 		NSArray *tmp;
-		if ([m_strCommNo isEqualToString:@"ing"]) {
+		if ([m_strCommId isEqualToString:@"ing"]) {
 			tmp = ingMain;
-		} else if ([m_strCommNo isEqualToString:@"edu"]) {
+		} else if ([m_strCommId isEqualToString:@"edu"]) {
 			tmp = eduMain;
 		}
 		
@@ -70,7 +70,7 @@
 		}
 		[target performSelector:selector withObject:nil afterDelay:0];
 	} else {
-		NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommNo];
+		NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommId];
 
 		m_receiveData = [[NSMutableData alloc] init];
 		m_connection = [[NSURLConnection alloc]

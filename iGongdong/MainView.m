@@ -68,12 +68,13 @@
 	m_mainData.selector = @selector(didFetchItems);
 	
 	if (m_login == nil) {
-		
 		// 저장된 로그인 정보를 이용하여 로그인
 		m_login = [[LoginToService alloc] init];
 		BOOL result = [m_login LoginToService];
 		
 		if (result) {
+			[m_login PushRegister];
+			
 			[m_mainData fetchItems];
 		} else {
 			UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"로그인 오류"
@@ -167,11 +168,11 @@
 		long row = currentIndexPath.row;
 		if (sec == 0) {
 			NSMutableDictionary *item = [m_arrayMain objectAtIndex:row];
-			viewController.m_strCommNo = [item valueForKey:@"code"];
+			viewController.m_strCommId = [item valueForKey:@"code"];
 			viewController.m_nMode = [NSNumber numberWithInt:CENTER];
 		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-			viewController.m_strCommNo = [item valueForKey:@"code"];
+			viewController.m_strCommId = [item valueForKey:@"code"];
 			viewController.m_nMode = [NSNumber numberWithInt:COMMUNITY];
 		}
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {

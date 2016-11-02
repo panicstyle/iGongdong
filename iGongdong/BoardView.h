@@ -13,7 +13,7 @@
 @interface BoardView : UIViewController  <UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property(nonatomic, weak) IBOutlet GADBannerView *bannerView;
-@property (strong, nonatomic) NSString *m_strCommNo;
+@property (strong, nonatomic) NSString *m_strCommId;
 @property (nonatomic, strong) NSNumber *m_nMode;
 @end
 

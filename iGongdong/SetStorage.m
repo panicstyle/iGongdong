@@ -11,12 +11,13 @@
 
 @implementation SetStorage
 
-@synthesize userid, userpwd;
+@synthesize userid, userpwd, switchPush;
 
 -(void)encodeWithCoder:(NSCoder *)aCoder
 {
 	[aCoder encodeObject:userid forKey:@"id"];
 	[aCoder encodeObject:userpwd forKey:@"pwd"];
+	[aCoder encodeObject:switchPush forKey:@"push"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder 
@@ -24,6 +25,7 @@
 	self = [super init];
 	self.userid = [aDecoder decodeObjectForKey:@"id"];
 	self.userpwd = [aDecoder decodeObjectForKey:@"pwd"];
+	self.switchPush = [aDecoder decodeObjectForKey:@"push"];
 	return self;
 }
 
@@ -31,5 +33,6 @@
 {
 	self.userid = nil;
 	self.userpwd = nil;
+	self.switchPush = nil;
 }
 @end

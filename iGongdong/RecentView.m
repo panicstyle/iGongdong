@@ -32,7 +32,7 @@
 
 @implementation RecentView
 
-@synthesize m_strCommNo;
+@synthesize m_strCommId;
 
 #pragma mark - View lifecycle
 
@@ -58,7 +58,7 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_recentData = [[RecentData alloc] init];
-	m_recentData.m_strCommNo = m_strCommNo;
+	m_recentData.m_strCommNo = m_strCommId;
 	m_recentData.target = self;
 	m_recentData.selector = @selector(didFetchItems:);
 	[m_recentData fetchItems];
@@ -154,7 +154,9 @@
 		view.m_strTitle = [item valueForKey:@"subject"];
 		view.m_strDate = [item valueForKey:@"date"];
 		view.m_strName = [item valueForKey:@"writer"];
-		view.m_strLink = [item valueForKey:@"link"];
+		view.m_strCommId = @"";
+		view.m_strBoardId = @"";
+		view.m_strBoardNo = @"";
 	}
 }
 

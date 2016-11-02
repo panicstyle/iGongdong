@@ -23,19 +23,19 @@
 @synthesize m_nMode;
 @synthesize m_isPNotice;
 @synthesize m_textView;
-@synthesize m_strCommNo;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
 @synthesize m_strBoardNo;
-@synthesize m_strArticleNo;
 @synthesize m_strCommentNo;
 @synthesize m_strComment;
 @synthesize target;
 @synthesize selector;
 
-- (CommentWriteView *) initWithBoard:(NSString *)strBoardNo Article:(NSString *)strArticleNo Comment:(NSString *)strCommentNo
+- (CommentWriteView *) initWithBoard:(NSString *)strBoardId Article:(NSString *)strBoardNo Comment:(NSString *)strCommentNo
 {
 	////NSLog(@"WriteArticleViewController start");
+	m_strBoardId = strBoardId;
 	m_strBoardNo = strBoardNo;
-	m_strArticleNo = strArticleNo;
 	m_strCommentNo = strCommentNo;
 	
 	return self;
@@ -243,10 +243,10 @@
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
 	if ([m_nModify intValue] == CommentWrite || [m_nModify intValue] == CommentReply) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=up_add&sort=%@&sub_sort=&p1=%@&p2=",
-			   CAFE_SERVER, m_strBoardNo, m_strCommNo];
+			   CAFE_SERVER, m_strBoardId, m_strCommId];
 	} else if ([m_nModify intValue] == CommentModify) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=edit_reply&sort=%@&sub_sort=&p1=%@&p2=",
-			   CAFE_SERVER, m_strBoardNo, m_strCommNo];
+			   CAFE_SERVER, m_strBoardId, m_strCommId];
 	}
 	
 	NSLog(@"url = [%@]", url);
@@ -258,11 +258,11 @@
 	NSMutableData *body = [NSMutableData data];
 	
 	if ([m_nModify intValue] == CommentWrite) {
-		[body appendData:[[NSString stringWithFormat:@"number=%@&content=%@", m_strArticleNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+		[body appendData:[[NSString stringWithFormat:@"number=%@&content=%@", m_strBoardNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	} else if ([m_nModify intValue] == CommentModify) {
 		[body appendData:[[NSString stringWithFormat:@"number=%@&content=%@", m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	} else {	// CommentReply
-		[body appendData:[[NSString stringWithFormat:@"number=%@&number_re=%@&content=%@", m_strArticleNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+		[body appendData:[[NSString stringWithFormat:@"number=%@&number_re=%@&content=%@", m_strBoardNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	}
 	
 	[request setHTTPBody:body];
@@ -302,7 +302,7 @@
 	[request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
 	
 	if ([m_nModify intValue] == CommentWrite) {
-		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/notice/%@", m_strArticleNo];
+		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/notice/%@", m_strBoardNo];
 		[request setValue:strReferer forHTTPHeaderField:@"Referer"];
 		[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
 						   "<methodCall>\n"
@@ -317,9 +317,9 @@
 						   "<module><![CDATA[board]]></module>\n"
 						   "<act><![CDATA[procBoardInsertComment]]></act>\n"
 						   "</params>\n"
-						   "</methodCall>", m_strArticleNo, m_strArticleNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+						   "</methodCall>", m_strBoardNo, m_strBoardNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	} else if ([m_nModify intValue] == CommentModify) {
-		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardModifyComment&comment_srl=%@", m_strArticleNo, m_strCommentNo];
+		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardModifyComment&comment_srl=%@", m_strBoardNo, m_strCommentNo];
 		[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 		[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
 						   "<methodCall>\n"
@@ -336,9 +336,9 @@
 						   "<parent_srl><![CDATA[0]]></parent_srl>\n"
 						   "<module><![CDATA[board]]></module>\n"
 						   "</params>\n"
-						   "</methodCall>", m_strArticleNo, m_strCommentNo, m_strArticleNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+						   "</methodCall>", m_strBoardNo, m_strCommentNo, m_strBoardNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	} else {	// CommentReply
-		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardReplyComment&comment_srl=%@", m_strArticleNo, m_strCommentNo];
+		NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardReplyComment&comment_srl=%@", m_strBoardNo, m_strCommentNo];
 		[request addValue:strReferer forHTTPHeaderField:@"Referer"];
 		[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
 						   "<methodCall>\n"
@@ -354,7 +354,7 @@
 						   "<module><![CDATA[board]]></module>\n"
 						   "<act><![CDATA[procBoardInsertComment]]></act>\n"
 						   "</params>\n"
-						   "</methodCall>", m_strArticleNo, m_strCommentNo, m_strArticleNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+						   "</methodCall>", m_strBoardNo, m_strCommentNo, m_strBoardNo, m_strCommentNo, m_textView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 	}
 	
 	[request setHTTPBody:body];
