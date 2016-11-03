@@ -24,9 +24,9 @@
 @implementation ArticleWriteView
 @synthesize m_nModify;
 @synthesize m_nMode;
-@synthesize m_strCommNo;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
 @synthesize m_strBoardNo;
-@synthesize m_strArticleNo;
 @synthesize m_strTitle;
 @synthesize m_strContent;
 @synthesize target;
@@ -238,10 +238,10 @@
 	//		/cafe.php?mode=up&sort=354&p1=tuntun&p2=HTTP/1.1
 	if ([m_nModify intValue] == ArticleModify) {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=edit&p2=&p1=%@&sort=%@",
-				   CAFE_SERVER, m_strCommNo, m_strBoardNo];
+				   CAFE_SERVER, m_strCommId, m_strBoardId];
 	} else {
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=up&p2=&p1=%@&sort=%@",
-			   CAFE_SERVER, m_strCommNo, m_strBoardNo];
+			   CAFE_SERVER, m_strCommId, m_strBoardId];
 	}
 	
 	NSData *respData;
@@ -349,7 +349,7 @@
 		
 		NSMutableData *body = [NSMutableData data];
 		// usetag = n
-		[body appendData:[[NSString stringWithFormat:@"number=%@&usetag=n&subject=%@&content=%@", m_strArticleNo, m_titleField.text, m_contentView.text] dataUsingEncoding:NSUTF8StringEncoding]];
+		[body appendData:[[NSString stringWithFormat:@"number=%@&usetag=n&subject=%@&content=%@", m_strBoardNo, m_titleField.text, m_contentView.text] dataUsingEncoding:NSUTF8StringEncoding]];
 		
 		[request setHTTPBody:body];
 		

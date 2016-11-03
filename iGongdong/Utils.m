@@ -73,6 +73,15 @@
 	return strResult;
 }
 
++ (NSString *)replaceOnlyHtmlTag:(NSString *)content
+{
+	NSString *dest;
+
+	dest = [self replaceStringRegex:content regex:@"(<).*?(>)" replace:@""];
+	
+	return dest;
+}
+
 + (NSString *)replaceStringHtmlTag:(NSString *)content
 {
 	NSString *dest;
@@ -93,23 +102,22 @@
 	dest = [self replaceStringRegex:dest regex:@"(<style).*?(/style>)" replace:@""];
 	dest = [self replaceStringRegex:dest regex:@"(<).*?(>)" replace:@""];
 	dest = [dest stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	
+	return dest;
 
-/*
- strDest=strDest.replaceAll("\n","");
- strDest=strDest.replaceAll("\r","");
- strDest=strDest.replaceAll("<br>","\n");
- strDest=strDest.replaceAll("<br/>","\n");
- strDest=strDest.replaceAll("<br />","\n");
- strDest=strDest.replaceAll("&nbsp;"," ");
- strDest=strDest.replaceAll("&lt;","<");
- strDest=strDest.replaceAll("&gt;",">");
- strDest=strDest.replaceAll("&amp;","&");
- strDest=strDest.replaceAll("&quot;","\"");
- strDest=strDest.replaceAll("&apos;","'");
- strDest=strDest.replaceAll("(<b>\\[)\\d+(\\]</b>)", "");
- strDest=strDest.replaceAll("(<!--)(.|\\n)*?(-->)", "");
- strDest=strDest.replaceAll("(<)(.|\\n)*?(>)","");
- */
+}
+
++ (NSString *)replaceSpecialString:(NSString *)content
+{
+	NSString *dest;
+	dest = [NSString stringWithString:content];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+	dest = [dest stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
+ 
 	return dest;
 }
 

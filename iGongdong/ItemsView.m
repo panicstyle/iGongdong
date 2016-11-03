@@ -33,8 +33,8 @@
 
 @implementation ItemsView
 
-@synthesize m_strCommNo;
-@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
 @synthesize m_nMode;
 
 - (void)viewDidLoad
@@ -64,8 +64,8 @@
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_itemsData = [[ItemsData alloc] init];
-	m_itemsData.m_strCommNo = m_strCommNo;
-	m_itemsData.m_strLink = m_strLink;
+	m_itemsData.m_strCommId = m_strCommId;
+	m_itemsData.m_strBoardId = m_strBoardId;
 	m_itemsData.m_nMode = m_nMode;
 	m_itemsData.target = self;
 	m_itemsData.selector = @selector(didFetchItems:);
@@ -159,11 +159,11 @@
 			
 			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
 			NSString *strName = [item valueForKey:@"name"];
-			NSString *strDate = [item valueForKey:@"date"];
-			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
+//			NSString *strDate = [item valueForKey:@"date"];
+//			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
 			
-			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
+			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strName];
+//			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 			labelName.attributedText = textName;
 			
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
@@ -327,20 +327,23 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_isPNotice = [item valueForKey:@"isPNotice"];
-		view.m_strTitle = [item valueForKey:@"subject"];
-		view.m_strDate = [item valueForKey:@"date"];
-		view.m_strName = [item valueForKey:@"name"];
-		view.m_strLink = [item valueForKey:@"link"];
-		view.m_strHit = [item valueForKey:@"hit"];
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
+		view.m_strBoardNo = [item valueForKey:@"boardNo"];
+		if ([m_nMode intValue] == CAFE_TYPE_EDU_APP) {
+			view.m_strApplyLink = [item valueForKey:@"applyLink"];
+		} else {
+			view.m_strApplyLink = @"";
+		}
 		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);
 	} else 	if ([[segue identifier] isEqualToString:@"ArticleWrite"]) {
 		ArticleWriteView *view = [segue destinationViewController];
 		view.m_nMode = [NSNumber numberWithInt:ArticleWrite];
-		view.m_strCommNo = m_strCommNo;
-		view.m_strBoardNo = m_strLink;
-		view.m_strArticleNo = @"";
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
+		view.m_strBoardNo = @"";
 		view.m_strTitle = @"";
 		view.m_strContent = @"";
 		view.m_nMode = m_nMode;

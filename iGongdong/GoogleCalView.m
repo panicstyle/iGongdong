@@ -19,7 +19,8 @@
 
 @implementation GoogleCalView
 @synthesize webView;
-@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
 
 #pragma mark - View lifecycle
 
@@ -47,7 +48,8 @@
 
 - (void)fetchItems
 {
-	NSString *url = [NSString stringWithFormat:@"%@/%@", CAFE_SERVER, m_strLink];
+	// http://cafe.gongdong.or.kr/cafe.php?p1=menbal&sort=cal43
+	NSString *url = [NSString stringWithFormat:@"%@/cafe.php?p1=%@&sort=%@", CAFE_SERVER, m_strCommId, m_strBoardId];
 	
 	m_receiveData = [[NSMutableData alloc] init];
 	m_connection = [[NSURLConnection alloc]

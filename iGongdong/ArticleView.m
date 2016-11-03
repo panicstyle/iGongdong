@@ -36,9 +36,11 @@
 
 	NSString *m_strContent;
 
-	NSString *m_strCommNo;
-	NSString *m_strBoardNo;
-	NSString *m_strArticleNo;
+	NSString *m_strTitle;
+	NSString *m_strDate;
+	NSString *m_strName;
+	NSString *m_strHit;
+	
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	
@@ -59,11 +61,10 @@
 
 @synthesize buttonArticleDelete;
 @synthesize m_isPNotice;
-@synthesize m_strTitle;
-@synthesize m_strDate;
-@synthesize m_strName;
-@synthesize m_strLink;
-@synthesize m_strHit;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
+@synthesize m_strBoardNo;
+@synthesize m_strApplyLink;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
@@ -113,59 +114,13 @@
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 
-	// link를 파싱하여 커뮤니티 아이다와 게시판 아이디 값을 구한다.
-	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
-		if ([m_isPNotice intValue] == 0) {
-			NSArray *a1 = [m_strLink componentsSeparatedByString:@"?"];
-			if (a1.count != 2) { return; };
-			
-			NSArray *linkArray = [[a1 objectAtIndex:1] componentsSeparatedByString:@"&"];
-			NSLog(@"linkArray = [%@]", linkArray);
-			if (linkArray) {
-				id key;
-				for (key in linkArray) {
-					////NSLog(@"key = [%@]", key);
-					NSArray *a = [key componentsSeparatedByString:@"="];
-					NSString *name = [a objectAtIndex:0];
-					if ([name isEqual:@"p1"]) {
-						m_strCommNo = [NSString stringWithString:[a objectAtIndex:1]];
-					} else if ([name isEqual:@"sort"]) {
-						m_strBoardNo = [NSString stringWithString:[a objectAtIndex:1]];
-					} else if ([name isEqual:@"number"]) {
-						m_strArticleNo = [NSString stringWithString:[a objectAtIndex:1]];
-					}
-				}
-			}
-		} else {
-			NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
-			NSLog(@"linkArray = [%@]", linkArray);
-			
-			m_strCommNo = @"";
-			m_strBoardNo = @"";
-			m_strArticleNo = [linkArray objectAtIndex:4];
-		}
-	} else {
-		if ([m_strLink containsString:@"index.php"]) {
-			m_strCommNo = @"";
-			m_strBoardNo = @"";
-			m_strArticleNo = [Utils findStringRegex:m_strLink regex:@"(?<=document_srl=).*?(?=$)"];
-		} else {
-			NSArray *linkArray = [m_strLink componentsSeparatedByString:@"/"];
-			NSLog(@"linkArray = [%@]", linkArray);
-			
-			m_strCommNo = @"";
-			m_strBoardNo = @"";
-			m_strArticleNo = [linkArray objectAtIndex:4];
-		}
-		
-	}
 	m_articleData = [[ArticleData alloc] init];
 	m_articleData.m_isPNotice = m_isPNotice;
-	m_articleData.m_strLink = m_strLink;
+	m_articleData.m_strCommId = m_strCommId;
+	m_articleData.m_strBoardId = m_strBoardId;
+	m_articleData.m_strBoardNo = m_strBoardNo;
 	m_articleData.m_nMode = m_nMode;
-	m_articleData.m_strName = m_strName;
-	m_articleData.m_strDate = m_strDate;
-	m_articleData.m_strHit = m_strHit;
+	m_articleData.m_strApplyLink = m_strApplyLink;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -564,7 +519,11 @@
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
 		m_webView.scrollView.bounces = NO;
-		[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
+		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+			[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
+		} else {
+			[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:WWW_SERVER]];
+		}
 
 //		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];
@@ -647,7 +606,7 @@
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
+	bool result = [m_articleData DeleteComment:m_strCommId boardId:m_strBoardId boardNo:m_strBoardNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -706,9 +665,9 @@
 - (void)DeleteArticle
 {
 	NSLog(@"DeleteArticleConfirm start");
-	NSLog(@"boardID=[%@], boardNo=[%@]", m_strBoardNo, m_strArticleNo);
+	NSLog(@"boardID=[%@], boardNo=[%@]", m_strBoardId, m_strBoardNo);
 	
-	bool result = [m_articleData DeleteArticle:m_strCommNo boardNo:m_strBoardNo articleNo:m_strArticleNo];
+	bool result = [m_articleData DeleteArticle:m_strCommId boardId:m_strBoardId boardNo:m_strBoardNo];
 	
 	if (result == false) {
         NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
@@ -748,9 +707,9 @@
 		view.m_nModify = [NSNumber numberWithInt:CommentWrite];
 		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
-		view.m_strCommNo = m_strCommNo;
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
 		view.m_strCommentNo = @"";
 		view.m_strComment = @"";
 		view.target = self;
@@ -767,9 +726,9 @@
 		view.m_nModify = [NSNumber numberWithInt:CommentModify];
 		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
-		view.m_strCommNo = m_strCommNo;
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
 		view.m_strCommentNo = [item valueForKey:@"no"];
 		view.m_strComment = [item valueForKey:@"comment"];
 		view.target = self;
@@ -786,9 +745,9 @@
 		view.m_nModify = [NSNumber numberWithInt:CommentReply];
 		view.m_nMode = m_nMode;
 		view.m_isPNotice = m_isPNotice;
-		view.m_strCommNo = m_strCommNo;
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
 		view.m_strCommentNo = [item valueForKey:@"no"];
 		view.m_strComment = @"";
 		view.target = self;
@@ -797,9 +756,9 @@
 		ArticleWriteView *view = [segue destinationViewController];
 		view.m_nModify = [NSNumber numberWithInt:ArticleModify];
 		view.m_nMode = m_nMode;
-		view.m_strCommNo = m_strCommNo;
+		view.m_strCommId = m_strCommId;
+		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = m_strBoardNo;
-		view.m_strArticleNo = m_strArticleNo;
 		NSString *strEditableTitle = [Utils replaceStringHtmlTag:m_strTitle];
 		//		NSString *strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
 		view.m_strTitle = strEditableTitle;

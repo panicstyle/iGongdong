@@ -23,8 +23,9 @@
 
 @implementation ItemsData
 
-@synthesize m_strCommNo;
-@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
+//@synthesize m_strLink;
 @synthesize m_arrayItems;
 @synthesize m_nMode;
 @synthesize m_nItemMode;
@@ -42,11 +43,14 @@
 
 - (void)fetchItems2
 {
+	// http://cafe.gongdong.or.kr/cafe.php?sort=35&sub_sort=&keyfield=&key_bs=&p1=menbal&p2=&p3=&page=1&startpage=1
 	NSString *url;
 	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
-		url = [NSString stringWithFormat:@"%@/%@&page=%d", CAFE_SERVER, m_strLink, m_nPage];
+		url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&keyfield=&key_bs=&p1=%@&p2=&p3=&page=%d", CAFE_SERVER, m_strBoardId, m_strCommId, m_nPage];
+	} else if ([m_nMode intValue] == CAFE_TYPE_EDU_APP_ADMIN) {
+		url = [NSString stringWithFormat:@"%@/index.php?mid=edu_app&module=admin&act=dispEnrollCourse&page=%d", WWW_SERVER, m_nPage];
 	} else {
-		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strLink, m_nPage];
+		url = [NSString stringWithFormat:@"%@/index.php?mid=%@&page=%d", WWW_SERVER, m_strBoardId, m_nPage];
 	}
 	
 	m_receiveData = [[NSMutableData alloc] init];
@@ -109,6 +113,12 @@
 		case CAFE_TYPE_ING:
 			[self getIngItems:str];
 			break;
+		case CAFE_TYPE_EDU_APP:
+			[self getEduAppItems:str];
+			break;
+		case CAFE_TYPE_EDU_APP_ADMIN:
+			[self getEduAppAdminItems:str];
+			break;
 	}
 }
 
@@ -149,8 +159,10 @@
 		[currItem setValue:strSubject forKey:@"subject"];
 		
 		// find link
+		// <a href="/cafe.php?sort=45&sub_sort=&page=&startpage=&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1163433&mode=view">
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
-		[currItem setValue:strLink forKey:@"link"];
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
 		
 		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=<font face=\\\"Tahoma\\\"><b>\\[).*?(?=\\]</b></font>)"];
 		[currItem setValue:strComment forKey:@"comment"];
@@ -222,8 +234,10 @@
 		[currItem setValue:strSubject forKey:@"subject"];
 		
 		// find link
+		// <a href="/cafe.php?sort=37&sub_sort=&page=&startpage=&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1285671&mode=view">
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\")(.|\\n)*?(?=\\\")"];
-		[currItem setValue:strLink forKey:@"link"];
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
 		
 		// 댓글 갯수
 		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=<b>\\[)(.|\\n)*?(?=\\]</b>)"];
@@ -300,9 +314,9 @@
 		
 		// find link
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
-		// 링크 중간에 & 가 &amp; 로 표시되어 있음. 변환해야 함.
-		strLink = [strLink stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-		[currItem setValue:strLink forKey:@"link"];
+		// <a href="http://www.gongdong.or.kr/index.php?mid=ing&amp;page=2&amp;document_srl=326671">
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=document_srl=).*?(?=$)"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
 		
 		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=Replies\\\">\\[).*?(?=\\]</span>)"];
 		[currItem setValue:strComment forKey:@"comment"];
@@ -364,9 +378,8 @@
 		
 		// find link
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
-		// 링크 중간에 & 가 &amp; 로 표시되어 있음. 변환해야 함.
-		strLink = [strLink stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
-		[currItem setValue:strLink forKey:@"link"];
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=document_srl=).*?(?=$)"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
 
 		// Comment 가 없음
 		[currItem setValue:@"" forKey:@"comment"];
@@ -388,6 +401,130 @@
 		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<li class=\\\"reading\\\">조회 수 ).*?(?=</li>)"];
 		//		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+}
+
+- (void)getEduAppItems:(NSString *)str
+{
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<tr class=).*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
+	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
+	NSMutableDictionary *currItem;
+	for (NSTextCheckingResult *match in matches) {
+		NSRange matchRange = [match range];
+		NSString *str2 = [str substringWithRange:matchRange];
+		BOOL isNotice = FALSE;
+		NSString *strStatus = @"";
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isPNotice"];
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNotice"];
+		
+		// subject
+		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(?<=class=\\\"title\\\">).*?(?=</a>)"];
+		strSubject = [Utils replaceSpecialString:strSubject];
+		if ([Utils numberOfMatches:str2 regex:@"edu_app_01.gif"] > 0) {
+			strStatus = @"[모집중]";
+		} else {
+			strStatus = @"[완료]";
+		}
+		strSubject = [NSString stringWithFormat:@"%@ %@", strStatus, strSubject];
+		[currItem setValue:strSubject forKey:@"subject"];
+		
+		// find link
+		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\" class=\\\"title)"];
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=document_srl=).*?(?=$)"];
+		[currItem setValue:boardNo forKey:@"boardNo"];
+		
+		// find apply link
+		NSString *strApplyLink = [Utils findStringRegex:str2 regex:@"(<a  target=\\\"_blank\\\" href=\\\"/xe).*?(\\\">)"];
+		[currItem setValue:strApplyLink forKey:@"applyLink"];
+		
+		[currItem setValue:@"" forKey:@"comment"];
+		
+		// isNew
+		[currItem setValue:@"0" forKey:@"isNew"];
+		
+		// name
+		NSString *strName = [Utils findStringRegex:str2 regex:@"(?<=<span class=\\\"category\\\">).*?(?=</span>)"];
+//		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// date
+		NSString *strDate = [Utils findStringRegex:str2 regex:@"(?<=일시 : ).*?(?= &nbsp;)"];
+		//		strDate = [Utils replaceStringHtmlTag:strDate];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		[currItem setValue:@"" forKey:@"hit"];
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+}
+
+- (void)getEduAppAdminItems:(NSString *)str
+{
+	NSString *str0 = [Utils findStringRegex:str regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 페이지 네비게이션 -->)"];
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<tr>).*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
+	NSArray *matches = [regex matchesInString:str0 options:0 range:NSMakeRange(0, [str0 length])];
+	NSMutableDictionary *currItem;
+	for (NSTextCheckingResult *match in matches) {
+		NSRange matchRange = [match range];
+		NSString *str2 = [str0 substringWithRange:matchRange];
+		
+		str2 = [Utils replaceStringRegex:str2 regex:@"(<!--).*?(-->)" replace:@""];
+		
+		BOOL isNotice = FALSE;
+		NSString *strStatus = @"";
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		if ([Utils numberOfMatches:str2 regex:@"<th"] > 0) {
+			continue;
+		}
+		
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isPNotice"];
+		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNotice"];
+		
+		// subject
+		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<a href=).*?(</a>)"];
+		strSubject = [Utils replaceSpecialString:strSubject];
+		strSubject = [Utils replaceStringHtmlTag:strSubject];
+		[currItem setValue:strSubject forKey:@"subject"];
+		
+		// find link
+		// <a href="http://www.gongdong.or.kr/index.php?mid=edu_app&amp;module=admin&amp;course_no=212&amp;act=dispEnrollByCourse">
+		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\">)"];
+		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=course_no=).*?(?=$)"];
+		if ([boardNo isEqualToString:@""]) {
+			boardNo = [Utils findStringRegex:strLink regex:@"(?<=course_no=).*?(?=&)"];
+		}
+		[currItem setValue:boardNo forKey:@"boardNo"];
+		
+		[currItem setValue:@"" forKey:@"comment"];
+		
+		// isNew
+		[currItem setValue:@"0" forKey:@"isNew"];
+		
+		// name
+		NSString *strName = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"no\\\">).*?(?=</td>)"];
+		//		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// date
+		[currItem setValue:@"" forKey:@"date"];
+		
+		[currItem setValue:@"" forKey:@"hit"];
 		
 		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
 		

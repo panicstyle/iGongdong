@@ -11,6 +11,7 @@
 @interface SetView : UIViewController
 @property (nonatomic, weak) IBOutlet UITextField *idField;
 @property (nonatomic, weak) IBOutlet UITextField *pwdField;
+@property (nonatomic, weak) IBOutlet UISwitch *switchPush;
 @property (nonatomic, strong) id target;
 @property SEL selector;
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface BoardData : NSObject
-@property (nonatomic, strong) NSString *m_strCommNo;
+@property (nonatomic, strong) NSString *m_strCommId;
 @property (nonatomic, strong) NSNumber *m_nMode;		// 1 : 커뮤니티, 2 : 사무국게시판
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
 @property id target;

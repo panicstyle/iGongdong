@@ -8,6 +8,7 @@
 
 #import "BoardData.h"
 #import "env.h"
+#import "Utils.h"
 
 @interface BoardData () {
 	NSMutableData *m_receiveData;
@@ -17,7 +18,7 @@
 
 @implementation BoardData
 @synthesize m_nMode;
-@synthesize m_strCommNo;
+@synthesize m_strCommId;
 @synthesize m_arrayItems;
 @synthesize target;
 @synthesize selector;
@@ -44,17 +45,25 @@
 							 @"b20movie", @"터전동영상", @CAFE_TYPE_CENTER,
 							   ];
 
+		NSArray *eduMain = @[
+							 @"edu_app", @"교육신청", @CAFE_TYPE_EDU_APP,
+							 @"edu_app", @"신청결과보기", @CAFE_TYPE_EDU_APP_ADMIN,
+							 ];
+
+		
 		NSArray *tmp;
-		if ([m_strCommNo isEqualToString:@"ing"]) {
+		if ([m_strCommId isEqualToString:@"ing"]) {
 			tmp = ingMain;
+		} else if ([m_strCommId isEqualToString:@"edu"]) {
+			tmp = eduMain;
 		}
 		
 		NSMutableDictionary *currItem;
 		int i;
 		for (i = 0; i < tmp.count; i+=3) {
 			currItem= [[NSMutableDictionary alloc] init];
-			[currItem setValue:tmp[i] forKey:@"link"];
-			[currItem setValue:tmp[i + 1] forKey:@"title"];
+			[currItem setValue:tmp[i] forKey:@"boardId"];
+			[currItem setValue:tmp[i + 1] forKey:@"boardName"];
 			[currItem setValue:tmp[i + 2] forKey:@"type"];
 			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isNew"];
 			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isCal"];
@@ -62,7 +71,7 @@
 		}
 		[target performSelector:selector withObject:nil afterDelay:0];
 	} else {
-		NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommNo];
+		NSString *url = [NSString stringWithFormat:@"%@/cafe.php?code=%@", CAFE_SERVER, m_strCommId];
 
 		m_receiveData = [[NSMutableData alloc] init];
 		m_connection = [[NSURLConnection alloc]
@@ -87,6 +96,7 @@
 	NSMutableDictionary *currItem;
 	
 	NSError *error = NULL;
+	
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<li id=\"cafe_sub_menu).*?(</li>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
 //		<li id="cafe_sub_menu_board"><a href="cafe.php?p1=menbal&sort=45" >가입 문의</a><IMG SRC="images/new_s.gif" WIDTH="8" HEIGHT="7" ALIGN=ABSMIDDLE hspace=3></li>
@@ -110,23 +120,13 @@
 		}
 		
 		// link
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=<a href=\\\").*?(?=\\\")" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:matchstr options:0 range:NSMakeRange(0, [matchstr length])];
-		NSString *link;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			link = [matchstr substringWithRange:rangeOfFirstMatch];
-			//NSLog(@"link=[%@]", link);
-		} else {
-			//NSLog(@"link not found");
-			link = @"";
-		}
-		[currItem setValue:link forKey:@"link"];
+		NSString *link = [Utils findStringRegex:matchstr regex:@"(?<=<a href=\\\").*?(?=\\\")"];
+		NSString *boardId = [Utils findStringRegex:link regex:@"(?<=&sort=).*?(?=$)"];
+		[currItem setValue:boardId forKey:@"boardId"];
 		
 		// title에서 < ... > 없애기
-		regex = [NSRegularExpression regularExpressionWithPattern:@"<.*?>" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSString *title = [regex stringByReplacingMatchesInString:matchstr options:0 range:NSMakeRange(0, [matchstr length]) withTemplate:@""];
-		
-		[currItem setValue:[NSString stringWithString:title] forKey:@"title"];
+		NSString *title = [Utils replaceOnlyHtmlTag:matchstr];
+		[currItem setValue:title forKey:@"boardName"];
 		
 		
 		// isNew images/new_s.gif 찾기

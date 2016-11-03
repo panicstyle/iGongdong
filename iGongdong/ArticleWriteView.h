@@ -13,9 +13,9 @@
 @property (nonatomic, weak) IBOutlet UITableView *tbView;
 @property (nonatomic, strong) NSNumber *m_nModify;
 @property (nonatomic, strong) NSNumber *m_nMode;
-@property (nonatomic, strong) NSString *m_strCommNo;
+@property (nonatomic, strong) NSString *m_strCommId;
+@property (nonatomic, strong) NSString *m_strBoardId;
 @property (nonatomic, strong) NSString *m_strBoardNo;
-@property (nonatomic, strong) NSString *m_strArticleNo;
 @property (nonatomic, strong) NSString *m_strTitle;
 @property (nonatomic, strong) NSString *m_strContent;
 @property id target;

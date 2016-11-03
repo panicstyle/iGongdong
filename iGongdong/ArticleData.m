@@ -22,20 +22,24 @@
 
 @implementation ArticleData
 
-@synthesize m_strTitle;
-@synthesize m_strName;
-@synthesize m_strDate;
-@synthesize m_strHit;
-@synthesize m_strHtml;
-@synthesize m_strContent;
-@synthesize m_strEditableContent;
 @synthesize m_isPNotice;
-@synthesize m_strLink;
+@synthesize m_strCommId;
+@synthesize m_strBoardId;
+@synthesize m_strBoardNo;
+@synthesize m_strApplyLink;
 @synthesize m_arrayItems;
 @synthesize m_attachItems;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
+
+@synthesize m_strHtml;
+@synthesize m_strTitle;
+@synthesize m_strName;
+@synthesize m_strDate;
+@synthesize m_strHit;
+@synthesize m_strContent;
+@synthesize m_strEditableContent;
 
 - (void)fetchItems
 {
@@ -50,15 +54,21 @@
 - (void)fetchItems2
 {
 	NSString *url;
- 
+ //http://cafe.gongdong.or.kr/cafe.php?sort=35&sub_sort=&page=2&startpage=1&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1283064&mode=view
 	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		if ([m_isPNotice intValue] == 0) {
-			url = [NSString stringWithFormat:@"%@%@", CAFE_SERVER, m_strLink];
+			url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&page=1&startpage=1&keyfield=&key_bs=&p1=%@&p2=&p3=&number=%@&mode=view", CAFE_SERVER, m_strBoardId, m_strCommId, m_strBoardNo];
 		} else {
-			url = m_strLink;
+			// http://www.gongdong.or.kr/notice/342940
+			url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/notice/%@", m_strBoardNo];
 		}
+	} else if ([m_nMode intValue] == CAFE_TYPE_EDU_APP_ADMIN) {
+		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&act=dispEnrollByCourse&course_no=225
+		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=225&act=dispEnrollByCourse
+		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=%@&act=dispEnrollByCourse", m_strBoardNo];
 	} else {
-		url = m_strLink;
+		// http://www.gongdong.or.kr/ing/343335
+		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/%@/%@", m_strBoardId, m_strBoardNo];
 	}
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
@@ -151,6 +161,17 @@
 			break;
 		case CAFE_TYPE_TEACHER:
 			[self parseTeacher];
+			break;
+		case CAFE_TYPE_EDU_APP:
+			[self parseEduApp];
+			break;
+		case CAFE_TYPE_EDU_APP_ADMIN:
+			if ([Utils numberOfMatches:m_strHtml regex:@"msg_is_not_administrator"] > 0) {
+				[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
+				return;
+			}
+			
+			[self parseEduAppAdmin];
 			break;
 	}
 }
@@ -696,14 +717,150 @@
 	return;
 }
 
-- (bool)DeleteArticle:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo
+- (void)parseEduApp
+{
+	//<!---- contents start ---->
+	//<!---- contents end ---->
+	
+	/*
+	 if ([m_nServerType intValue] == 1) {
+		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
+	 } else {
+		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
+	 }
+	 */
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	
+	NSString *strCategory = [Utils findStringRegex:m_strHtml regex:@"(?<=class=\\\"category\\\">).*?(?=</a>)"];
+	m_strTitle = [NSString stringWithFormat:@"[%@]%@", strCategory, m_strTitle];
+	
+	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
+	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<span).*?(</span>)" replace:@""];
+	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<a href=\\\"h).*?(</a>)" replace:@""];
+	m_strName = [Utils replaceStringHtmlTag:m_strName];
+	
+	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
+	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
+	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
+	
+	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
+	
+	NSString *strContent;
+	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	
+	NSError *error = NULL;
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
+	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
+	} else {
+		m_strContent = @"";
+	}
+	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
+	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	
+	NSString *strStatus;
+	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</table>)"];
+	
+	if ([Utils numberOfMatches:strStatus regex:@"신청기간중"] > 0) {
+		NSString *strApply;
+		strApply = [NSString stringWithFormat:@"<tr><td>%@수강신청 바로가기</a></td></tr></table>", m_strApplyLink];
+		
+		strStatus = [Utils replaceStringRegex:strStatus regex:@"</table>" replace:strApply];
+	}
+	
+	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
+	
+	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
+	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
+	m_attachItems = [self parseAttach:imageString];
+	
+	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
+	
+	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
+	
+	NSMutableDictionary *currItem;
+	
+	int isReply = 0;
+	for (int i = 1; i < [commentItems count]; i++) {
+		NSString *s = [commentItems objectAtIndex:i];
+		currItem = [[NSMutableDictionary alloc] init];
+		
+		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
+		// number
+		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
+		if ([strNumber length] <= 0) {
+			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
+		}
+		[currItem setValue:strNumber forKey:@"no"];
+		
+		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
+			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+			isReply = 0;
+		} else {
+			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
+			isReply = 1;
+		}
+		
+		// Name
+		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
+		strName = [Utils replaceStringHtmlTag:strName];
+		[currItem setValue:strName forKey:@"name"];
+		
+		// Date
+		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
+		strDate = [Utils replaceStringHtmlTag:strDate];
+		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
+		[currItem setValue:strDate forKey:@"date"];
+		
+		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
+		strComm = [Utils replaceStringHtmlTag:strComm];
+		[currItem setValue:strComm forKey:@"comment"];
+		
+		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
+		
+		[m_arrayItems addObject:currItem];
+	}
+	
+	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	
+	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
+	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	
+	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
+
+- (void)parseEduAppAdmin
+{
+	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(<div class=\\\"enroll_content).*?(</h2>)"];
+	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
+	
+	m_strName = @"";
+
+	m_strContent = [Utils findStringRegex:m_strHtml regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 링크 입력폼 -->)"];
+
+	NSString *strStyle = @"<style type=\"text/css\">.listTable { border-collapse:collapse;  }	.listTable td { border: solid 1px #ccc; font-size: 1.0em; padding: 5px }	</style>";
+	m_strContent = [NSString stringWithFormat:@"%@%@", strStyle, m_strContent];
+	
+	m_strEditableContent = m_strContent;
+	
+	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
+	return;
+}
+
+- (bool)DeleteArticle:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo
 {
 	// POST http://cafe.gongdong.or.kr/cafe.php?mode=del&sort=1225&sub_sort=&p1=tuntun&p2=
 	// number=977381&passwd=
 	
 	NSString *url;
 	url = [NSString stringWithFormat:@"%@/cafe.php?mode=del&sort=%@&sub_sort=&p1=%@&p2=",
-			   CAFE_SERVER, strBoardNo, strCommNo];
+			   CAFE_SERVER, strBoardId, strCommId];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -712,7 +869,7 @@
 	
 	NSMutableData *body = [NSMutableData data];
 	// usetag = n
-	[body appendData:[[NSString stringWithFormat:@"number=%@&passwd=", strArticleNo] dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[[NSString stringWithFormat:@"number=%@&passwd=", strBoardNo] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
@@ -737,23 +894,23 @@
 	}
 }
 
-- (bool)DeleteComment:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice Mode:(int)nMode
+- (bool)DeleteComment:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo isPNotice:(int)isPNotice Mode:(int)nMode
 {
 	if (nMode == CAFE_TYPE_NORMAL) {
 		if (isPNotice == 0) {
-			return [self DeleteCommentNormal:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+			return [self DeleteCommentNormal:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 		} else {
-			return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+			return [self DeleteCommentPNotice:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 		}
 	} else {
-		return [self DeleteCommentPNotice:strCommNo boardNo:strBoardNo articleNo:strArticleNo commentNo:strCommentNo];
+		return [self DeleteCommentPNotice:strCommId boardId:strBoardId boardNo:strBoardNo commentNo:strCommentNo];
 	}
 }
 
-- (bool)DeleteCommentNormal:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
+- (bool)DeleteCommentNormal:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo
 {
 	NSLog(@"DeleteArticleConfirm start");
-	NSLog(@"commID=[%@], boardID=[%@], numberID=[%@]", strCommNo, strBoardNo, strCommentNo);
+	NSLog(@"commId=[%@], boardId=[%@], boardNo=[%@], commentID=[%@]", strCommId, strBoardId, strBoardNo, strCommentNo);
 	
 	// POST http://cafe.gongdong.or.kr/cafe.php?mode=del_reply&sort=1225&sub_sort=&p1=tuntun&p2=
 	// number=1588986&passwd=
@@ -762,7 +919,7 @@
 	s = @"%@/cafe.php?mode=del_reply&sort=%@&sub_sort=&p1=%@&p2=";
 	
 	NSString *url = [NSString stringWithFormat:s,
-					 CAFE_SERVER, strBoardNo, strCommNo];
+					 CAFE_SERVER, strBoardId, strCommId];
 	NSLog(@"url = [%@]", url);
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
@@ -796,10 +953,10 @@
 	}
 }
 
-- (bool)DeleteCommentPNotice:(NSString *)strCommNo boardNo:(NSString *)strBoardNo articleNo:(NSString *)strArticleNo commentNo:(NSString *)strCommentNo
+- (bool)DeleteCommentPNotice:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo commentNo:(NSString *)strCommentNo
 {
 	NSLog(@"DeleteCommentPNotice start");
-	NSLog(@"articleNo=[%@], numberID=[%@]", strArticleNo, strCommentNo);
+	NSLog(@"articleNo=[%@], numberID=[%@]", strBoardNo, strCommentNo);
 	
 	NSString *url = @"http://www.gongdong.or.kr/index.php";
 	NSLog(@"url = [%@]", url);
@@ -810,7 +967,7 @@
 	
 	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Origin"];
 	[request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-	NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardDeleteComment&comment_srl=%@", strArticleNo, strCommentNo];
+	NSString *strReferer = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=notice&document_srl=%@&act=dispBoardDeleteComment&comment_srl=%@", strBoardNo, strCommentNo];
 	[request setValue:strReferer forHTTPHeaderField:@"Referer"];
 	
 	NSMutableData *body = [NSMutableData data];
@@ -827,7 +984,7 @@
 					   "<comment_srl><![CDATA[%@]]></comment_srl>\n"
 					   "<module><![CDATA[board]]></module>\n"
 					   "</params>\n"
-					   "</methodCall>", strArticleNo, strCommentNo, strArticleNo, strCommentNo] dataUsingEncoding:NSUTF8StringEncoding]];
+					   "</methodCall>", strBoardNo, strCommentNo, strBoardNo, strCommentNo] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	[request setHTTPBody:body];
 	
