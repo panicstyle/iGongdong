@@ -134,7 +134,7 @@
 	NSString *commId;
 	NSString *boardId;
 	NSString *boardNo;
-	if ([dUserInfo objectForKey:@"link"]) {
+	if ([dUserInfo objectForKey:@"commId"]) {
 		commId = [dUserInfo objectForKey:@"commId"];
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];

@@ -42,25 +42,47 @@
 							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
 							];
 	[self.bannerView loadRequest:request];
-/*
+
 	SetInfo *setInfo = [[SetInfo alloc] init];
 	
 	if (![setInfo CheckVersionInfo]) {
 		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"-무지개초등에 아마표 게시판이 추가되었습니다.\n-마을과 중등에 전체일정 게시판이 추가되었습니다.";
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"업데이트 안내"
+		NSString *NotiMessage = @"새글 알림기능이 추가되었습니다. 새글알림을 설정하시겠습니까?";
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"안내"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
 		
 		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action) {}];
+															  handler:^(UIAlertAction * action)
+			{
+				UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
+				SetView *setView = (SetView*)[storyboard instantiateViewControllerWithIdentifier:@"SetView"];
+				setView.target = self;
+				setView.selector = @selector(didChangedSetting:);
+				UINavigationController *navController = (UINavigationController*)self.navigationController;
+				if (navController != nil) {
+					[navController pushViewController:setView animated:YES];
+				}
+				[alert dismissViewControllerAnimated:YES completion:nil];
+			}];
+	
+		UIAlertAction* cancel = [UIAlertAction
+								 actionWithTitle:@"취소"
+								 style:UIAlertActionStyleDefault
+								 handler:^(UIAlertAction * action)
+								 {
+									 [alert dismissViewControllerAnimated:YES completion:nil];
+									 
+								 }];
 		
 		[alert addAction:defaultAction];
+		[alert addAction:cancel];
+		
 		[self presentViewController:alert animated:YES completion:nil];
 		[setInfo SaveVersionInfo];
 	}
-*/
+
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_mainData = [[MainData alloc] init];

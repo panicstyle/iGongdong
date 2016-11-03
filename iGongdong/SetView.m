@@ -35,7 +35,7 @@
 	idField.text = storage.userid;
 	pwdField.text = storage.userpwd;
 	if (storage.switchPush == nil) {
-		[switchPush setOn:true];
+		[switchPush setOn:false];
 	} else {
 		[switchPush setOn:[storage.switchPush intValue]];
 	}

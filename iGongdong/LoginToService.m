@@ -93,7 +93,7 @@
 		AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		getVar.strUserId = userid;
 		if (switchPush == nil) {
-			switchPush = [NSNumber numberWithBool:true];
+			switchPush = [NSNumber numberWithBool:false];
 		}
 		getVar.switchPush = switchPush;
 		result = TRUE;

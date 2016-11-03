@@ -256,7 +256,7 @@
         <!--Set View-->
         <scene sceneID="vX3-wf-3Ne">
             <objects>
-                <viewController id="WbE-2D-Dcm" customClass="SetView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SetView" id="WbE-2D-Dcm" customClass="SetView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Qcb-kV-tkB"/>
                         <viewControllerLayoutGuide type="bottom" id="qU5-Dj-CB3"/>
@@ -628,7 +628,7 @@
         <!--Article View-->
         <scene sceneID="qJa-ql-Iqt">
             <objects>
-                <viewController id="OkL-kn-E4Z" customClass="ArticleView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArticleView" id="OkL-kn-E4Z" customClass="ArticleView" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="SdE-xa-Idg"/>
                         <viewControllerLayoutGuide type="bottom" id="1wL-kB-v2x"/>
