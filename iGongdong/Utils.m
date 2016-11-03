@@ -73,6 +73,15 @@
 	return strResult;
 }
 
++ (NSString *)replaceOnlyHtmlTag:(NSString *)content
+{
+	NSString *dest;
+
+	dest = [self replaceStringRegex:content regex:@"(<).*?(>)" replace:@""];
+	
+	return dest;
+}
+
 + (NSString *)replaceStringHtmlTag:(NSString *)content
 {
 	NSString *dest;

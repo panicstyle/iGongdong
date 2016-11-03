@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface ArticleData : NSObject
+
 @property (strong, nonatomic) NSString *m_strHtml;
 @property (strong, nonatomic) NSString *m_strTitle;
 @property (strong, nonatomic) NSString *m_strName;
@@ -16,11 +17,12 @@
 @property (strong, nonatomic) NSString *m_strHit;
 @property (strong, nonatomic) NSString *m_strContent;
 @property (strong, nonatomic) NSString *m_strEditableContent;
+
 @property (strong, nonatomic) NSNumber *m_isPNotice;
-//@property (strong, nonatomic) NSString *m_strLink;
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;
 @property (strong, nonatomic) NSString *m_strBoardNo;
+@property (strong, nonatomic) NSString *m_strApplyLink;
 @property (strong, nonatomic) NSNumber *m_nMode;
 @property (strong, nonatomic) NSMutableArray *m_arrayItems;
 @property (strong, nonatomic) NSDictionary *m_attachItems;

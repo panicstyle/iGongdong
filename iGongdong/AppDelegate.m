@@ -131,9 +131,11 @@
 	//Do whatever you need
 	NSLog(@"applicationDidBecomeActive with UserInfo");
 	
+	NSString *commId;
 	NSString *boardId;
 	NSString *boardNo;
 	if ([dUserInfo objectForKey:@"link"]) {
+		commId = [dUserInfo objectForKey:@"commId"];
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];
 	} else {
@@ -150,11 +152,9 @@
 	
 	ArticleView *viewController = (ArticleView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleView"];
 	if (viewController != nil) {
-		viewController.m_strTitle = @"";
-		viewController.m_strDate = @"";
-		viewController.m_strName = @"";
-//		viewController.m_boardId = boardId;
-//		viewController.m_boardNo = boardNo;
+		viewController.m_strCommId = commId;
+		viewController.m_strBoardId = boardId;
+		viewController.m_strBoardNo = boardNo;
 		viewController.target = nil;
 		viewController.selector = nil;
 	} else {

@@ -151,9 +151,6 @@
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_strTitle = [item valueForKey:@"subject"];
-		view.m_strDate = [item valueForKey:@"date"];
-		view.m_strName = [item valueForKey:@"writer"];
 		view.m_strCommId = @"";
 		view.m_strBoardId = @"";
 		view.m_strBoardNo = @"";

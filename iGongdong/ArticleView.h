@@ -17,14 +17,10 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleModify;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleDelete;
 @property (strong, nonatomic) NSNumber *m_isPNotice;
-@property (strong, nonatomic) NSString *m_strTitle;
-@property (strong, nonatomic) NSString *m_strDate;
-@property (strong, nonatomic) NSString *m_strName;
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;
 @property (strong, nonatomic) NSString *m_strBoardNo;
-//@property (strong, nonatomic) NSString *m_strLink;
-@property (strong, nonatomic) NSString *m_strHit;
+@property (strong, nonatomic) NSString *m_strApplyLink;
 @property (strong, nonatomic) NSNumber *m_nMode;
 @property id target;
 @property SEL selector;

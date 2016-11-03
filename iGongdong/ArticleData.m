@@ -22,23 +22,24 @@
 
 @implementation ArticleData
 
-@synthesize m_strTitle;
-@synthesize m_strName;
-@synthesize m_strDate;
-@synthesize m_strHit;
-@synthesize m_strHtml;
-@synthesize m_strContent;
-@synthesize m_strEditableContent;
 @synthesize m_isPNotice;
-//@synthesize m_strLink;
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
 @synthesize m_strBoardNo;
+@synthesize m_strApplyLink;
 @synthesize m_arrayItems;
 @synthesize m_attachItems;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
+
+@synthesize m_strHtml;
+@synthesize m_strTitle;
+@synthesize m_strName;
+@synthesize m_strDate;
+@synthesize m_strHit;
+@synthesize m_strContent;
+@synthesize m_strEditableContent;
 
 - (void)fetchItems
 {
@@ -59,11 +60,15 @@
 			url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&page=1&startpage=1&keyfield=&key_bs=&p1=%@&p2=&p3=&number=%@&mode=view", CAFE_SERVER, m_strBoardId, m_strCommId, m_strBoardNo];
 		} else {
 			// http://www.gongdong.or.kr/notice/342940
-			url = [NSString stringWithFormat:@"www.gongdong.or.kr/notice/%@", m_strBoardNo];
+			url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/notice/%@", m_strBoardNo];
 		}
+	} else if ([m_nMode intValue] == CAFE_TYPE_EDU_APP_ADMIN) {
+		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&act=dispEnrollByCourse&course_no=225
+		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=225&act=dispEnrollByCourse
+		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=%@&act=dispEnrollByCourse", m_strBoardNo];
 	} else {
 		// http://www.gongdong.or.kr/ing/343335
-		url = [NSString stringWithFormat:@"www.gongdong.or.kr/%@/%@", m_strBoardId, m_strBoardNo];
+		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/%@/%@", m_strBoardId, m_strBoardNo];
 	}
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
@@ -161,6 +166,11 @@
 			[self parseEduApp];
 			break;
 		case CAFE_TYPE_EDU_APP_ADMIN:
+			if ([Utils numberOfMatches:m_strHtml regex:@"msg_is_not_administrator"] > 0) {
+				[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
+				return;
+			}
+			
 			[self parseEduAppAdmin];
 			break;
 	}
@@ -756,9 +766,7 @@
 	
 	if ([Utils numberOfMatches:strStatus regex:@"신청기간중"] > 0) {
 		NSString *strApply;
-		strApply = [Utils findStringRegex:m_strHtml regex:@"(<map name=\\\"Map).*?(</map>)"];
-		strApply = [Utils findStringRegex:strApply regex:@"(?<=href=\\\").*?(?=\\\")"];
-		strApply = [NSString stringWithFormat:@"<tr><td><a href=\"%@\">수강신청 바로가기</a></td></tr></table>", strApply];
+		strApply = [NSString stringWithFormat:@"<tr><td>%@수강신청 바로가기</a></td></tr></table>", m_strApplyLink];
 		
 		strStatus = [Utils replaceStringRegex:strStatus regex:@"</table>" replace:strApply];
 	}

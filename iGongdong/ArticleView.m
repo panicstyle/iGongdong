@@ -36,9 +36,11 @@
 
 	NSString *m_strContent;
 
-//	NSString *m_strCommId;
-//	NSString *m_strBoardId;
-//	NSString *m_strBoardNo;
+	NSString *m_strTitle;
+	NSString *m_strDate;
+	NSString *m_strName;
+	NSString *m_strHit;
+	
 	NSString *m_strCommentNo;
 	NSString *m_strComment;
 	
@@ -59,14 +61,10 @@
 
 @synthesize buttonArticleDelete;
 @synthesize m_isPNotice;
-@synthesize m_strTitle;
-@synthesize m_strDate;
-@synthesize m_strName;
-//@synthesize m_strLink;
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
 @synthesize m_strBoardNo;
-@synthesize m_strHit;
+@synthesize m_strApplyLink;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
@@ -122,9 +120,7 @@
 	m_articleData.m_strBoardId = m_strBoardId;
 	m_articleData.m_strBoardNo = m_strBoardNo;
 	m_articleData.m_nMode = m_nMode;
-	m_articleData.m_strName = m_strName;
-	m_articleData.m_strDate = m_strDate;
-	m_articleData.m_strHit = m_strHit;
+	m_articleData.m_strApplyLink = m_strApplyLink;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
@@ -523,7 +519,11 @@
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
 		m_webView.scrollView.bounces = NO;
-		[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
+		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+			[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
+		} else {
+			[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:WWW_SERVER]];
+		}
 
 //		m_arrayItems = [NSMutableArray arrayWithArray:m_articleData.m_arrayItems];
 		[self.tbView reloadData];

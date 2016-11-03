@@ -86,7 +86,7 @@
 		if (cell == nil) {
 			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierTitle];
 		}
-		cell.textLabel.text = [item valueForKey:@"title"];
+		cell.textLabel.text = [item valueForKey:@"boardName"];
 	} else {
 		int isCal = [[item valueForKey:@"isCal"] intValue];
 		if (isCal == 0) {
@@ -94,7 +94,7 @@
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
 			}
-			cell.textLabel.text = [item valueForKey:@"title"];
+			cell.textLabel.text = [item valueForKey:@"boardName"];
 			if ([[item valueForKey:@"isNew"] intValue] == 0) {
 				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
 			} else {
@@ -105,7 +105,7 @@
 			if (cell == nil) {
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
 			}
-			cell.textLabel.text = [item valueForKey:@"title"];
+			cell.textLabel.text = [item valueForKey:@"boardName"];
 			if ([[item valueForKey:@"isNew"] intValue] == 0) {
 				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
 			} else {
@@ -129,7 +129,6 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = [item valueForKey:@"boardId"];
-//		view.m_strLink = [item valueForKey:@"link"];
 		view.m_nMode = [item valueForKey:@"type"];
 	} else if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];
@@ -138,7 +137,6 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = [item valueForKey:@"boardId"];
-//		view.m_strLink = [item valueForKey:@"link"];
 	}
 }
 

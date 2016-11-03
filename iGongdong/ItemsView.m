@@ -159,11 +159,11 @@
 			
 			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
 			NSString *strName = [item valueForKey:@"name"];
-			NSString *strDate = [item valueForKey:@"date"];
-			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
+//			NSString *strDate = [item valueForKey:@"date"];
+//			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
 			
-			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
+			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strName];
+//			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 			labelName.attributedText = textName;
 			
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
@@ -327,13 +327,14 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_isPNotice = [item valueForKey:@"isPNotice"];
-		view.m_strTitle = [item valueForKey:@"subject"];
-		view.m_strDate = [item valueForKey:@"date"];
-		view.m_strName = [item valueForKey:@"name"];
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = [item valueForKey:@"boardNo"];
-		view.m_strHit = [item valueForKey:@"hit"];
+		if ([m_nMode intValue] == CAFE_TYPE_EDU_APP) {
+			view.m_strApplyLink = [item valueForKey:@"applyLink"];
+		} else {
+			view.m_strApplyLink = @"";
+		}
 		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);

@@ -15,6 +15,7 @@
 //    HTTPRequest *httpRequest;
 	NSString *userid;
     NSString *userpwd;
+	NSNumber *switchPush;
 }
 - (BOOL)LoginToService;
 - (void)Logout;
