@@ -7,8 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <StoreKit/StoreKit.h>
 #import "env.h"
 
-@interface AboutView : UIViewController
+@interface AboutView : UIViewController <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 @property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UIButton *btnDonation;
+
++ (id) sharedManager;
+
 @end

@@ -14,6 +14,17 @@
 
 @implementation AboutView
 @synthesize textView;
+@synthesize btnDonation;
+
++ (id) sharedManager
+{
+	static AboutView * sharedMyManager = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedMyManager = [[self alloc] init];
+	});
+	return sharedMyManager;
+}
 
 - (void)viewDidLoad
 {
@@ -30,4 +41,83 @@
     textView.text = msgAbout;
 }
 
+- (IBAction)doDonation:(id)sender {
+	NSSet *productIdentifiers = [NSSet setWithObjects:@"com.panicstyle.iGongdong.donation1", nil];
+	
+	SKProductsRequest *productsRequest = [[SKProductsRequest alloc]
+										  initWithProductIdentifiers:productIdentifiers];
+	productsRequest.delegate = self;
+	[productsRequest start];
+}
+
+// 1. 조회가 정상이면 구매 요청을 한다.
+- (void) productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
+{
+	if( [response.products count] > 0 ) {
+		[self paymentRequest:[response.products objectAtIndex:0]];
+	} else {
+		NSLog(@"In-App Purchase Fail");
+//		[self callDelegateFail:@"response.products count <= 0"];
+	}
+}
+
+- (void) paymentRequest:(SKProduct *) product
+{
+	SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+	payment.quantity = 1;
+	NSLog(@"SKPaymentQueue");
+	[[SKPaymentQueue defaultQueue] addPayment:payment];
+}
+
+// Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
+	NSLog(@"paymentQueue");
+	for (SKPaymentTransaction *transaction in transactions) {
+		switch (transaction.transactionState) {
+				// Call the appropriate custom method for the transaction state.
+			case SKPaymentTransactionStatePurchasing:
+				NSLog(@"SKPaymentTransactionStatePurchasing");
+//				[self showTransactionAsInProgress:transaction deferred:NO];
+				break;
+			case SKPaymentTransactionStateDeferred:
+				NSLog(@"SKPaymentTransactionStateDeferred");
+//				[self showTransactionAsInProgress:transaction deferred:YES];
+				break;
+			case SKPaymentTransactionStateFailed:
+				NSLog(@"SKPaymentTransactionStateFailed");
+//				[self failedTransaction:transaction];
+				break;
+			case SKPaymentTransactionStatePurchased:
+				// Load the receipt from the app bundle.
+//				[self completeTransaction:transaction];
+				break;
+			case SKPaymentTransactionStateRestored:
+				NSLog(@"SKPaymentTransactionStateRestored");
+//				[self restoreTransaction:transaction];
+				break;
+			default:
+				// For debugging
+				NSLog(@"Unexpected transaction state %@", @(transaction.transactionState));
+//				[self callDelegateFail:@"transactionState is default"];
+				break;
+		}
+	}
+}
+
+- (void) completeTransaction:(SKPaymentTransaction *)transaction{
+	NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+	[[NSBundle mainBundle] appStoreReceiptURL];
+	NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
+	if (!receipt) {
+		/* No local receipt -- handle the error. */
+//		[self callDelegateFail:@"complete. but don't exist receipt"];
+	} else {
+		//        NSLog(@"SKPaymentTransactionStatePurchased receipt : %@", receipt);
+		//        NSString *encReceipt = [receipt base64EncodedStringWithOptions:0];
+		//        NSLog(@"SKPaymentTransactionStatePurchased encReceipt : %@", encReceipt);
+		
+//		[self callDelegateSuccess:receipt];
+		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+	}
+}
 @end

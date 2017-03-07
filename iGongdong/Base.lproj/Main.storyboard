@@ -24,23 +24,53 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Rwk-7P-yep">
-                                <rect key="frame" x="8" y="8" width="359" height="651"/>
+                                <rect key="frame" x="8" y="0.0" width="359" height="400"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 <dataDetectorType key="dataDetectorTypes" link="YES" address="YES"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jdo-fn-bfC">
+                                <rect key="frame" x="87" y="408" width="200" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="9YH-9l-mzp"/>
+                                    <constraint firstAttribute="height" constant="30" id="FDC-ZX-44c"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="개발자에게 커피한잔 쏘기"/>
+                                <connections>
+                                    <action selector="doDonation:" destination="qDd-9D-0V5" eventType="touchDown" id="zRJ-Bv-62L"/>
+                                </connections>
+                            </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="공동육아앱 개발자를 후원해 주세요." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="WpQ-53-VVn">
+                                <rect key="frame" x="16" y="446" width="343" height="61"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="343" id="RdQ-IE-EsO"/>
+                                    <constraint firstAttribute="height" constant="61" id="dvk-WD-EFx"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="rMM-pp-QiG" firstAttribute="top" secondItem="Rwk-7P-yep" secondAttribute="bottom" constant="8" id="Ikz-OI-wRF"/>
-                            <constraint firstItem="Rwk-7P-yep" firstAttribute="leading" secondItem="oah-CG-JoB" secondAttribute="leading" constant="8" id="ccO-ni-dT7"/>
-                            <constraint firstItem="Rwk-7P-yep" firstAttribute="top" secondItem="oah-CG-JoB" secondAttribute="top" constant="8" id="id1-HH-rRS"/>
-                            <constraint firstAttribute="trailing" secondItem="Rwk-7P-yep" secondAttribute="trailing" constant="8" id="ihI-dy-NUW"/>
+                            <constraint firstItem="WpQ-53-VVn" firstAttribute="trailing" secondItem="oah-CG-JoB" secondAttribute="trailingMargin" id="0vP-Z1-jJS"/>
+                            <constraint firstItem="WpQ-53-VVn" firstAttribute="leading" secondItem="oah-CG-JoB" secondAttribute="leadingMargin" id="6zI-Ep-E58"/>
+                            <constraint firstItem="jdo-fn-bfC" firstAttribute="top" secondItem="Rwk-7P-yep" secondAttribute="bottom" constant="8" id="Bf9-Kx-cWr"/>
+                            <constraint firstAttribute="trailing" secondItem="Rwk-7P-yep" secondAttribute="trailing" constant="8" id="Bj0-ti-RkZ"/>
+                            <constraint firstItem="WpQ-53-VVn" firstAttribute="top" secondItem="jdo-fn-bfC" secondAttribute="bottom" constant="8" id="LgY-pu-ahu"/>
+                            <constraint firstItem="Rwk-7P-yep" firstAttribute="leading" secondItem="oah-CG-JoB" secondAttribute="leading" constant="8" id="PUI-hY-6oN"/>
+                            <constraint firstItem="jdo-fn-bfC" firstAttribute="top" secondItem="Rwk-7P-yep" secondAttribute="bottom" constant="8" id="RlL-8Y-KKn"/>
+                            <constraint firstItem="jdo-fn-bfC" firstAttribute="centerX" secondItem="oah-CG-JoB" secondAttribute="centerX" id="XUe-CM-ACe"/>
+                            <constraint firstItem="Rwk-7P-yep" firstAttribute="top" secondItem="oah-CG-JoB" secondAttribute="top" id="kbi-Bb-OYs"/>
+                            <constraint firstItem="WpQ-53-VVn" firstAttribute="top" secondItem="jdo-fn-bfC" secondAttribute="bottom" constant="8" id="qSN-US-NUZ"/>
+                            <constraint firstItem="rMM-pp-QiG" firstAttribute="top" secondItem="WpQ-53-VVn" secondAttribute="bottom" constant="160" id="wRn-ef-axs"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="yQs-wC-5eR"/>
                     <connections>
+                        <outlet property="btnDonation" destination="jdo-fn-bfC" id="HJO-Me-ZeE"/>
                         <outlet property="textView" destination="Rwk-7P-yep" id="Nau-s1-06A"/>
                     </connections>
                 </viewController>

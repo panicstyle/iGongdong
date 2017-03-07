@@ -10,6 +10,7 @@
 #import "Utils.h"
 #import "LoginToService.h"
 #import "ArticleView.h"
+#import "AboutView.h"
 
 @interface AppDelegate ()
 {
@@ -25,6 +26,9 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	
+	[[SKPaymentQueue defaultQueue] addTransactionObserver:[AboutView sharedManager]];
+	
 	// Override point for customization after application launch.
 	[[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 	//	[[UIApplication sharedApplication] cancelAllLocalNotifications];

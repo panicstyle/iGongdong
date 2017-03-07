@@ -31,6 +31,7 @@
 		EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */; };
 		EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */; };
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
+		ECAC002F1E6EEB36005EF8F4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECAC002E1E6EEB36005EF8F4 /* StoreKit.framework */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
 		ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECE8A0231D44E4F900D2680A /* WebLinkView.m */; };
@@ -104,6 +105,7 @@
 		EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iGongdong.entitlements; sourceTree = "<group>"; };
 		EC938BC21C90534E006BEF9E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		EC938BC31C90534E006BEF9E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		ECAC002E1E6EEB36005EF8F4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		ECC846AC1C91588000CF47DA /* CommentWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentWriteView.h; sourceTree = "<group>"; };
 		ECC846AD1C91588000CF47DA /* CommentWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentWriteView.m; sourceTree = "<group>"; };
 		ECC846B01C915F3700CF47DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */,
+				ECAC002F1E6EEB36005EF8F4 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +146,7 @@
 				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
 				EC717E941C87C68800C1888B /* iGongdong */,
 				EC717E931C87C68800C1888B /* Products */,
+				ECAC002D1E6EEB36005EF8F4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -222,6 +226,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		ECAC002D1E6EEB36005EF8F4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ECAC002E1E6EEB36005EF8F4 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -291,6 +303,9 @@
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 8PG9C7Q5V8;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
