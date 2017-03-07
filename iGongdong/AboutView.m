@@ -89,11 +89,11 @@
 				break;
 			case SKPaymentTransactionStatePurchased:
 				// Load the receipt from the app bundle.
-//				[self completeTransaction:transaction];
+				[self completeTransaction:transaction];
 				break;
 			case SKPaymentTransactionStateRestored:
 				NSLog(@"SKPaymentTransactionStateRestored");
-//				[self restoreTransaction:transaction];
+				[self restoreTransaction:transaction];
 				break;
 			default:
 				// For debugging
@@ -105,6 +105,8 @@
 }
 
 - (void) completeTransaction:(SKPaymentTransaction *)transaction{
+	[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+
 	NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
 	[[NSBundle mainBundle] appStoreReceiptURL];
 	NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
@@ -117,7 +119,11 @@
 		//        NSLog(@"SKPaymentTransactionStatePurchased encReceipt : %@", encReceipt);
 		
 //		[self callDelegateSuccess:receipt];
-		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+//		[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 	}
+}
+
+- (void) restoreTransaction:(SKPaymentTransaction *)transaction {
+	[[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 @end
