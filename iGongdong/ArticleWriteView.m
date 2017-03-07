@@ -6,17 +6,20 @@
 //  Copyright © 2016년 dykim. All rights reserved.
 //
 
+#import <Photos/Photos.h>
 #import "ArticleWriteView.h"
+#import "Utils.h"
 
 @interface ArticleWriteView ()
 {
 	int m_bUpMode;
-	UITextField *m_titleField;
-	UITextView *m_contentView;
 	long m_lContentHeight;
-	UITableViewCell *m_contentCell;
-	UITableViewCell *m_imageCell;
-	int m_nAddPic;
+	UIAlertView *alertWait;
+	
+	int m_selectedImage;
+	int m_ImageStatus[5];
+	int m_nAttachCount;
+	NSString *m_strImageFileName[5];
 }
 
 @end
@@ -31,16 +34,24 @@
 @synthesize m_strContent;
 @synthesize target;
 @synthesize selector;
+@synthesize viewTitle;
+@synthesize viewContent;
+@synthesize viewImage0;
+@synthesize viewImage1;
+@synthesize viewImage2;
+@synthesize viewImage3;
+@synthesize viewImage4;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
 	m_bUpMode = false;
-	m_nAddPic = false;
 	
 	if ([m_nModify intValue] == ArticleWrite) {
 		[(UILabel *)self.navigationItem.titleView setText:@"글쓰기"];
 	} else if ([m_nModify intValue] == ArticleModify) {
 		[(UILabel *)self.navigationItem.titleView setText:@"글수정"];
+		viewTitle.text = m_strTitle;
+		viewContent.text = m_strContent;
 	}
 
 	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
@@ -68,6 +79,17 @@
 											 selector:@selector(keyboardDidHide:)
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
+
+	viewImage0.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage1.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage2.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage3.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	viewImage4.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+	m_ImageStatus[0] = 0;
+	m_ImageStatus[1] = 0;
+	m_ImageStatus[2] = 0;
+	m_ImageStatus[3] = 0;
+	m_ImageStatus[4] = 0;
 }
 
 /*
@@ -93,14 +115,14 @@
 	if (m_bUpMode == up) return;
 	
 	NSDictionary* keyboardInfo = [notif userInfo];
-	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
+	NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
 	CGRect keyboardFrameBeginRect = [keyboardFrameBegin CGRectValue];
 	
 	const int movementDistance = keyboardFrameBeginRect.size.height; // tweak as needed
 	const float movementDuration = 0.3f; // tweak as needed
 	
 	int movement = (up ? -movementDistance : movementDistance);
-
+	
 	[UIView beginAnimations: @"animateTextView" context: nil];
 	[UIView setAnimationBeginsFromCurrentState: YES];
 	[UIView setAnimationDuration: movementDuration];
@@ -109,25 +131,10 @@
 	viewRect.size.height = viewRect.size.height + movement;
 	self.view.frame = viewRect;
 	
-//	CGRect tableRect = self.tbView.frame;
-//	tableRect.size.height = tableRect.size.height + movement;
-//	self.tbView.frame = tableRect;
-	
-	CGRect contentRect = m_contentCell.frame;
+	CGRect contentRect = viewContent.frame;
 	contentRect.size.height = contentRect.size.height + movement;
-	m_contentCell.frame = contentRect;
-
-	[self.tbView beginUpdates];
-	[self.tbView endUpdates];
+	viewContent.frame = contentRect;
 	
-//	CGRect textRect = m_contentView.frame;
-//	textRect.size.height = textRect.size.height + movement;
-//	m_contentView.frame = textRect;
-	
-//	CGRect imageRect = m_imageCell.frame;
-//	imageRect.size.height = imageRect.size.height;
-//	m_imageCell.frame = imageRect;
-
 	[UIView commitAnimations];
 	m_bUpMode = up;
 }
@@ -156,61 +163,6 @@
 	return fullScreenRect;
 }
 
-#pragma mark - Table view data source
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	if ([indexPath row] == 0) {
-		return 40.0f;
-	} else if ([indexPath row] == 1) {
-		return (float)m_lContentHeight;
-	} else {
-		return 40.0f;
-	}
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 3;
-}
-
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	static NSString *CellIdentifierTitle = @"Title";
-	static NSString *CellIdentifierContent = @"Content";
-	static NSString *CellIdentifierImage = @"Image";
-	
-	UITableViewCell *cell;
-	if ([indexPath row] == 0) {
-		cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierTitle];
-		if (cell == nil) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierTitle];
-		}
-		m_titleField = (UITextField *)[cell viewWithTag:100];
-		m_titleField.text = m_strTitle;
-		return cell;
-	} else if ([indexPath row] == 1){
-		m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
-		if (m_contentCell == nil) {
-			m_contentCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierContent];
-		}
-		m_contentView = (UITextView *)[m_contentCell viewWithTag:101];
-		m_contentView.text = m_strContent;
-		return m_contentCell;
-	} else {
-		m_imageCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierImage];
-		if (m_imageCell == nil) {
-			m_imageCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierImage];
-		}
-		m_imageCell.textLabel.text = @"Image Line";
-		return m_imageCell;
-	}
-}
-
-
 - (void) cancelEditing:(id)sender
 {
 	//	[contentView resignFirstResponder];
@@ -223,8 +175,7 @@
 	////NSLog(@"donEditing start...");
 	NSString *url;
 	
-	if (m_titleField.text.length <= 0 || m_contentView.text.length <= 0) {
-		// 쓰여진 내용이 없으므로 저장하지 않는다.
+	if (viewTitle.text.length <= 0 || viewContent.text.length <= 0) {		// 쓰여진 내용이 없으므로 저장하지 않는다.
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"확인"
 														message:@"입력된 내용이 없습니다."
 													   delegate:nil
@@ -243,149 +194,266 @@
 		url = [NSString stringWithFormat:@"%@/cafe.php?mode=up&p2=&p1=%@&sort=%@",
 			   CAFE_SERVER, m_strCommId, m_strBoardId];
 	}
-	
-	NSData *respData;
-	if (m_nAddPic) {
-/*
-		// 사진첨부됨, Multipart message로 전송
-		//        NSData *imageData = UIImagePNGRepresentation(addPicture.image);
-		NSData *imageData = UIImageJPEGRepresentation(addPicture.image, 0.5f);
-		
-		NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
-		[request setURL:[NSURL URLWithString:url]];
-		[request setHTTPMethod:@"POST"];
-		
-		NSString *boundary = @"0xKhTmLbOuNdArY";  // important!!!
-		NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-		[request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-		
-		NSMutableString *strBody1 = [[NSMutableString alloc] init];
-		NSMutableString *strBody2 = [[NSMutableString alloc] init];
-		
-		
-		// number
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"number\"\n"]];
-		[strBody1 appendString:@"\n"];
-		if (isEdit) {
-			[strBody1 appendString:[NSString stringWithFormat:@"%@\n", numberID]];
-		} else {
-			[strBody1 appendString:@"\n"];
-		}
-		
-		// usetag = n
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"usetag\"\n"]];
-		[strBody1 appendString:@"\n"];
-		[strBody1 appendString:@"n\n"];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// subject
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"subject\"\n"]];
-		[strBody1 appendString:@"\n"];
-		[strBody1 appendString:[NSString stringWithFormat:@"%@\n", subjectField.text]];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// sample
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"sample\"\n"]];
-		[strBody1 appendString:@"\n"];
-		[strBody1 appendString:@"\n"];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// content
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"content\"\n"]];
-		[strBody1 appendString:@"\n"];
-		[strBody1 appendString:[NSString stringWithFormat:@"%@\n", contentField.text]];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// imgfile[]
-		[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"imgfile[]\"; filename=\"1234.png\"\n"]];
-		[strBody1 appendString:@"Content-Type: image/png\n"];
-		[strBody1 appendString:@"\n"];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// file_text[]
-		[strBody2 appendString:@"\n"];
-		[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file_text[]\"\n"]];
-		[strBody2 appendString:@"\n"];
-		[strBody2 appendString:@"\n"];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// img_file[]
-		[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"img_file[]\"; filename=\"\"\n"]];
-		[strBody2 appendString:@"\n"];
-		[strBody2 appendString:@"\n"];
-		//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		// file_text[]
-		[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
-		[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file_text[]\"\n"]];
-		[strBody2 appendString:@"\n"];
-		[strBody2 appendString:@"\n"];
-		
-		[strBody2 appendString:[NSString stringWithFormat:@"--%@--\n",boundary]];
-		
-		NSMutableData *body = [NSMutableData data];
-		
-		[body appendData:[strBody1 dataUsingEncoding:NSUTF8StringEncoding]];
-		[body appendData:[NSData dataWithData:imageData]];
-		[body appendData:[strBody2 dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		[request setHTTPBody:body];
-		
-		respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-*/
+
+	if (m_ImageStatus[0] == 1 || m_ImageStatus[1] == 1 || m_ImageStatus[2] == 1 || m_ImageStatus[3] == 1 || m_ImageStatus[4] == 1) {
+		[self postWithAttach:url];
 	} else {
-		
-		NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-		[request setURL:[NSURL URLWithString:url]];
-		[request setHTTPMethod:@"POST"];
-		
-		NSMutableData *body = [NSMutableData data];
-		// usetag = n
-		[body appendData:[[NSString stringWithFormat:@"number=%@&usetag=n&subject=%@&content=%@", m_strBoardNo, m_titleField.text, m_contentView.text] dataUsingEncoding:NSUTF8StringEncoding]];
-		
-		[request setHTTPBody:body];
-		
-		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-		
-		respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-		
+		[self postDo:url];
+	}
+}
+
+- (void) postWithAttach:(NSString *)url {
+/*
+	NSData *respData;
+	// 사진첨부됨, Multipart message로 전송
+	//        NSData *imageData = UIImagePNGRepresentation(addPicture.image);
+	NSData *imageData = UIImageJPEGRepresentation(addPicture.image, 0.5f);
+	
+	NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+	[request setURL:[NSURL URLWithString:url]];
+	[request setHTTPMethod:@"POST"];
+	
+	NSString *boundary = @"0xKhTmLbOuNdArY";  // important!!!
+	NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+	[request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+	
+	NSMutableString *strBody1 = [[NSMutableString alloc] init];
+	NSMutableString *strBody2 = [[NSMutableString alloc] init];
+	
+	
+	// number
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"number\"\n"]];
+	[strBody1 appendString:@"\n"];
+	if (isEdit) {
+		[strBody1 appendString:[NSString stringWithFormat:@"%@\n", numberID]];
+	} else {
+		[strBody1 appendString:@"\n"];
 	}
 	
+	// usetag = n
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"usetag\"\n"]];
+	[strBody1 appendString:@"\n"];
+	[strBody1 appendString:@"n\n"];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// subject
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"subject\"\n"]];
+	[strBody1 appendString:@"\n"];
+	[strBody1 appendString:[NSString stringWithFormat:@"%@\n", subjectField.text]];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// sample
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"sample\"\n"]];
+	[strBody1 appendString:@"\n"];
+	[strBody1 appendString:@"\n"];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// content
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"content\"\n"]];
+	[strBody1 appendString:@"\n"];
+	[strBody1 appendString:[NSString stringWithFormat:@"%@\n", contentField.text]];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// imgfile[]
+	[strBody1 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody1 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"imgfile[]\"; filename=\"1234.png\"\n"]];
+	[strBody1 appendString:@"Content-Type: image/png\n"];
+	[strBody1 appendString:@"\n"];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// file_text[]
+	[strBody2 appendString:@"\n"];
+	[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file_text[]\"\n"]];
+	[strBody2 appendString:@"\n"];
+	[strBody2 appendString:@"\n"];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// img_file[]
+	[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"img_file[]\"; filename=\"\"\n"]];
+	[strBody2 appendString:@"\n"];
+	[strBody2 appendString:@"\n"];
+	//        [body appendData:[[NSString stringWithFormat:@"\n--%@--\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	// file_text[]
+	[strBody2 appendString:[NSString stringWithFormat:@"--%@\n",boundary]];
+	[strBody2 appendString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file_text[]\"\n"]];
+	[strBody2 appendString:@"\n"];
+	[strBody2 appendString:@"\n"];
+	
+	[strBody2 appendString:[NSString stringWithFormat:@"--%@--\n",boundary]];
+	
+	NSMutableData *body = [NSMutableData data];
+	
+	[body appendData:[strBody1 dataUsingEncoding:NSUTF8StringEncoding]];
+	[body appendData:[NSData dataWithData:imageData]];
+	[body appendData:[strBody2 dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	[request setHTTPBody:body];
+	
+	respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+*/
+}
+
+- (void) postDo:(NSString *)url {
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	[request setURL:[NSURL URLWithString:url]];
+	[request setHTTPMethod:@"POST"];
+	
+	NSMutableData *body = [NSMutableData data];
+	// usetag = n
+	[body appendData:[[NSString stringWithFormat:@"number=%@&usetag=n&subject=%@&content=%@", m_strBoardNo, viewTitle.text, viewContent.text] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	[request setHTTPBody:body];
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+	
+	NSData *respData;
+	respData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+		
 	NSString *str = [[NSString alloc] initWithData:respData
 										  encoding:NSUTF8StringEncoding];
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<meta http-equiv=\"refresh\" content=\"0;" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSUInteger numberOfMatches = [regex numberOfMatchesInString:str options:0 range:NSMakeRange(0, [str length])];
-	
-	if (numberOfMatches > 0) {
+	if ([Utils numberOfMatches:str regex:@"<meta http-equiv=\"refresh\" content=\"0;"] > 0) {
 		NSLog(@"write article success");
 		[target performSelector:selector withObject:nil afterDelay:0];
 		[[self navigationController] popViewControllerAnimated:YES];
 	} else {
-		regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=window.alert\\(\\\").*?(?=\\\")" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-		NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str options:0 range:NSMakeRange(0, [str length])];
-		
-		NSString *errmsg;
-		if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-			errmsg = [str substringWithRange:rangeOfFirstMatch];
-			NSLog(@"errmsg=[%@]", errmsg);
-		} else {
-			NSLog(@"errmsg line not found");
-			errmsg = @"글 작성중 오류가 발생했습니다. 잠시후 다시 해보세요.";
-		}
+		NSString *errmsg = [Utils findStringRegex:str regex:@"(?<=window.alert\\(\\\").*?(?=\\\")"];
 		
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"글 작성 오류"
 														message:errmsg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"확인", nil];
 		[alert show];
 	}
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+	//You can retrieve the actual UIImage
+	UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+	//Or you can get the image url from AssetsLibrary
+	NSURL *path = [info valueForKey:UIImagePickerControllerReferenceURL];
+	PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[path] options:nil];
+	NSString *filename = [[result firstObject] filename];
+	
+	if (m_selectedImage == 0) {
+		viewImage0.image = image;
+		m_ImageStatus[0] = 1;
+		m_strImageFileName[0] = filename;
+	} else if (m_selectedImage == 1) {
+		viewImage1.image = image;
+		m_ImageStatus[1] = 1;
+		m_strImageFileName[1] = filename;
+	} else if (m_selectedImage == 2) {
+		viewImage2.image = image;
+		m_ImageStatus[2] = 1;
+		m_strImageFileName[2] = filename;
+	} else if (m_selectedImage == 3) {
+		viewImage3.image = image;
+		m_ImageStatus[3] = 1;
+		m_strImageFileName[3] = filename;
+	} else if (m_selectedImage == 4) {
+		viewImage4.image = image;
+		m_ImageStatus[4] = 1;
+		m_strImageFileName[4] = filename;
+	}
+	
+	[picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	UITouch *touch = [touches anyObject];
+	int imageStatus;
+	UIImageView *viewImage;
+	if ([touch view] == viewImage0) {
+		NSLog(@"viewImage1 touched");
+		m_selectedImage = 0;
+		imageStatus = m_ImageStatus[0];
+		viewImage = viewImage0;
+	} else if ([touch view] == viewImage1) {
+		NSLog(@"viewImage2 touched");
+		m_selectedImage = 1;
+		imageStatus = m_ImageStatus[1];
+		viewImage = viewImage1;
+	} else if ([touch view] == viewImage2) {
+		NSLog(@"viewImage3 touched");
+		m_selectedImage = 2;
+		imageStatus = m_ImageStatus[2];
+		viewImage = viewImage2;
+	} else if ([touch view] == viewImage3) {
+		NSLog(@"viewImage4 touched");
+		m_selectedImage = 3;
+		imageStatus = m_ImageStatus[3];
+		viewImage = viewImage3;
+	} else if ([touch view] == viewImage4) {
+		NSLog(@"viewImage5 touched");
+		m_selectedImage = 4;
+		imageStatus = m_ImageStatus[4];
+		viewImage = viewImage4;
+	}
+	if (imageStatus == 0) {
+		UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+		imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+		imagePickerController.delegate = self;
+		[self presentViewController:imagePickerController animated:YES completion:nil];
+	} else {
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																	   message:@"삭제하시겠습니까?"
+																preferredStyle:UIAlertControllerStyleAlert];
+		
+		UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
+														 handler:^(UIAlertAction * action) {
+															 [self DeleteImage];
+														 }];
+		UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"취소" style:UIAlertActionStyleDefault
+															 handler:^(UIAlertAction * action) {}];
+		
+		
+		[alert addAction:okAction];
+		[alert addAction:cancelAction];
+		[self presentViewController:alert animated:YES completion:nil];
+	}
+}
+
+- (void)DeleteImage {
+	if (m_selectedImage == 0) {
+		viewImage0.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[0] = 0;
+	} else if (m_selectedImage == 1) {
+		viewImage1.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[1] = 0;
+	} else if (m_selectedImage == 2) {
+		viewImage2.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[2] = 0;
+	} else if (m_selectedImage == 3) {
+		viewImage3.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[3] = 0;
+	} else if (m_selectedImage == 4) {
+		viewImage4.image = [UIImage imageNamed:@"ic_image_white_18pt"];
+		m_ImageStatus[4] = 0;
+	}
+}
+
+-(UIImage *)scaleToFitWidth:(UIImage *)image width:(CGFloat)width
+{
+	if (image.size.width <= SCALE_SIZE) return image;
+	
+	CGFloat ratio = width / image.size.width;
+	CGFloat height = image.size.height * ratio;
+	
+	NSLog(@"W:%f H:%f",width,height);
+	
+	UIGraphicsBeginImageContext(CGSizeMake(width, height));
+	[image drawInRect:CGRectMake(0.0f,0.0f,width,height)];
+	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return newImage;
 }
 
 @end

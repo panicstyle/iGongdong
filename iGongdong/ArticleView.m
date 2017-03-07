@@ -513,8 +513,6 @@
 		
 		NSLog(@"htmlString = [%@]", m_strContent);
 		
-		CGFloat width = m_contentCell.frame.size.width;
-		
 		m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;

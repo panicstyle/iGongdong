@@ -33,9 +33,6 @@
 	BOOL pushEnable = NO;
 	if ([[UIApplication sharedApplication] respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
 		pushEnable = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
-	} else {
-		UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-		pushEnable = types & UIRemoteNotificationTypeAlert;
 	}
 	
 	// 푸시 아이디를 달라고 폰에다가 요청하는 함수
@@ -45,11 +42,6 @@
 		// iOS 8 Notifications
 		[application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
 		[application registerForRemoteNotifications];
-	} else {
-		NSLog(@"down ios8");
-		// iOS < 8 Notifications
-		[application registerForRemoteNotificationTypes:
-		 (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
 	}
 	
 	// 앱이 완전히 종료된 상태에서 푸쉬 알림을 받으면 해당 푸쉬 알림 메시지가 launchOptions 에 포함되어서 실행된다.
