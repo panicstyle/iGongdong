@@ -17,8 +17,6 @@
 		EC717E9D1C87C68800C1888B /* BoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717E9C1C87C68800C1888B /* BoardView.m */; };
 		EC717EA21C87C68800C1888B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC717EA11C87C68800C1888B /* Assets.xcassets */; };
 		EC717EA51C87C68800C1888B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC717EA31C87C68800C1888B /* LaunchScreen.storyboard */; };
-		EC717EB01C87C68800C1888B /* iGongdongTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717EAF1C87C68800C1888B /* iGongdongTests.m */; };
-		EC717EBB1C87C68800C1888B /* iGongdongUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717EBA1C87C68800C1888B /* iGongdongUITests.m */; };
 		EC717F111C8811C500C1888B /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F101C8811C500C1888B /* MainView.m */; };
 		EC717F2B1C882F3E00C1888B /* LoginToService.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F221C882F3E00C1888B /* LoginToService.m */; };
 		EC717F2C1C882F3E00C1888B /* SetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F241C882F3E00C1888B /* SetInfo.m */; };
@@ -76,11 +74,7 @@
 		EC717EA41C87C68800C1888B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EC717EA61C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC717EAB1C87C68800C1888B /* iGongdongTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iGongdongTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717EAF1C87C68800C1888B /* iGongdongTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iGongdongTests.m; sourceTree = "<group>"; };
-		EC717EB11C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC717EB61C87C68800C1888B /* iGongdongUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iGongdongUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717EBA1C87C68800C1888B /* iGongdongUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iGongdongUITests.m; sourceTree = "<group>"; };
-		EC717EBC1C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC717F0E1C8811C500C1888B /* env.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = env.h; sourceTree = "<group>"; };
 		EC717F0F1C8811C500C1888B /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
 		EC717F101C8811C500C1888B /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
@@ -148,8 +142,6 @@
 			children = (
 				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
 				EC717E941C87C68800C1888B /* iGongdong */,
-				EC717EAE1C87C68800C1888B /* iGongdongTests */,
-				EC717EB91C87C68800C1888B /* iGongdongUITests */,
 				EC717E931C87C68800C1888B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -230,24 +222,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		EC717EAE1C87C68800C1888B /* iGongdongTests */ = {
-			isa = PBXGroup;
-			children = (
-				EC717EAF1C87C68800C1888B /* iGongdongTests.m */,
-				EC717EB11C87C68800C1888B /* Info.plist */,
-			);
-			path = iGongdongTests;
-			sourceTree = "<group>";
-		};
-		EC717EB91C87C68800C1888B /* iGongdongUITests */ = {
-			isa = PBXGroup;
-			children = (
-				EC717EBA1C87C68800C1888B /* iGongdongUITests.m */,
-				EC717EBC1C87C68800C1888B /* Info.plist */,
-			);
-			path = iGongdongUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -310,7 +284,7 @@
 		EC717E8A1C87C68800C1888B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = dykim;
 				TargetAttributes = {
 					EC717E911C87C68800C1888B = {
@@ -414,7 +388,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC717EB01C87C68800C1888B /* iGongdongTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,7 +395,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC717EBB1C87C68800C1888B /* iGongdongUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,8 +446,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -560,8 +534,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -605,8 +581,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

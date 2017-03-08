@@ -419,7 +419,6 @@
 	for (NSTextCheckingResult *match in matches) {
 		NSRange matchRange = [match range];
 		NSString *str2 = [str substringWithRange:matchRange];
-		BOOL isNotice = FALSE;
 		NSString *strStatus = @"";
 		currItem = [[NSMutableDictionary alloc] init];
 		
@@ -485,8 +484,6 @@
 		
 		str2 = [Utils replaceStringRegex:str2 regex:@"(<!--).*?(-->)" replace:@""];
 		
-		BOOL isNotice = FALSE;
-		NSString *strStatus = @"";
 		currItem = [[NSMutableDictionary alloc] init];
 		
 		if ([Utils numberOfMatches:str2 regex:@"<th"] > 0) {

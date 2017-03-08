@@ -69,4 +69,6 @@
 #define FILE_TYPE_HTML	0
 #define FILE_TYPE_IMAGE	1
 
+#define SCALE_SIZE		600
+
 #endif

@@ -46,9 +46,6 @@
 {
 	if ([m_nFileType intValue] == FILE_TYPE_IMAGE) {
 		
-		CGFloat width = mainView.bounds.size.width;
-		CGFloat height = mainView.bounds.size.height;
-		
 		UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.bounds.size.width, mainView.bounds.size.height)];
 		
 		[mainView addSubview:imageView];

@@ -46,38 +46,19 @@
 	SetInfo *setInfo = [[SetInfo alloc] init];
 	
 	if (![setInfo CheckVersionInfo]) {
-		
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"새글 알림기능이 추가되었습니다. 새글알림을 설정하시겠습니까?";
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"안내"
+		NSString *NotiMessage = @"이미지 첨부기능이 추가되었습니다.\n글쓰기 밑에 이미지버튼을 눌러 이미지를 첨부하세요.";
+		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
 		
 		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
 															  handler:^(UIAlertAction * action)
 			{
-				UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:NULL];
-				SetView *setView = (SetView*)[storyboard instantiateViewControllerWithIdentifier:@"SetView"];
-				setView.target = self;
-				setView.selector = @selector(didChangedSetting:);
-				UINavigationController *navController = (UINavigationController*)self.navigationController;
-				if (navController != nil) {
-					[navController pushViewController:setView animated:YES];
-				}
 				[alert dismissViewControllerAnimated:YES completion:nil];
 			}];
 	
-		UIAlertAction* cancel = [UIAlertAction
-								 actionWithTitle:@"취소"
-								 style:UIAlertActionStyleDefault
-								 handler:^(UIAlertAction * action)
-								 {
-									 [alert dismissViewControllerAnimated:YES completion:nil];
-									 
-								 }];
-		
 		[alert addAction:defaultAction];
-		[alert addAction:cancel];
 		
 		[self presentViewController:alert animated:YES completion:nil];
 		[setInfo SaveVersionInfo];

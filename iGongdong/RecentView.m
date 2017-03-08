@@ -147,6 +147,7 @@
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
 	if ([[segue identifier] isEqualToString:@"Article"]) {
+/*
 		ArticleView *view = [segue destinationViewController];
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
@@ -154,6 +155,7 @@
 		view.m_strCommId = @"";
 		view.m_strBoardId = @"";
 		view.m_strBoardNo = @"";
+ */
 	}
 }
 
