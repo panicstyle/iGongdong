@@ -203,17 +203,7 @@
 	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=</span>, &nbsp;조회 : ).*?(?=</div>)"];
 	
 	NSString *strContent;
-	strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
-	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)"];
 	
 	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
 	
@@ -280,12 +270,30 @@
 		[m_arrayItems addObject:currItem];
 	}
 
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@%@", resizeStr, m_strContent, imageString, strAttach];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
+	
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
 
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
@@ -336,19 +344,10 @@
 	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
 	
 	NSString *strContent;
-	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
@@ -401,13 +400,31 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
+
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
 	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
+
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
 }
@@ -437,19 +454,10 @@
 	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
 	
 	NSString *strContent;
-	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(<ul class=\"files).*?(</ul>)"];
 	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
@@ -502,12 +510,30 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
+	
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
 	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
@@ -536,19 +562,10 @@
 	// m_strHit도 넘오온 값을 그대로 사용함. 본문에는 조회수가 없음.
 	
 	NSString *strContent;
-	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
@@ -601,12 +618,30 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
+	
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
 
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
@@ -637,23 +672,14 @@
 	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
 	
 	NSString *strContent;
-	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
 	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
 	
 	NSString *strStatus;
 	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</td>)"];
-	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
+	strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, strContent];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
@@ -706,12 +732,30 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
+	
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
 	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
@@ -747,19 +791,9 @@
 	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
 	
 	NSString *strContent;
-	strContent = @"(<!--BeforeDocument).*?(</div><!--AfterDocument)";
-	
-	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:strContent options:NSRegularExpressionDotMatchesLineSeparators error:&error];
-	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:m_strHtml options:0 range:NSMakeRange(0, [m_strHtml length])];
-	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-		m_strContent = [m_strHtml substringWithRange:rangeOfFirstMatch];
-	} else {
-		m_strContent = @"";
-	}
-	[Utils replaceStringRegex:m_strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	m_strContent = [m_strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onload=\"resizeImage2(this)\" "];
+	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
+	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
+	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
 	
 	NSString *strStatus;
 	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</table>)"];
@@ -771,7 +805,7 @@
 		strStatus = [Utils replaceStringRegex:strStatus regex:@"</table>" replace:strApply];
 	}
 	
-	m_strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, m_strContent];
+	strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, strContent];
 	
 	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
 	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
@@ -824,12 +858,30 @@
 		[m_arrayItems addObject:currItem];
 	}
 	
-	m_strEditableContent = [Utils replaceStringHtmlTag:m_strContent];
+	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
 	
-	NSString *resizeStr = @"<script>function resizeImage2(mm){var window_innerWidth = window.innerWidth - 30;var width = eval(mm.width);var height = eval(mm.height);if( width > window_innerWidth ){var p_height = window_innerWidth / width;var new_height = height * p_height;eval(mm.width = window_innerWidth);eval(mm.height = new_height);}}</script>";
-	//        NSString *imageopenStr = [NSString stringWithString:@"<script>function image_open(src, mm){var src1 = 'image2.php?imgsrc='+src;window.open(src1,'image','width=1,height=1,scrollbars=yes,resizable=yes');}</script>"];
+	NSMutableString *strHeader = [[NSMutableString alloc] init];
+	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
+	[strHeader appendString:@"<html><head>"];
+	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
+	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
+	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
+	[strHeader appendString:@"</head>"];
 	
-	m_strContent = [NSString stringWithFormat:@"%@%@%@", resizeStr, m_strContent, imageString];
+	NSString *strBottom = @"</body></html>";
+	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
+	NSString *strBody = @"<body>";
+	
+	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
+	
+	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+					strHeader,
+					strBody,
+					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
+					strBottom];
 	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;
@@ -842,12 +894,12 @@
 	
 	m_strName = @"";
 
-	m_strContent = [Utils findStringRegex:m_strHtml regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 링크 입력폼 -->)"];
+	NSString *strContent = [Utils findStringRegex:m_strHtml regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 링크 입력폼 -->)"];
 
 	NSString *strStyle = @"<style type=\"text/css\">.listTable { border-collapse:collapse;  }	.listTable td { border: solid 1px #ccc; font-size: 1.0em; padding: 5px }	</style>";
-	m_strContent = [NSString stringWithFormat:@"%@%@", strStyle, m_strContent];
+	m_strContent = [NSString stringWithFormat:@"%@%@", strStyle, strContent];
 	
-	m_strEditableContent = m_strContent;
+	m_strEditableContent = strContent;
 	
 	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
 	return;

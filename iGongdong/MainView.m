@@ -47,19 +47,15 @@
 	
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"이미지 첨부기능이 추가되었습니다.\n글쓰기 밑에 이미지버튼을 눌러 이미지를 첨부하세요.";
+		NSString *NotiMessage = @"그동안 사진 확대가 안되어서 불편하셨죠. 사진을 클릭하면 확대해서 보실 수 있고 저장도 할 수 있어요.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
 		
 		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"확인" style:UIAlertActionStyleDefault
-															  handler:^(UIAlertAction * action)
-			{
-				[alert dismissViewControllerAnimated:YES completion:nil];
-			}];
-	
-		[alert addAction:defaultAction];
+															  handler:^(UIAlertAction * action) {}];
 		
+		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
 		[setInfo SaveVersionInfo];
 	}

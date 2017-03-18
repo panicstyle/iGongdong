@@ -153,6 +153,7 @@
 			NSString *strPicLink = [item valueForKey:@"piclink"];
 			NSURL *url = [NSURL URLWithString:strPicLink];
 			imageView.image = [UIImage imageWithCIImage:[CIImage imageWithContentsOfURL:url]];
+//			imageView.contentMode = UIViewContentModeScaleAspectFit;
 			
 			UITextView *textSubject = (UITextView *)[cell viewWithTag:201];
 			textSubject.text = [item valueForKey:@"subject"];

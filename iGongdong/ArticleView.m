@@ -431,18 +431,27 @@
 	NSString *urlString = url.absoluteString;
 	NSLog(@"request = %@", urlString);
 	
+	NSString *fileName;
+	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
+		fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
+		fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	} else {
+		fileName = [m_attachItems valueForKey:urlString];
+	}
+	NSLog(@"fileName = %@", fileName);
+	NSString *loweredExtension = [[fileName pathExtension] lowercaseString];
+	NSLog(@"loweredExtension = %@", loweredExtension);
+	// Valid extensions may change.  Check the UIImage class reference for the most up to date list.
+	NSSet *validImageExtensions = [NSSet setWithObjects:@"tif", @"tiff", @"jpg", @"jpeg", @"gif", @"png", @"bmp", @"bmpf", @"ico", @"cur", @"xbm", nil];
+	
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		
-		NSString *fileName;
-		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
-			fileName = [Utils findStringRegex:urlString regex:@"(?<=&name=).*?(?=$)"];
-			fileName = [fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		} else {
-			fileName = [m_attachItems valueForKey:urlString];
-		}
-		NSString *suffix = [[fileName substringFromIndex:[fileName length] - 4] lowercaseString];
-		
-		if ([suffix hasSuffix:@"hwp"]|| [suffix hasSuffix:@"pdf"]) {
+		if ([validImageExtensions containsObject:loweredExtension])
+		{
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = urlString;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
 			NSData	*tempData = [NSData dataWithContentsOfURL:url];
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
 			NSString *documentDirectory = [paths objectAtIndex:0];
@@ -458,17 +467,48 @@
 			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
 			self.doic.delegate = self;
 			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
-		} else {
-			if ([suffix hasSuffix:@"png"] || [suffix hasSuffix:@"jpg"]
-				|| [suffix hasSuffix:@"jpeg"]|| [suffix hasSuffix:@"gif"]) {
-				m_nFileType = FILE_TYPE_IMAGE;
-			} else {
-				m_nFileType = FILE_TYPE_HTML;
-			}
-			m_strWebLink = urlString;
-			[self performSegueWithIdentifier:@"WebLink" sender:self];
-			
 			return NO;
+		} else {
+			[[UIApplication sharedApplication] openURL:[request URL]];
+		}
+		
+		return NO;
+	} else if (navigationType == UIWebViewNavigationTypeOther) {
+		if ([[[request URL] absoluteString] hasPrefix:@"jscall:"]) {
+			
+			NSString *requestString = [[request URL] absoluteString];
+			NSArray *components = [requestString componentsSeparatedByString:@"://"];
+			NSString *functionName = [components objectAtIndex:1];
+			
+			NSLog(@"requestString = [%@]", requestString);
+			NSLog(@"functionName = [%@]", functionName);
+			
+			NSString *fileName = [functionName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			NSLog(@"fileName = [%@]", fileName);
+			
+			m_nFileType = FILE_TYPE_IMAGE;
+			m_strWebLink = fileName;
+			[self performSegueWithIdentifier:@"WebLink" sender:self];
+			return NO;
+		} else if ([loweredExtension hasSuffix:@"hwp"]|| [loweredExtension hasSuffix:@"pdf"]) {
+			NSData	*tempData = [NSData dataWithContentsOfURL:url];
+			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSAllDomainsMask, YES);
+			NSString *documentDirectory = [paths objectAtIndex:0];
+			NSString *filePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			BOOL isWrite = [tempData writeToFile:filePath atomically:YES];
+			NSString *tempFilePath;
+			
+			if (isWrite) {
+				tempFilePath = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@", fileName]];
+			}
+			NSURL *resultURL = [NSURL fileURLWithPath:tempFilePath];
+			
+			self.doic = [UIDocumentInteractionController interactionControllerWithURL:resultURL];
+			self.doic.delegate = self;
+			[self.doic presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+			return NO;
+		} else {
+			return YES;
 		}
 	}
  	return YES;

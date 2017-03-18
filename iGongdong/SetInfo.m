@@ -27,7 +27,7 @@
     NSString *savedVersion = storage.version;
 	
 	NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
-	NSString *currVersion = [infoDict objectForKey:@"CFBundleVersion"];
+	NSString *currVersion = [infoDict objectForKey:@"CFBundleShortVersionString"];
 	
 	if ([savedVersion isEqualToString:currVersion]) {
 		return TRUE;
@@ -39,7 +39,7 @@
 - (BOOL)SaveVersionInfo
 {
 	NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
-	NSString *currVersion = [infoDict objectForKey:@"CFBundleVersion"];
+	NSString *currVersion = [infoDict objectForKey:@"CFBundleShortVersionString"];
 	
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentsDirectory = [paths objectAtIndex:0];

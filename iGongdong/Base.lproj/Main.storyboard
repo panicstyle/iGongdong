@@ -547,7 +547,7 @@
                                                         <constraint firstAttribute="height" constant="16" id="p3d-Zn-SCx"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1E7-sq-DtE">
+                                                <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1E7-sq-DtE">
                                                     <rect key="frame" x="32" y="0.0" width="150" height="99"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="150" id="Axj-yO-re0"/>
@@ -1001,10 +1001,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N2L-t1-srL">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rda-XY-V3d">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="609"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
+                            </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XlL-dL-zWJ" customClass="GADBannerView">
                                 <rect key="frame" x="27" y="617" width="320" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1017,17 +1016,17 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="XlL-dL-zWJ" firstAttribute="centerX" secondItem="fpl-RP-4bI" secondAttribute="centerX" id="0rV-mF-LjN"/>
-                            <constraint firstAttribute="trailing" secondItem="N2L-t1-srL" secondAttribute="trailing" id="LLu-am-IA1"/>
-                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="top" secondItem="N2L-t1-srL" secondAttribute="bottom" constant="8" id="UTl-dU-1pA"/>
-                            <constraint firstItem="N2L-t1-srL" firstAttribute="leading" secondItem="fpl-RP-4bI" secondAttribute="leading" id="WX2-ca-fxb"/>
-                            <constraint firstItem="N2L-t1-srL" firstAttribute="top" secondItem="fpl-RP-4bI" secondAttribute="top" id="jPQ-dH-sRC"/>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="top" secondItem="Rda-XY-V3d" secondAttribute="bottom" constant="8" id="3iI-2g-tDx"/>
+                            <constraint firstItem="Rda-XY-V3d" firstAttribute="leading" secondItem="fpl-RP-4bI" secondAttribute="leading" id="DxG-Do-lDq"/>
+                            <constraint firstItem="Rda-XY-V3d" firstAttribute="top" secondItem="fpl-RP-4bI" secondAttribute="top" id="Pe9-wD-kCX"/>
                             <constraint firstItem="XlL-dL-zWJ" firstAttribute="bottom" secondItem="fpl-RP-4bI" secondAttribute="bottomMargin" id="piw-1v-vpH"/>
+                            <constraint firstAttribute="trailing" secondItem="Rda-XY-V3d" secondAttribute="trailing" id="w2Q-Ag-LCA"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="yk7-RH-sz1"/>
                     <connections>
                         <outlet property="bannerView" destination="XlL-dL-zWJ" id="5ze-Vp-5XK"/>
-                        <outlet property="mainView" destination="N2L-t1-srL" id="hUX-od-9Pq"/>
+                        <outlet property="mainView" destination="Rda-XY-V3d" id="aDS-RL-oia"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IJv-dY-1vg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1148,7 +1147,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="fjI-1J-ra1"/>
-        <segue reference="Os0-FT-BXJ"/>
+        <segue reference="Ff6-gV-Dgj"/>
         <segue reference="eIp-xT-7Fl"/>
     </inferredMetricsTieBreakers>
 </document>
