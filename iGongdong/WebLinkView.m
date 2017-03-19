@@ -29,6 +29,12 @@
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"이미지보기";
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+	
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;

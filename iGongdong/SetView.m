@@ -23,6 +23,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"로그인설정";
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;   // iOS 7 specific
     

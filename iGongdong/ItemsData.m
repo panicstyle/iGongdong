@@ -162,6 +162,9 @@
 		// <a href="/cafe.php?sort=45&sub_sort=&page=&startpage=&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1163433&mode=view">
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
 		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+		if (isPNotice) {
+			boardNo = [Utils findStringRegex:strLink regex:@"(?<=notice/).*?(?=$)"];
+		}
 		[currItem setValue:boardNo forKey:@"boardNo"];
 		
 		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=<font face=\\\"Tahoma\\\"><b>\\[).*?(?=\\]</b></font>)"];

@@ -30,6 +30,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"공동육아";
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;
@@ -168,10 +174,12 @@
 		if (sec == 0) {
 			NSMutableDictionary *item = [m_arrayMain objectAtIndex:row];
 			viewController.m_strCommId = [item valueForKey:@"code"];
+			viewController.m_strCommTitle = [item valueForKey:@"title"];
 			viewController.m_nMode = [NSNumber numberWithInt:CENTER];
 		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 			viewController.m_strCommId = [item valueForKey:@"code"];
+			viewController.m_strCommTitle = [item valueForKey:@"title"];
 			viewController.m_nMode = [NSNumber numberWithInt:COMMUNITY];
 		}
 	} else if ([[segue identifier] isEqualToString:@"SetLogin"]) {

@@ -46,14 +46,18 @@
 - (void)viewDidLoad {
 	m_bUpMode = false;
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
 	if ([m_nModify intValue] == ArticleWrite) {
-		[(UILabel *)self.navigationItem.titleView setText:@"글쓰기"];
+		lblTitle.text = @"글쓰기";
 		m_strBoardNo = @"";
 	} else if ([m_nModify intValue] == ArticleModify) {
-		[(UILabel *)self.navigationItem.titleView setText:@"글수정"];
+		lblTitle.text = @"글수정";
 		viewTitle.text = m_strTitle;
 		viewContent.text = m_strContent;
 	}
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
 
 	CGRect rectScreen = [self getScreenFrameForCurrentOrientation];
 	m_lContentHeight = rectScreen.size.height;

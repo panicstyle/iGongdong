@@ -22,12 +22,18 @@
 
 @implementation BoardView
 @synthesize m_strCommId;
+@synthesize m_strCommTitle;
 @synthesize m_nMode;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strCommTitle;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
     // Replace this ad unit ID with your own ad unit ID.
     self.bannerView.adUnitID = kSampleAdUnitID;
     self.bannerView.rootViewController = self;
@@ -129,6 +135,7 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = [item valueForKey:@"boardId"];
+		view.m_strBoardName = [item valueForKey:@"boardName"];
 		view.m_nMode = [item valueForKey:@"type"];
 	} else if ([[segue identifier] isEqualToString:@"Calendar"]) {
 		GoogleCalView *view = [segue destinationViewController];
@@ -137,6 +144,7 @@
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = [item valueForKey:@"boardId"];
+		view.m_strBoardName = [item valueForKey:@"boardName"];
 	}
 }
 

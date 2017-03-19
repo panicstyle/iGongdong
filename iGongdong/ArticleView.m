@@ -64,6 +64,7 @@
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
 @synthesize m_strBoardNo;
+@synthesize m_strBoardName;
 @synthesize m_strApplyLink;
 @synthesize m_nMode;
 @synthesize target;
@@ -74,7 +75,13 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	
+
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strBoardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	buttonArticleDelete.target = self;
 	buttonArticleDelete.action = @selector(DeleteArticleConfirm);
 	
@@ -308,10 +315,17 @@
 				m_fTitleHeight = (77 - 32) + (size.height);
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:100];
-				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
+				NSString *strNameDate;
+				NSMutableAttributedString *textName;
+				if (m_strName != nil) {
+					strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
+					textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
+					[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([m_strName length] + 2, [strNameDate length] - [m_strName length] - 2)];
+				} else {
+					strNameDate = @"";
+					textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
+				}
 				
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([m_strName length] + 2, [strNameDate length] - [m_strName length] - 2)];
 				labelName.attributedText = textName;
 			} else if (row == 1){		// Content Row
 				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];

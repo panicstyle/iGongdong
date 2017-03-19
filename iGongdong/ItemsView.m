@@ -35,12 +35,19 @@
 
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
+@synthesize m_strBoardName;
 @synthesize m_nMode;
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	
+
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strBoardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
 	// Replace this ad unit ID with your own ad unit ID.
@@ -331,6 +338,7 @@
 		view.m_strCommId = m_strCommId;
 		view.m_strBoardId = m_strBoardId;
 		view.m_strBoardNo = [item valueForKey:@"boardNo"];
+		view.m_strBoardName = m_strBoardName;
 		if ([m_nMode intValue] == CAFE_TYPE_EDU_APP) {
 			view.m_strApplyLink = [item valueForKey:@"applyLink"];
 		} else {
