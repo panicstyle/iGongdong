@@ -21,7 +21,4 @@
 @property id target;
 @property SEL selector;
 
-- (CommentWriteView *) initWithBoard:(NSString *)strBoardNo Article:(NSString *)strArticleNo Comment:(NSString *)strCommentNo;
-- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
-
 @end

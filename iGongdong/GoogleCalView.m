@@ -21,6 +21,7 @@
 @synthesize webView;
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
+@synthesize m_strBoardName;
 
 #pragma mark - View lifecycle
 
@@ -28,6 +29,12 @@
 {
 	[super viewDidLoad];
 	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = m_strBoardName;
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;

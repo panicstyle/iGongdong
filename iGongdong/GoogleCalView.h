@@ -16,4 +16,5 @@
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;
+@property (strong, nonatomic) NSString *m_strBoardName;
 @end

@@ -18,7 +18,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+	
+	UILabel *lblTitle = [[UILabel alloc] init];
+	lblTitle.text = @"앱정보";
+	lblTitle.backgroundColor = [UIColor clearColor];
+	[lblTitle sizeToFit];
+	self.navigationItem.titleView = lblTitle;
+	
 	NSString *msgAbout;
 	
     // Do any additional setup after loading the view from its nib.

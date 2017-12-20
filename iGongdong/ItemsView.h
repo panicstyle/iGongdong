@@ -16,5 +16,6 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *m_newArticle;
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;
+@property (strong, nonatomic) NSString *m_strBoardName;
 @property (strong, nonatomic) NSNumber *m_nMode;
 @end

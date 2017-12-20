@@ -126,10 +126,12 @@
 	NSString *commId;
 	NSString *boardId;
 	NSString *boardNo;
+	NSString *boardName;
 	if ([dUserInfo objectForKey:@"commId"]) {
 		commId = [dUserInfo objectForKey:@"commId"];
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];
+		boardNo = [dUserInfo objectForKey:@"boardName"];
 	} else {
 		dUserInfo = nil;
 		return;
@@ -147,6 +149,7 @@
 		viewController.m_strCommId = commId;
 		viewController.m_strBoardId = boardId;
 		viewController.m_strBoardNo = boardNo;
+		viewController.m_strBoardName = boardName;
 		viewController.target = nil;
 		viewController.selector = nil;
 	} else {

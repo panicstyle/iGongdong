@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;
 @property (strong, nonatomic) NSString *m_strBoardNo;
+@property (strong, nonatomic) NSString *m_strBoardName;
 @property (strong, nonatomic) NSString *m_strApplyLink;
 @property (strong, nonatomic) NSNumber *m_nMode;
 @property id target;
