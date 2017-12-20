@@ -369,7 +369,7 @@
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch *touch = [touches anyObject];
-	int imageStatus;
+	int imageStatus = 0;
 	UIImageView *viewImage;
 	if ([touch view] == viewImage0) {
 		NSLog(@"viewImage1 touched");
