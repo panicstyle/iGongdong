@@ -335,36 +335,37 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-	//You can retrieve the actual UIImage
-	UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-	//Or you can get the image url from AssetsLibrary
-	NSURL *path = [info valueForKey:UIImagePickerControllerReferenceURL];
-	PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[path] options:nil];
-	NSString *filename = [[result firstObject] filename];
-	
-	if (m_selectedImage == 0) {
-		viewImage0.image = image;
-		m_ImageStatus[0] = 1;
-		m_strImageFileName[0] = filename;
-	} else if (m_selectedImage == 1) {
-		viewImage1.image = image;
-		m_ImageStatus[1] = 1;
-		m_strImageFileName[1] = filename;
-	} else if (m_selectedImage == 2) {
-		viewImage2.image = image;
-		m_ImageStatus[2] = 1;
-		m_strImageFileName[2] = filename;
-	} else if (m_selectedImage == 3) {
-		viewImage3.image = image;
-		m_ImageStatus[3] = 1;
-		m_strImageFileName[3] = filename;
-	} else if (m_selectedImage == 4) {
-		viewImage4.image = image;
-		m_ImageStatus[4] = 1;
-		m_strImageFileName[4] = filename;
-	}
-	
-	[picker dismissViewControllerAnimated:YES completion:nil];
+    //You can retrieve the actual UIImage
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    //Or you can get the image url from AssetsLibrary
+    /* 파일명이 별 의미없음. 그냥 0001 로 나옴. 가끔 추출되지 않아서 문제가 발생하기도 함.
+     NSURL *path = [info valueForKey:UIImagePickerControllerReferenceURL];
+     PHFetchResult *result = [PHAsset fetchAssetsWithALAssetURLs:@[path] options:nil];
+     NSString *filename = [[result firstObject] filename];
+     */
+    if (m_selectedImage == 0) {
+        viewImage0.image = image;
+        m_ImageStatus[0] = 1;
+        m_strImageFileName[0] = @"0001.PNG";
+    } else if (m_selectedImage == 1) {
+        viewImage1.image = image;
+        m_ImageStatus[1] = 1;
+        m_strImageFileName[1] = @"0002.PNG";
+    } else if (m_selectedImage == 2) {
+        viewImage2.image = image;
+        m_ImageStatus[2] = 1;
+        m_strImageFileName[2] = @"0003.PNG";
+    } else if (m_selectedImage == 3) {
+        viewImage3.image = image;
+        m_ImageStatus[3] = 1;
+        m_strImageFileName[3] = @"0004.PNG";
+    } else if (m_selectedImage == 4) {
+        viewImage4.image = image;
+        m_ImageStatus[4] = 1;
+        m_strImageFileName[4] = @"0005.PNG";
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
