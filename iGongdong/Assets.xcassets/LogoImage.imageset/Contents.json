@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "gongdong-logo-400-200.png",
+      "filename" : "gongdong-logo-300-150.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "gongdong-logo-800-400.png",
+      "filename" : "gongdong-logo-600-300.png",
       "scale" : "2x"
     },
     {

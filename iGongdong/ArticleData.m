@@ -206,7 +206,10 @@
 	strContent = [Utils findStringRegex:m_strHtml regex:@"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)"];
 	
 	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
-	
+//    strAttach = [strAttach stringByReplacingOccurrencesOfString:@"height=30 class=default" withString:@""];
+    if ([strAttach length] < 140) {
+        strAttach = @"";
+    }
 	NSRange find7 = [m_strHtml rangeOfString:@"<p align=center><img onload=\"resizeImage2(this)\""];
 	NSString *imageString = @"";
 	if (find7.location != NSNotFound) {
@@ -288,9 +291,10 @@
 	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
 	
 	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@<table>%@</table>%@%@%@",
 					strHeader,
 					strBody,
+                    strAttach,
 					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
 					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
 					strBottom];
