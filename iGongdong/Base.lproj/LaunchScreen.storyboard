@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina5_9" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -18,31 +18,23 @@
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" image="LogoImage" translatesAutoresizingMaskIntoConstraints="NO" id="BXe-Hi-f2h">
-                                <rect key="frame" x="0.0" y="307" width="375" height="200"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="375" id="oN6-9b-RzJ"/>
-                                    <constraint firstAttribute="height" constant="200" id="vmH-6m-SZf"/>
-                                </constraints>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" image="LogoImage" translatesAutoresizingMaskIntoConstraints="NO" id="rGP-Fe-mth">
+                                <rect key="frame" x="7" y="268" width="400" height="200"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="BXe-Hi-f2h" secondAttribute="trailing" id="4To-B5-ovD"/>
-                            <constraint firstItem="BXe-Hi-f2h" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="5Hc-KD-Jd3"/>
-                            <constraint firstItem="BXe-Hi-f2h" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BvL-2c-3tY"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="BXe-Hi-f2h" secondAttribute="bottom" constant="271" id="Jz2-0w-Eja"/>
-                            <constraint firstItem="BXe-Hi-f2h" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="263" id="VWa-8c-C3H"/>
-                            <constraint firstItem="BXe-Hi-f2h" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="vCm-SI-zWi"/>
+                            <constraint firstItem="rGP-Fe-mth" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="EiA-VQ-ww5"/>
+                            <constraint firstItem="rGP-Fe-mth" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="wHR-Iq-hbt"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="52" y="374.6305418719212"/>
+            <point key="canvasLocation" x="50.399999999999999" y="373.15270935960592"/>
         </scene>
     </scenes>
     <resources>

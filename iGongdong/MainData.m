@@ -42,6 +42,18 @@
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 
+#ifdef TEST_MODE
+    NSArray *arrayComm = @[
+                           @"ggumtle", @"의정부꿈틀꿈틀",
+                           ];
+    for (i = 0; i < arrayComm.count; i+=2) {
+        currItem= [[NSMutableDictionary alloc] init];
+        [currItem setValue:arrayComm[i] forKey:@"code"];
+        [currItem setValue:arrayComm[i + 1] forKey:@"title"];
+        [m_arrayItems addObject:currItem];
+    }
+#endif
+    
 	NSString *url = [NSString stringWithFormat:@"%@/index.php?code=mypage", WWW_SERVER];
 	m_receiveData = [[NSMutableData alloc] init];
 	m_connection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
