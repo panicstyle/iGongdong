@@ -205,7 +205,7 @@
 	NSString *strContent;
 	strContent = [Utils findStringRegex:m_strHtml regex:@"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)"];
 	
-	NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td bgcolor=)"];
+    NSString *strAttach = [Utils findStringRegex:m_strHtml regex:@"(?<=<!-- view image file -->).*?(?=<tr><td  height=1  ></td></tr>)"];
 //    strAttach = [strAttach stringByReplacingOccurrencesOfString:@"height=30 class=default" withString:@""];
     if ([strAttach length] < 140) {
         strAttach = @"";
@@ -258,7 +258,7 @@
 		
 		if (isReply == 0) {
 			// Comment
-			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td bgcolor=\"#ffffff\" style=\"padding:7pt;\">).*?(?=<div id=\"reply_)"];
+			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td style=\"padding:7pt;\">).*?(?=<div id=\"reply_)"];
 			strComm = [Utils replaceStringHtmlTag:strComm];
 			[currItem setValue:strComm forKey:@"comment"];
 		} else {
@@ -291,7 +291,7 @@
 	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
 	
 	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@<table>%@</table>%@%@%@",
+	m_strContent = [[NSString alloc] initWithFormat:@"%@%@<table>%@</table><div>%@</div>%@%@",
 					strHeader,
 					strBody,
                     strAttach,

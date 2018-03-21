@@ -25,12 +25,12 @@
 - (void)fetchItems
 {
 	m_arrayMain = [[NSMutableArray alloc] init];
-	
+/*
 	NSArray *arrayMain = @[
 						   @"edu", @"교육사업",
 						   @"ing", @"소통과참여",
 					  ];
-	
+
 	NSMutableDictionary *currItem;
 	int i;
 	for (i = 0; i < arrayMain.count; i+=2) {
@@ -39,7 +39,7 @@
 		[currItem setValue:arrayMain[i + 1] forKey:@"title"];
 		[m_arrayMain addObject:currItem];
 	}
-	
+*/
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 #ifdef TEST_MODE
@@ -54,7 +54,7 @@
     }
 #endif
     
-	NSString *url = [NSString stringWithFormat:@"%@/index.php?code=mypage", WWW_SERVER];
+	NSString *url = [NSString stringWithFormat:@"%@/", WWW_SERVER];
 	m_receiveData = [[NSMutableData alloc] init];
 	m_connection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]] delegate:self];
 }
@@ -76,7 +76,7 @@
 	NSLog(@"str = %@", str);
 	
 	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<select name=\"community).*?(</select>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<select name=\"select_community).*?(</select>)" options:NSRegularExpressionDotMatchesLineSeparators error:&error];
 	NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:str options:0 range:NSMakeRange(0, [str length])];
 	NSString *selectStr;
 	if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
@@ -106,6 +106,8 @@
 		} else {
 			code = @"";
 		}
+        
+        if ([code isEqualToString:@""]) continue;
 		
 		// title
 		regex = [NSRegularExpression regularExpressionWithPattern:@"<.*?>" options:NSRegularExpressionDotMatchesLineSeparators error:&error];

@@ -42,32 +42,23 @@
 		return FALSE;
 	}
 	NSString *url;
-	url = [NSString stringWithFormat:@"%@/index.php", WWW_SERVER];
+	url = [NSString stringWithFormat:@"%@/bbs/login_check.php", WWW_SERVER];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:url]];
 	[request setHTTPMethod:@"POST"];
-	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Referer"];
+	[request setValue:@"http://www.gongdong.or.kr/bbs/login.php?url=%2F" forHTTPHeaderField:@"Referer"];
 	//    [request setValue:@"XMLHttpRequest" forHTTPHeaderField:@"X_Requested-With"];
-	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Origin"];
-	[request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+//	[request setValue:@"http://www.gongdong.or.kr" forHTTPHeaderField:@"Origin"];
+//	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 	
- 
+    NSString *escaped = [userid stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
 	NSMutableData *body = [NSMutableData data];
-	[body appendData:[[NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
-					   "<methodCall>\n"
-					   "<params>\n"
-					   "<_filter><![CDATA[login]]></_filter>\n"
-					   "<error_return_url><![CDATA[/]]></error_return_url>\n"
-					   "<mid><![CDATA[front]]></mid>\n"
-					   "<act><![CDATA[procMemberLogin]]></act>\n"
-					   "<user_id><![CDATA[%@]]></user_id>\n"
-					   "<password><![CDATA[%@]]></password>\n"
-					   "<module><![CDATA[member]]></module>\n"
-					   "</params>\n"
-					   "</methodCall>", userid, userpwd]  dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"url=%%252F&mb_id=%@&mb_password=%@", escaped, userpwd] dataUsingEncoding:NSUTF8StringEncoding]];
+
 	[request setHTTPBody:body];
  
 	NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
@@ -88,7 +79,7 @@
 	 */
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	if (returnString && [returnString rangeOfString:@"<error>0</error>"].location != NSNotFound) {
+	if (returnString && [returnString rangeOfString:@"<title>오류안내 페이지"].location == NSNotFound) {
 		NSLog(@"LoginToService Success");
 		AppDelegate *getVar = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		getVar.strUserId = userid;

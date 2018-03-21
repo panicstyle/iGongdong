@@ -97,7 +97,7 @@
 	// <form action="/cafe.php" method=get name=frmEdit >
 	switch ([m_nMode intValue]) {
 		case CAFE_TYPE_NORMAL:
-			if ([Utils numberOfMatches:str regex:@"<div align=\"center\">제목</div>"]) {
+			if ([Utils numberOfMatches:str regex:@"<tr  id=\"board_list_title"]) {
 				m_nItemMode = [NSNumber numberWithInt:NormalItems];
 				[self getNormaltems:str];
 			} else {
@@ -154,7 +154,7 @@
 		}
 		
 		// subject
-		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<div align=\\\"left).*?(</div>)"];
+		NSString *strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\"subject).*?(</a>)"];
 		strSubject = [Utils replaceStringHtmlTag:strSubject];
 		[currItem setValue:strSubject forKey:@"subject"];
 		
@@ -167,7 +167,8 @@
 		}
 		[currItem setValue:boardNo forKey:@"boardNo"];
 		
-		NSString *strComment = [Utils findStringRegex:str2 regex:@"(?<=<font face=\\\"Tahoma\\\"><b>\\[).*?(?=\\]</b></font>)"];
+        strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\"subject).*?(</td>)"];
+		NSString *strComment = [Utils findStringRegex:strSubject regex:@"(?<=\\[).*?(?=\\])"];
 		[currItem setValue:strComment forKey:@"comment"];
 		
 		// isNew
@@ -196,12 +197,12 @@
 		}
 		
 		// date
-		NSString *strDate = [Utils findStringRegex:str2 regex:@"(<div align=\\\"center\\\"><span style=\\\"font-size:8pt;\\\"><font).*?(</div>)"];
+		NSString *strDate = [Utils findStringRegex:str2 regex:@"(<td class=\"date).*?(</td>)"];
 		strDate = [Utils replaceStringHtmlTag:strDate];
 		[currItem setValue:strDate forKey:@"date"];
 		
 		// Hit
-		NSString *strHit = [Utils findStringRegex:str2 regex:@"(<div align=\\\"right\\\"><span style=\\\"font-size:8pt;\\\"><font face=\\\"Tahoma\\\">).*?(&nbsp;)"];
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(<td class=\"hit).*?(</td>)"];
 		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
 		
