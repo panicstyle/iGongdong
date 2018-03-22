@@ -25,14 +25,14 @@
 - (void)fetchItems
 {
 	m_arrayMain = [[NSMutableArray alloc] init];
+    int i;
+    NSMutableDictionary *currItem;
 /*
 	NSArray *arrayMain = @[
 						   @"edu", @"교육사업",
 						   @"ing", @"소통과참여",
 					  ];
 
-	NSMutableDictionary *currItem;
-	int i;
 	for (i = 0; i < arrayMain.count; i+=2) {
 		currItem= [[NSMutableDictionary alloc] init];
 		[currItem setValue:arrayMain[i] forKey:@"code"];
@@ -44,7 +44,7 @@
 
 #ifdef TEST_MODE
     NSArray *arrayComm = @[
-                           @"ggumtle", @"의정부꿈틀꿈틀",
+                           @"purunsup", @"푸른숲어린이집",
                            ];
     for (i = 0; i < arrayComm.count; i+=2) {
         currItem= [[NSMutableDictionary alloc] init];

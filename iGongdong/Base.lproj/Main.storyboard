@@ -721,10 +721,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N2L-t1-srL">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="678"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vd9-tA-Z9h">
+                                <rect key="frame" x="0.0" y="64" width="414" height="614"/>
+                            </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XlL-dL-zWJ" customClass="GADBannerView">
                                 <rect key="frame" x="47" y="686" width="320" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -737,22 +736,22 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="XlL-dL-zWJ" firstAttribute="centerX" secondItem="fpl-RP-4bI" secondAttribute="centerX" id="0rV-mF-LjN"/>
-                            <constraint firstAttribute="trailing" secondItem="N2L-t1-srL" secondAttribute="trailing" id="LLu-am-IA1"/>
-                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="top" secondItem="N2L-t1-srL" secondAttribute="bottom" constant="8" id="UTl-dU-1pA"/>
-                            <constraint firstItem="N2L-t1-srL" firstAttribute="leading" secondItem="fpl-RP-4bI" secondAttribute="leading" id="WX2-ca-fxb"/>
-                            <constraint firstItem="N2L-t1-srL" firstAttribute="top" secondItem="fpl-RP-4bI" secondAttribute="top" id="jPQ-dH-sRC"/>
+                            <constraint firstAttribute="trailing" secondItem="Vd9-tA-Z9h" secondAttribute="trailing" id="8si-3O-eay"/>
+                            <constraint firstItem="Vd9-tA-Z9h" firstAttribute="top" secondItem="xZ2-hr-4UM" secondAttribute="bottom" id="Pzl-Al-iMD"/>
+                            <constraint firstItem="Vd9-tA-Z9h" firstAttribute="leading" secondItem="fpl-RP-4bI" secondAttribute="leading" id="eih-ln-Sve"/>
+                            <constraint firstItem="XlL-dL-zWJ" firstAttribute="top" secondItem="Vd9-tA-Z9h" secondAttribute="bottom" constant="8" id="gsA-ic-Gge"/>
                             <constraint firstItem="XlL-dL-zWJ" firstAttribute="bottom" secondItem="fpl-RP-4bI" secondAttribute="bottomMargin" id="piw-1v-vpH"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="yk7-RH-sz1"/>
                     <connections>
                         <outlet property="bannerView" destination="XlL-dL-zWJ" id="5ze-Vp-5XK"/>
-                        <outlet property="mainView" destination="N2L-t1-srL" id="hUX-od-9Pq"/>
+                        <outlet property="mainView" destination="Vd9-tA-Z9h" id="QZL-EZ-fUe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IJv-dY-1vg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3650.4000000000001" y="-65.217391304347828"/>
+            <point key="canvasLocation" x="3649.275362318841" y="-65.217391304347828"/>
         </scene>
         <!--Article Write View-->
         <scene sceneID="BsR-1C-1zw">
