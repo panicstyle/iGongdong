@@ -125,7 +125,7 @@
 - (void)getNormaltems:(NSString *)str
 {
 	NSError *error = NULL;
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(id=\\\"board_list_line\\\").*?(<td bgcolor=\"#f5f5f5\" colspan=\"7\" height=1></td>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(id=\\\"board_list_line\\\").*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
 	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
 	NSMutableDictionary *currItem;
 	for (NSTextCheckingResult *match in matches) {
@@ -161,13 +161,23 @@
 		// find link
 		// <a href="/cafe.php?sort=45&sub_sort=&page=&startpage=&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1163433&mode=view">
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\").*?(?=\\\")"];
-		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+        NSString *commId = @"";
+        NSString *boardId = @"";
+        NSString *boardNo = @"";
 		if (isPNotice) {
-			boardNo = [Utils findStringRegex:strLink regex:@"(?<=notice/).*?(?=$)"];
-		}
-		[currItem setValue:boardNo forKey:@"boardNo"];
-		
+            boardId = [Utils findStringRegex:strLink regex:@"(?<=bo_table=).*?(?=&)"];
+            boardNo = [Utils findStringRegex:strLink regex:@"(?<=&wr_id=).*?(?=$)"];
+        } else {
+            commId = [Utils findStringRegex:strLink regex:@"(?<=p1=).*?(?=&)"];
+            boardId = [Utils findStringRegex:strLink regex:@"(?<=sort=).*?(?=&)"];
+            boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+        }
+        [currItem setValue:commId forKey:@"commId"];
+        [currItem setValue:boardId forKey:@"boardId"];
+        [currItem setValue:boardNo forKey:@"boardNo"];
+
         strSubject = [Utils findStringRegex:str2 regex:@"(<td class=\"subject).*?(</td>)"];
+        strSubject = [Utils findStringRegex:strSubject regex:@"(</a>).*?(</td>)"];
 		NSString *strComment = [Utils findStringRegex:strSubject regex:@"(?<=\\[).*?(?=\\])"];
 		[currItem setValue:strComment forKey:@"comment"];
 		

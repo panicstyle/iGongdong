@@ -44,7 +44,7 @@
 
 #ifdef TEST_MODE
     NSArray *arrayComm = @[
-                           @"purunsup", @"푸른숲어린이집",
+                           @"urinori", @"우리노리",
                            ];
     for (i = 0; i < arrayComm.count; i+=2) {
         currItem= [[NSMutableDictionary alloc] init];

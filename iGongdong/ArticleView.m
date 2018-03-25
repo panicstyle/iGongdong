@@ -52,6 +52,8 @@
 
 	NSString *m_strWebLink;
 	int m_nFileType;
+    
+    NSString *m_strDeleteLink;
 	
 	NSURLConnection *conn;
 }
@@ -657,8 +659,9 @@
 	long row = clickedButtonPath.row;
 	NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 	m_strCommentNo = [item valueForKey:@"no"];
+    NSString *strDeleteLink = [item valueForKey:@"deletelink"];
 	
-	bool result = [m_articleData DeleteComment:m_strCommId boardId:m_strBoardId boardNo:m_strBoardNo commentNo:m_strCommentNo isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
+    bool result = [m_articleData DeleteComment:m_strCommId boardId:m_strBoardId boardNo:m_strBoardNo commentNo:m_strCommentNo deleteLink:strDeleteLink isPNotice:[m_isPNotice intValue] Mode:[m_nMode intValue]];
 
 	if (result == false) {
 		NSString *errmsg = @"글을 삭제할 수 없습니다. 잠시후 다시 해보세요.";
