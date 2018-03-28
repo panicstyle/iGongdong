@@ -50,7 +50,7 @@
 	[self.bannerView loadRequest:request];
 
 	SetInfo *setInfo = [[SetInfo alloc] init];
-	
+/*
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
 		NSString *NotiMessage = @"사진 클릭시 앱이 종료되는 문제가 해결되었습니다.";
@@ -63,9 +63,9 @@
 		
 		[alert addAction:defaultAction];
 		[self presentViewController:alert animated:YES completion:nil];
-		[setInfo SaveVersionInfo];
+        [setInfo SaveVersionInfo];
 	}
-
+*/
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_mainData = [[MainData alloc] init];
