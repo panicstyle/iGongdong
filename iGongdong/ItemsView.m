@@ -335,8 +335,13 @@
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
 		view.m_isPNotice = [item valueForKey:@"isPNotice"];
-		view.m_strCommId = [item valueForKey:@"commId"];
-		view.m_strBoardId = [item valueForKey:@"boardId"];
+        if ([view.m_isPNotice intValue] == 0) {
+            view.m_strCommId = m_strCommId;
+            view.m_strBoardId = m_strBoardId;
+        } else {
+            view.m_strCommId = [item valueForKey:@"commId"];
+            view.m_strBoardId = [item valueForKey:@"boardId"];
+        }
 		view.m_strBoardNo = [item valueForKey:@"boardNo"];
 		view.m_strBoardName = m_strBoardName;
 		if ([m_nMode intValue] == CAFE_TYPE_EDU_APP) {
