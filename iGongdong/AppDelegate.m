@@ -127,8 +127,16 @@
 	NSString *boardId;
 	NSString *boardNo;
 	NSString *boardName;
+    NSString *PNotice;
+    int isPNotice = 0;
 	if ([dUserInfo objectForKey:@"commId"]) {
-		commId = [dUserInfo objectForKey:@"commId"];
+        PNotice = [dUserInfo objectForKey:@"PNotice"];
+        if ([PNotice isEqualToString:@"pnotice"]) {
+            isPNotice = 1;
+        } else {
+            isPNotice = 0;
+        }
+        commId = [dUserInfo objectForKey:@"commId"];
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];
 		boardNo = [dUserInfo objectForKey:@"boardName"];
@@ -146,10 +154,12 @@
 	
 	ArticleView *viewController = (ArticleView*)[storyboard instantiateViewControllerWithIdentifier:@"ArticleView"];
 	if (viewController != nil) {
+        viewController.m_isPNotice = [NSNumber numberWithInt:isPNotice];
 		viewController.m_strCommId = commId;
 		viewController.m_strBoardId = boardId;
 		viewController.m_strBoardNo = boardNo;
 		viewController.m_strBoardName = boardName;
+        viewController.m_nMode = [NSNumber numberWithInt:0];
 		viewController.target = nil;
 		viewController.selector = nil;
 	} else {
