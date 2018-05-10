@@ -139,7 +139,7 @@
         commId = [dUserInfo objectForKey:@"commId"];
 		boardId = [dUserInfo objectForKey:@"boardId"];
 		boardNo = [dUserInfo objectForKey:@"boardNo"];
-		boardNo = [dUserInfo objectForKey:@"boardName"];
+		boardName = [dUserInfo objectForKey:@"boardName"];
 	} else {
 		dUserInfo = nil;
 		return;

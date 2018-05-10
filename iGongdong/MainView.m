@@ -50,10 +50,10 @@
 	[self.bannerView loadRequest:request];
 
 	SetInfo *setInfo = [[SetInfo alloc] init];
-/*
+
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"사진 클릭시 앱이 종료되는 문제가 해결되었습니다.";
+		NSString *NotiMessage = @"알림 클릭시 해당 글이 보이지 않던 문제가 해결되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -65,7 +65,7 @@
 		[self presentViewController:alert animated:YES completion:nil];
         [setInfo SaveVersionInfo];
 	}
-*/
+
 	m_arrayItems = [[NSMutableArray alloc] init];
 	
 	m_mainData = [[MainData alloc] init];
