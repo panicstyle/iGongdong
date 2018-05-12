@@ -72,7 +72,7 @@
 	 history.go(-1);
 	 </script> */
 	
-	if ([Utils numberOfMatches:str regex:@"history.go\\(-1\\)"] > 0) {
+    if ([Utils numberOfMatches:str regex:@"window.alert(\\\"권한이 없습니다"] > 0 || [Utils numberOfMatches:str regex:@"window.alert(\\\"로그인 하세요"] > 0) {
 		if (m_isLogin == FALSE) {
 			NSLog(@"retry login");
 			m_login = [[LoginToService alloc] init];
@@ -90,9 +90,8 @@
 			[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
 			return;
 		}
-		return;
-	}
-	
+    }
+
 	// <div id="board-content">
 	// <form action="/cafe.php" method=get name=frmEdit >
 	switch ([m_nMode intValue]) {
