@@ -119,11 +119,7 @@
 	m_strHtml = [[NSString alloc] initWithData:m_receiveData
 									  encoding:NSUTF8StringEncoding];
 	
-	if ([Utils numberOfMatches:m_strHtml regex:@"window.alert(\\\"권한이 없습니다"] > 0) {
-		[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
-		return;
-	}
-	if ([Utils numberOfMatches:m_strHtml regex:@"history.go\\(-1\\)"] > 0) {
+	if ([Utils numberOfMatches:m_strHtml regex:@"window.alert(\\\"권한이 없습니다"] > 0 || [Utils numberOfMatches:m_strHtml regex:@"window.alert(\\\"로그인 하세요"] > 0) {
 		if (m_isLogin == FALSE) {
 			NSLog(@"retry login");
 			// 저장된 로그인 정보를 이용하여 로그인
@@ -140,7 +136,7 @@
 			[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_LOGIN_FAIL] afterDelay:0];
 			return;
 		}
-	}
+    }
 
 	switch ([m_nMode intValue]) {
 		case CAFE_TYPE_NORMAL:
