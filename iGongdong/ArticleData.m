@@ -10,6 +10,7 @@
 #import "Utils.h"
 #import "env.h"
 #import "LoginToService.h"
+#import "NSString+HTML.h"
 
 @interface ArticleData () {
 	NSMutableData *m_receiveData;
@@ -26,7 +27,6 @@
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
 @synthesize m_strBoardNo;
-@synthesize m_strApplyLink;
 @synthesize m_arrayItems;
 @synthesize m_attachItems;
 @synthesize m_nMode;
@@ -54,21 +54,17 @@
 - (void)fetchItems2
 {
 	NSString *url;
- //http://cafe.gongdong.or.kr/cafe.php?sort=35&sub_sort=&page=2&startpage=1&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1283064&mode=view
 	if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 		if ([m_isPNotice intValue] == 0) {
 			url = [NSString stringWithFormat:@"%@/cafe.php?sort=%@&sub_sort=&page=1&startpage=1&keyfield=&key_bs=&p1=%@&p2=&p3=&number=%@&mode=view", CAFE_SERVER, m_strBoardId, m_strCommId, m_strBoardNo];
 		} else {
-			// http://www.gongdong.or.kr/notice/342940
 			url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/bbs/board.php?bo_table=%@&wr_id=%@", m_strBoardId, m_strBoardNo];
 		}
-	} else if ([m_nMode intValue] == CAFE_TYPE_EDU_APP_ADMIN) {
-		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&act=dispEnrollByCourse&course_no=225
-		// http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=225&act=dispEnrollByCourse
-		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/index.php?mid=edu_app&module=admin&course_no=%@&act=dispEnrollByCourse", m_strBoardNo];
+	} else if ([m_nMode intValue] == CAFE_TYPE_APPLY) {
+        NSString *escaped = [m_strBoardId stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/bbs/board.php?bo_table=B691&sca=%@&wr_id=%@", escaped, m_strBoardNo];
 	} else {
-		// http://www.gongdong.or.kr/ing/343335
-		url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/%@/%@", m_strBoardId, m_strBoardNo];
+        url = [NSString stringWithFormat:@"http://www.gongdong.or.kr/bbs/board.php?bo_table=%@&wr_id=%@", m_strBoardId, m_strBoardNo];
 	}
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
@@ -147,27 +143,10 @@
 			}
 			break;
 		case CAFE_TYPE_NOTICE:
+        case CAFE_TYPE_CENTER:
+        case CAFE_TYPE_ING:
+        case CAFE_TYPE_APPLY:
 			[self parsePNotice];
-			break;
-		case CAFE_TYPE_CENTER:
-			[self parseCenter];
-			break;
-		case CAFE_TYPE_ING:
-			[self parseIng];
-			break;
-		case CAFE_TYPE_TEACHER:
-			[self parseTeacher];
-			break;
-		case CAFE_TYPE_EDU_APP:
-			[self parseEduApp];
-			break;
-		case CAFE_TYPE_EDU_APP_ADMIN:
-			if ([Utils numberOfMatches:m_strHtml regex:@"msg_is_not_administrator"] > 0) {
-				[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_AUTH_FAIL] afterDelay:0];
-				return;
-			}
-			
-			[self parseEduAppAdmin];
 			break;
 	}
 }
@@ -185,6 +164,7 @@
 	}
 */
 	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<div style=\"margin-right:10; margin-left:10;\"><B>).*?(?=</div>)"];
+    m_strTitle = [m_strTitle stringByConvertingHTMLToPlainText];
 	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
 
 	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div align=\"right\"><b>작성자 : <a).*?(</a>)"];
@@ -322,6 +302,7 @@
 - (void)parsePNotice
 {
     m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h1 id=\\\"bo_v_title\\\">).*?(?=</h1>)"];
+    m_strTitle = [m_strTitle stringByConvertingHTMLToPlainText];
     m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
     
     m_strName = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\\\"sv_member\\\">).*?(?=</span>)"];
@@ -397,482 +378,6 @@
     
     [target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
     return;
-}
-
-- (void)parseCenter
-{
-	//<!---- contents start ---->
-	//<!---- contents end ---->
-	
-	/*
-	 if ([m_nServerType intValue] == 1) {
-		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
-	 } else {
-		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
-	 }
-	 */
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-	
-	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
-	m_strName = [Utils replaceStringHtmlTag:m_strName];
-	
-	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
-	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
-	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
-	
-	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
-	
-	NSString *strContent;
-	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
-	
-	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	
-	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(<ul class=\"files).*?(</ul>)"];
-	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
-	m_attachItems = [self parseAttach:imageString];
-
-	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
-	
-	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
-	
-	NSMutableDictionary *currItem;
-	
-	int isReply = 0;
-	for (int i = 1; i < [commentItems count]; i++) {
-		NSString *s = [commentItems objectAtIndex:i];
-		currItem = [[NSMutableDictionary alloc] init];
-		
-		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
-		// number
-		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
-		if ([strNumber length] <= 0) {
-			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
-		}
-		[currItem setValue:strNumber forKey:@"no"];
-		
-		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
-			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
-			isReply = 0;
-		} else {
-			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
-			isReply = 1;
-		}
-		
-		// Name
-		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
-		strName = [Utils replaceStringHtmlTag:strName];
-		[currItem setValue:strName forKey:@"name"];
-		
-		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
-		strDate = [Utils replaceStringHtmlTag:strDate];
-		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
-		[currItem setValue:strDate forKey:@"date"];
-		
-		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
-		strComm = [Utils replaceStringHtmlTag:strComm];
-		[currItem setValue:strComm forKey:@"comment"];
-		
-		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
-		
-		[m_arrayItems addObject:currItem];
-	}
-	
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
-	
-	NSMutableString *strHeader = [[NSMutableString alloc] init];
-	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
-	[strHeader appendString:@"<html><head>"];
-	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
-	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
-	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
-	[strHeader appendString:@"</head>"];
-	
-	NSString *strBottom = @"</body></html>";
-	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
-	NSString *strBody = @"<body>";
-	
-	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	
-	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
-					strHeader,
-					strBody,
-					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					strBottom];
-	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
-}
-
-- (void)parseIng
-{
-	//<!---- contents start ---->
-	//<!---- contents end ---->
-	
-	/*
-	 if ([m_nServerType intValue] == 1) {
-		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
-	 } else {
-		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
-	 }
-	 */
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title_ing\">).*?(?=</h3>)"];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-
-	// m_strName은 넘어온 값을 그대로 사용함. 본문에는 작성자가 없음.
-	
-	// m_strDate도 넘어온 값을 그대로 사용함. 본문에는 날짜가 없음.
-	
-	// m_strHit도 넘오온 값을 그대로 사용함. 본문에는 조회수가 없음.
-	
-	NSString *strContent;
-	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
-	
-	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	
-	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
-	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
-	m_attachItems = [self parseAttach:imageString];
-
-	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
-	
-	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
-	
-	NSMutableDictionary *currItem;
-	
-	int isReply = 0;
-	for (int i = 1; i < [commentItems count]; i++) {
-		NSString *s = [commentItems objectAtIndex:i];
-		currItem = [[NSMutableDictionary alloc] init];
-		
-		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
-		// number
-		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
-		if ([strNumber length] <= 0) {
-			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
-		}
-		[currItem setValue:strNumber forKey:@"no"];
-		
-		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
-			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
-			isReply = 0;
-		} else {
-			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
-			isReply = 1;
-		}
-		
-		// Name
-		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
-		strName = [Utils replaceStringHtmlTag:strName];
-		[currItem setValue:strName forKey:@"name"];
-		
-		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
-		strDate = [Utils replaceStringHtmlTag:strDate];
-		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
-		[currItem setValue:strDate forKey:@"date"];
-		
-		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
-		strComm = [Utils replaceStringHtmlTag:strComm];
-		[currItem setValue:strComm forKey:@"comment"];
-		
-		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
-		
-		[m_arrayItems addObject:currItem];
-	}
-	
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
-	
-	NSMutableString *strHeader = [[NSMutableString alloc] init];
-	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
-	[strHeader appendString:@"<html><head>"];
-	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
-	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
-	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
-	[strHeader appendString:@"</head>"];
-	
-	NSString *strBottom = @"</body></html>";
-	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
-	NSString *strBody = @"<body>";
-	
-	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	
-	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
-					strHeader,
-					strBody,
-					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					strBottom];
-
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
-}
-
-- (void)parseTeacher
-{
-	//<!---- contents start ---->
-	//<!---- contents end ---->
-	
-	/*
-	 if ([m_nServerType intValue] == 1) {
-		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
-	 } else {
-		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
-	 }
-	 */
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-	
-	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
-	m_strName = [Utils replaceStringHtmlTag:m_strName];
-	
-	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
-	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
-	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
-	
-	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
-	
-	NSString *strContent;
-	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
-	
-	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	
-	NSString *strStatus;
-	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</td>)"];
-	strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, strContent];
-	
-	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
-	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
-	m_attachItems = [self parseAttach:imageString];
-
-	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
-	
-	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
-	
-	NSMutableDictionary *currItem;
-	
-	int isReply = 0;
-	for (int i = 1; i < [commentItems count]; i++) {
-		NSString *s = [commentItems objectAtIndex:i];
-		currItem = [[NSMutableDictionary alloc] init];
-		
-		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
-		// number
-		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
-		if ([strNumber length] <= 0) {
-			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
-		}
-		[currItem setValue:strNumber forKey:@"no"];
-		
-		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
-			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
-			isReply = 0;
-		} else {
-			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
-			isReply = 1;
-		}
-		
-		// Name
-		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
-		strName = [Utils replaceStringHtmlTag:strName];
-		[currItem setValue:strName forKey:@"name"];
-		
-		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
-		strDate = [Utils replaceStringHtmlTag:strDate];
-		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
-		[currItem setValue:strDate forKey:@"date"];
-		
-		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
-		strComm = [Utils replaceStringHtmlTag:strComm];
-		[currItem setValue:strComm forKey:@"comment"];
-		
-		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
-		
-		[m_arrayItems addObject:currItem];
-	}
-	
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
-	
-	NSMutableString *strHeader = [[NSMutableString alloc] init];
-	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
-	[strHeader appendString:@"<html><head>"];
-	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
-	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
-	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
-	[strHeader appendString:@"</head>"];
-	
-	NSString *strBottom = @"</body></html>";
-	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
-	NSString *strBody = @"<body>";
-	
-	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	
-	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
-					strHeader,
-					strBody,
-					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					strBottom];
-	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
-}
-
-- (void)parseEduApp
-{
-	//<!---- contents start ---->
-	//<!---- contents end ---->
-	
-	/*
-	 if ([m_nServerType intValue] == 1) {
-		strContent = @"(?<=<!---- contents start 본문 표시 부분 DJ ---->).*?(?=<!---- contents end ---->)";
-	 } else {
-		strContent = @"(?<=<!---- contents start ---->).*?(?=<!---- contents end ---->)";
-	 }
-	 */
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(?<=<h3 class=\"title\">).*?(?=</h3>)"];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-	
-	NSString *strCategory = [Utils findStringRegex:m_strHtml regex:@"(?<=class=\\\"category\\\">).*?(?=</a>)"];
-	m_strTitle = [NSString stringWithFormat:@"[%@]%@", strCategory, m_strTitle];
-	
-	m_strName = [Utils findStringRegex:m_strHtml regex:@"(<div class=\"authorArea\">).*?(</div>)"];
-	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<span).*?(</span>)" replace:@""];
-	m_strName = [Utils replaceStringRegex:m_strName regex:@"(<a href=\\\"h).*?(</a>)" replace:@""];
-	m_strName = [Utils replaceStringHtmlTag:m_strName];
-	
-	m_strDate = [Utils findStringRegex:m_strHtml regex:@"(<span class=\"date\">).*?(</span>)"];
-	m_strDate = [Utils replaceStringHtmlTag:m_strDate];
-	m_strDate = [Utils replaceStringRegex:m_strDate regex:@"(\\().*?(\\))" replace:@""];
-	
-	m_strHit = [Utils findStringRegex:m_strHtml regex:@"(?<=<span class=\"num\">).*?(?=</span>)"];
-	
-	NSString *strContent;
-	strContent = [Utils findStringRegex:m_strHtml regex:@"(<!--BeforeDocument).*?(</div><!--AfterDocument)"];
-	[Utils replaceStringRegex:strContent regex:@"(<!--).*?[(-->)" replace:@""];
-	strContent = [strContent stringByReplacingOccurrencesOfString:@"<!--AfterDocument" withString:@""];
-	
-	NSString *strStatus;
-	strStatus = [Utils findStringRegex:m_strHtml regex:@"(<table border=\\\"1\\\" cellspacing=\\\"0\\\" summary=\\\"Extra Form\\\" class=\\\"extraVarsList).*?(</table>)"];
-	
-	if ([Utils numberOfMatches:strStatus regex:@"신청기간중"] > 0) {
-		NSString *strApply;
-		strApply = [NSString stringWithFormat:@"<tr><td>%@수강신청 바로가기</a></td></tr></table>", m_strApplyLink];
-		
-		strStatus = [Utils replaceStringRegex:strStatus regex:@"</table>" replace:strApply];
-	}
-	
-	strContent = [NSString stringWithFormat:@"%@</table>%@", strStatus, strContent];
-	
-	NSString *imageString = [Utils findStringRegex:m_strHtml regex:@"(?<=<ul class=\"files\">).*?(?=</ul>)"];
-	// 첨부파일명이 링크에 없기 때문에 imageString 에서 파일명과 링크를 key, value 로 구성해서 첨부파일 링크 클릭시 파일명을 가져올 수 있도록 한다.
-	m_attachItems = [self parseAttach:imageString];
-	
-	NSString *strComment = [Utils findStringRegex:m_strHtml regex:@"(?<=<div class=\"feedbackList\" id=\"reply\">).*?(?=<form action=)"];
-	
-	NSArray *commentItems = [strComment componentsSeparatedByString:@"<div class=\"item "];
-	
-	NSMutableDictionary *currItem;
-	
-	int isReply = 0;
-	for (int i = 1; i < [commentItems count]; i++) {
-		NSString *s = [commentItems objectAtIndex:i];
-		currItem = [[NSMutableDictionary alloc] init];
-		
-		NSString *strLink = [Utils findStringRegex:s regex:@"(?<=<a href=\\\"http://www.gongdong.or.kr/).*?(?=\\\">)"];
-		// number
-		NSString *strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=&)"];
-		if ([strNumber length] <= 0) {
-			strNumber = [Utils findStringRegex:strLink regex:@"(?<=comment_srl=).*?(?=$)"];
-		}
-		[currItem setValue:strNumber forKey:@"no"];
-		
-		if ([Utils numberOfMatches:s regex:@"<div class=\"indent\"  style=\"margin-left:"] <= 0) {
-			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
-			isReply = 0;
-		} else {
-			[currItem setValue:[NSNumber numberWithInt:1] forKey:@"isRe"];
-			isReply = 1;
-		}
-		
-		// Name
-		NSString *strName = [Utils findStringRegex:s regex:@"(<a href=\"#popup_menu_area\" class=\"member_).*?(</a>)"];
-		strName = [Utils replaceStringHtmlTag:strName];
-		[currItem setValue:strName forKey:@"name"];
-		
-		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(?<=<p class=\"meta\">).*?(?=</p>)"];
-		strDate = [Utils replaceStringHtmlTag:strDate];
-		strDate = [Utils replaceStringRegex:strDate regex:@"\t\t\t\t\t\t\t" replace:@" "];
-		[currItem setValue:strDate forKey:@"date"];
-		
-		NSString *strComm = [Utils findStringRegex:s regex:@"(<!--BeforeComment).*?(?=<!--AfterComment)"];
-		strComm = [Utils replaceStringHtmlTag:strComm];
-		[currItem setValue:strComm forKey:@"comment"];
-		
-		[currItem setValue:[NSNumber numberWithFloat:80.0f] forKey:@"height"];
-		
-		[m_arrayItems addObject:currItem];
-	}
-	
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
-	
-	NSMutableString *strHeader = [[NSMutableString alloc] init];
-	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];
-	[strHeader appendString:@"<html><head>"];
-	[strHeader appendString:@"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"];
-	[strHeader appendString:@"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi\">"];
-	[strHeader appendString:@"<script>function myapp_clickImg(obj){window.location=\"jscall://\"+encodeURIComponent(obj.src);}</script>"];
-	[strHeader appendString:@"</head>"];
-	
-	NSString *strBottom = @"</body></html>";
-	//        String cssStr = "<link href=\"./css/default.css\" rel=\"stylesheet\">";
-	NSString *strBody = @"<body>";
-	
-	[strContent stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	[imageString stringByReplacingOccurrencesOfString:@"onload=\"resizeImage2(this)\"" withString:@""];
-	
-	/* 이미지 테크에 width 값과 click 시 javascript 를 호출하도록 수정한다. */
-	m_strContent = [[NSString alloc] initWithFormat:@"%@%@%@%@%@",
-					strHeader,
-					strBody,
-					[strContent stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					[imageString stringByReplacingOccurrencesOfString:@"<img " withString:@"<img onclick=\"myapp_clickImg(this)\" width=300 "],
-					strBottom];
-	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
-}
-
-- (void)parseEduAppAdmin
-{
-	m_strTitle = [Utils findStringRegex:m_strHtml regex:@"(<div class=\\\"enroll_content).*?(</h2>)"];
-	m_strTitle = [Utils replaceStringHtmlTag:m_strTitle];
-	
-	m_strName = @"";
-
-	NSString *strContent = [Utils findStringRegex:m_strHtml regex:@"(<!-- // 교육신청 목록 -->).*?(<!-- // 링크 입력폼 -->)"];
-
-	NSString *strStyle = @"<style type=\"text/css\">.listTable { border-collapse:collapse;  }	.listTable td { border: solid 1px #ccc; font-size: 1.0em; padding: 5px }	</style>";
-	m_strContent = [NSString stringWithFormat:@"%@%@", strStyle, strContent];
-	
-	m_strEditableContent = strContent;
-	
-	[target performSelector:selector withObject:[NSNumber numberWithInt:RESULT_OK] afterDelay:0];
-	return;
 }
 
 - (bool)DeleteArticle:(NSString *)strCommId boardId:(NSString *)strBoardId boardNo:(NSString *)strBoardNo

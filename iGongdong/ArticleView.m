@@ -67,7 +67,6 @@
 @synthesize m_strBoardId;
 @synthesize m_strBoardNo;
 @synthesize m_strBoardName;
-@synthesize m_strApplyLink;
 @synthesize m_nMode;
 @synthesize target;
 @synthesize selector;
@@ -129,7 +128,6 @@
 	m_articleData.m_strBoardId = m_strBoardId;
 	m_articleData.m_strBoardNo = m_strBoardNo;
 	m_articleData.m_nMode = m_nMode;
-	m_articleData.m_strApplyLink = m_strApplyLink;
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];

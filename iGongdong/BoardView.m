@@ -94,30 +94,29 @@
 		}
 		cell.textLabel.text = [item valueForKey:@"boardName"];
 	} else {
-		int isCal = [[item valueForKey:@"isCal"] intValue];
-		if (isCal == 0) {
-			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierBoard];
-			if (cell == nil) {
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
-			}
-			cell.textLabel.text = [item valueForKey:@"boardName"];
-			if ([[item valueForKey:@"isNew"] intValue] == 0) {
-				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
-			} else {
-				[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
-			}
+		if ([[item valueForKey:@"isCal"] intValue] == 1 || [[item valueForKey:@"type"] intValue] == CAFE_TYPE_CAL) {
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
+            }
+            cell.textLabel.text = [item valueForKey:@"boardName"];
+            if ([[item valueForKey:@"isNew"] intValue] == 0) {
+                [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+            } else {
+                [cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+            }
 		} else {
-			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierCalendar];
-			if (cell == nil) {
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierCalendar];
-			}
-			cell.textLabel.text = [item valueForKey:@"boardName"];
-			if ([[item valueForKey:@"isNew"] intValue] == 0) {
-				[cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
-			} else {
-				[cell.imageView setImage:[UIImage imageNamed:@"circle"]];
-			}
-		}
+            cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierBoard];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierBoard];
+            }
+            cell.textLabel.text = [item valueForKey:@"boardName"];
+            if ([[item valueForKey:@"isNew"] intValue] == 0) {
+                [cell.imageView setImage:[UIImage imageNamed:@"circle-blank"]];
+            } else {
+                [cell.imageView setImage:[UIImage imageNamed:@"circle"]];
+            }
+        }
 	}
 	return cell;
 }
@@ -142,7 +141,11 @@
 		NSIndexPath *currentIndexPath = [self.tbView indexPathForSelectedRow];
 		long row = currentIndexPath.row;
 		NSMutableDictionary *item = [m_arrayItems objectAtIndex:row];
-		view.m_strCommId = m_strCommId;
+        if ([m_nMode intValue] == CENTER) {
+            view.m_strCommId = @"center";
+        } else {
+            view.m_strCommId = m_strCommId;
+        }
 		view.m_strBoardId = [item valueForKey:@"boardId"];
 		view.m_strBoardName = [item valueForKey:@"boardName"];
 	}

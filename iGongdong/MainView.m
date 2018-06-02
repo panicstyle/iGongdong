@@ -53,7 +53,7 @@
 
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"알림 클릭시 해당 글이 보이지 않던 문제가 해결되었습니다.";
+		NSString *NotiMessage = @"소통&참여 게시판 보기와 각종교육신청 보기가 추가돠었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
