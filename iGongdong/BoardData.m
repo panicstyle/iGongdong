@@ -32,22 +32,21 @@
 	if ([m_nMode intValue] == CENTER) {
 	
 		NSArray *ingMain = @[
-							 @"ing", @"공동육아 ING", @CAFE_TYPE_ING,
-							 @"ask", @"무엇이든 물어보세요", @CAFE_TYPE_CENTER,
-							 @"notice", @"공지사항", @CAFE_TYPE_NOTICE,
-							 @"teacher", @"교사모집/구직", @CAFE_TYPE_TEACHER,
-							 @"johap", @"조합원모집", @CAFE_TYPE_TEACHER,
-							 @"eboard", @"알리고싶어요", @CAFE_TYPE_CENTER,
-							 @"coop2", @"사회적협동조합 소식", @CAFE_TYPE_CENTER,
-							 @"eCommunity", @"터전소식", @CAFE_TYPE_CENTER,
-							 @"b20sign", @"간판사진/연혁", @CAFE_TYPE_CENTER,
-							 @"b20story", @"스토리사진/놀이소재", @CAFE_TYPE_CENTER,
-							 @"b20movie", @"터전동영상", @CAFE_TYPE_CENTER,
+                             @"B211", @"공지사항", @CAFE_TYPE_NOTICE,
+                             @"B221", @"법인일정", @CAFE_TYPE_CAL,
+							 @"B231", @"공동육아ing", @CAFE_TYPE_ING,
+							 @"B271", @"무엇이든 물어보세요", @CAFE_TYPE_CENTER,
+                             @"B281", @"알리고싶어요", @CAFE_TYPE_CENTER,
+							 @"B251", @"교사모집/구직", @CAFE_TYPE_CENTER,
+							 @"B261", @"조합원모집", @CAFE_TYPE_CENTER,
+							 @"B301", @"터전소식", @CAFE_TYPE_CENTER,
 							   ];
 
 		NSArray *eduMain = @[
-							 @"edu_app", @"교육신청", @CAFE_TYPE_EDU_APP,
-							 @"edu_app", @"신청결과보기", @CAFE_TYPE_EDU_APP_ADMIN,
+                             @"교사교육", @"교사교육", @CAFE_TYPE_APPLY,
+                             @"부모교육", @"부모교육", @CAFE_TYPE_APPLY,
+                             @"운영진교육", @"운영진교육", @CAFE_TYPE_APPLY,
+                             @"열린교육", @"열린교육", @CAFE_TYPE_APPLY,
 							 ];
 
 		

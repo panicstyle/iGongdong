@@ -27,10 +27,10 @@
 	m_arrayMain = [[NSMutableArray alloc] init];
     int i;
     NSMutableDictionary *currItem;
-/*
+
 	NSArray *arrayMain = @[
-						   @"edu", @"교육사업",
 						   @"ing", @"소통과참여",
+                           @"edu", @"교육신청",
 					  ];
 
 	for (i = 0; i < arrayMain.count; i+=2) {
@@ -39,7 +39,7 @@
 		[currItem setValue:arrayMain[i + 1] forKey:@"title"];
 		[m_arrayMain addObject:currItem];
 	}
-*/
+
 	m_arrayItems = [[NSMutableArray alloc] init];
 
 #ifdef TEST_MODE

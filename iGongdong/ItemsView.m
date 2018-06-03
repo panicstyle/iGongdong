@@ -105,7 +105,7 @@
 	if ([indexPath row] == [m_arrayItems count]) {
 		return 50.0f;
 	} else {
-		if ([m_nItemMode intValue] == PictureItems) {
+		if ([m_nItemMode intValue] == PictureItems || [m_nMode intValue] == CAFE_TYPE_ING) {
 			return 100.0f;
 		} else {
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
@@ -139,7 +139,7 @@
 		[cell addSubview:title1];
 		return cell;
 	} else {
-		if ([m_nItemMode intValue] == PictureItems) {
+		if ([m_nItemMode intValue] == PictureItems || [m_nMode intValue] == CAFE_TYPE_ING) {
 			// 사진첩 보기
 			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
 			
@@ -163,7 +163,12 @@
 //			imageView.contentMode = UIViewContentModeScaleAspectFit;
 			
 			UITextView *textSubject = (UITextView *)[cell viewWithTag:201];
-			textSubject.text = [item valueForKey:@"subject"];
+            NSRange range = [self visibleRangeOfTextView:textSubject];
+            NSString *strSubject = [item valueForKey:@"subject"];
+            if ([strSubject length] > 30) {
+                strSubject = [NSString stringWithFormat:@"%@...", [strSubject substringToIndex:30]];
+            }
+			textSubject.text = strSubject;
 			
 			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
 			NSString *strName = [item valueForKey:@"name"];
@@ -311,6 +316,14 @@
 	return cell;
 }
 
+-(NSRange)visibleRangeOfTextView:(UITextView *)textView {
+    CGRect bounds = textView.bounds;
+    UITextPosition *start = [textView characterRangeAtPoint:bounds.origin].start;
+    UITextPosition *end = [textView characterRangeAtPoint:CGPointMake(CGRectGetMaxX(bounds), CGRectGetMaxY(bounds))].end;
+    return NSMakeRange([textView offsetFromPosition:textView.beginningOfDocument toPosition:start],
+                       [textView offsetFromPosition:start toPosition:end]);
+}
+
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ([indexPath row] == [m_arrayItems count]) {
@@ -344,11 +357,6 @@
         }
 		view.m_strBoardNo = [item valueForKey:@"boardNo"];
 		view.m_strBoardName = m_strBoardName;
-		if ([m_nMode intValue] == CAFE_TYPE_EDU_APP) {
-			view.m_strApplyLink = [item valueForKey:@"applyLink"];
-		} else {
-			view.m_strApplyLink = @"";
-		}
 		view.m_nMode = m_nMode;
 		view.target = self;
 		view.selector = @selector(didWrite:);

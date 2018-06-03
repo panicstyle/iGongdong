@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
+		EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */; };
+		EC36786C20C2AFAE00B02EF0 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */; };
 		EC3AA62F1C990865006BFE5B /* MainData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA62E1C990865006BFE5B /* MainData.m */; };
 		EC3AA6321C992861006BFE5B /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6311C992861006BFE5B /* BoardData.m */; };
 		EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6341C993628006BFE5B /* ItemsData.m */; };
@@ -56,6 +58,10 @@
 /* Begin PBXFileReference section */
 		EC2080A11C954540006305A8 /* ArticleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleData.h; sourceTree = "<group>"; };
 		EC2080A21C954540006305A8 /* ArticleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleData.m; sourceTree = "<group>"; };
+		EC36786720C2AF7C00B02EF0 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
+		EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
+		EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		EC36786B20C2AFAE00B02EF0 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		EC3AA62D1C990865006BFE5B /* MainData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainData.h; sourceTree = "<group>"; };
 		EC3AA62E1C990865006BFE5B /* MainData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainData.m; sourceTree = "<group>"; };
 		EC3AA6301C992861006BFE5B /* BoardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardData.h; sourceTree = "<group>"; };
@@ -159,7 +165,6 @@
 		EC717E941C87C68800C1888B /* iGongdong */ = {
 			isa = PBXGroup;
 			children = (
-				EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */,
 				EC717F451C89313400C1888B /* AboutView.h */,
 				EC717F461C89313400C1888B /* AboutView.m */,
 				EC717E981C87C68800C1888B /* AppDelegate.h */,
@@ -180,6 +185,9 @@
 				EC717F0E1C8811C500C1888B /* env.h */,
 				EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */,
 				EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */,
+				EC36786B20C2AFAE00B02EF0 /* GTMNSString+HTML.h */,
+				EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */,
+				EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */,
 				EC717EA61C87C68800C1888B /* Info.plist */,
 				EC3AA6331C993628006BFE5B /* ItemsData.h */,
 				EC3AA6341C993628006BFE5B /* ItemsData.m */,
@@ -193,6 +201,8 @@
 				EC3AA62E1C990865006BFE5B /* MainData.m */,
 				EC717F0F1C8811C500C1888B /* MainView.h */,
 				EC717F101C8811C500C1888B /* MainView.m */,
+				EC36786720C2AF7C00B02EF0 /* NSString+HTML.h */,
+				EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */,
 				EC3AA6361C994623006BFE5B /* RecentData.h */,
 				EC3AA6371C994623006BFE5B /* RecentData.m */,
 				EC717F631C8AA71500C1888B /* RecentView.h */,
@@ -368,7 +378,9 @@
 				EC717F2F1C882F3E00C1888B /* SetView.m in Sources */,
 				ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */,
 				EC3AA6381C994623006BFE5B /* RecentData.m in Sources */,
+				EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */,
 				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,
+				EC36786C20C2AFAE00B02EF0 /* GTMNSString+HTML.m in Sources */,
 				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,
 				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
 				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
