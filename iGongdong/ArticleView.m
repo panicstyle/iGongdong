@@ -13,6 +13,7 @@
 #import "Utils.h"
 #import "ArticleData.h"
 #import "WebLinkView.h"
+#import "DBInterface.h"
 
 @interface ArticleView ()
 {
@@ -131,6 +132,17 @@
 	m_articleData.target = self;
 	m_articleData.selector = @selector(didFetchItems:);
 	[m_articleData fetchItems];
+    
+    // DB에 현재 읽는 글의 boardId, boardNo 를 insert
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    NSString *commId = @"";
+    if ([m_strCommId isEqualToString:@"ing"] || [m_strCommId isEqualToString:@"edu"]) {
+        commId = @"center";
+    } else {
+        commId = m_strCommId;
+    }
+    [db insertWithCommId:commId BoardId:m_strBoardId BoardNo:m_strBoardNo];
 }
 
 - (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -571,6 +583,7 @@
 		m_webView.delegate = self;
 		m_webView.scrollView.scrollEnabled = YES;
 		m_webView.scrollView.bounces = NO;
+        m_webView.dataDetectorTypes = UIDataDetectorTypePhoneNumber | UIDataDetectorTypeLink;
 		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
 			[m_webView loadHTMLString:m_strContent baseURL:[NSURL URLWithString:CAFE_SERVER]];
 		} else {

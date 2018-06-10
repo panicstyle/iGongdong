@@ -14,6 +14,7 @@
 #import "LoginToService.h"
 #import "env.h"
 #import "MainData.h"
+#import "DBInterface.h"
 
 @interface MainView ()
 {
@@ -53,7 +54,7 @@
 
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"소통&참여 게시판 보기와 각종교육신청 보기가 추가돠었습니다.";
+		NSString *NotiMessage = @"이미 읽은 글을 표시하는 기능이 추가되었습니다.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];
@@ -72,6 +73,11 @@
 	m_mainData.target = self;
 	m_mainData.selector = @selector(didFetchItems);
 	
+    // DB에 6개월 지난 데이터는 삭제
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    [db delete];
+
 	if (m_login == nil) {
 		// 저장된 로그인 정보를 이용하여 로그인
 		m_login = [[LoginToService alloc] init];

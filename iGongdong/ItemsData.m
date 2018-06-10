@@ -11,6 +11,7 @@
 #import "LoginToService.h"
 #import "Utils.h"
 #import "NSString+HTML.h"
+#import "DBInterface.h"
 
 @interface ItemsData () {
 	NSMutableData *m_receiveData;
@@ -125,6 +126,11 @@
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(id=\\\"board_list_line\\\").*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
 	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
 	NSMutableDictionary *currItem;
+    
+    // DB Interface
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
 	for (NSTextCheckingResult *match in matches) {
 		NSRange matchRange = [match range];
 		NSString *str2 = [str substringWithRange:matchRange];
@@ -220,6 +226,13 @@
 		} else {
 			[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
 		}
+        
+        int checked = [db searchWithCommId:commId BoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
 		
 		[m_arrayItems addObject:currItem];
 	}
@@ -232,6 +245,10 @@
 	NSArray *arrayItems = [str componentsSeparatedByString:@"<td width=\"25%\" valign=top>"];
 	
 	NSMutableDictionary *currItem;
+    
+    // DB Interface
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
 	
 	for (int i = 1; i < [arrayItems count]; i++) {
 		NSString *str2 = [arrayItems objectAtIndex:i];
@@ -250,6 +267,8 @@
 		// <a href="/cafe.php?sort=37&sub_sort=&page=&startpage=&keyfield=&key_bs=&p1=menbal&p2=&p3=&number=1285671&mode=view">
 		NSString *strLink = [Utils findStringRegex:str2 regex:@"(?<=<a href=\\\")(.|\\n)*?(?=\\\")"];
 		NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=&number=).*?(?=&)"];
+        NSString *boardId = [Utils findStringRegex:strLink regex:@"(?<=&sort=).*?(?=&)"];
+        NSString *commId = [Utils findStringRegex:strLink regex:@"(?<=&p1=).*?(?=&)"];
 		[currItem setValue:boardNo forKey:@"boardNo"];
 		
 		// 댓글 갯수
@@ -278,6 +297,13 @@
 		// isReItem
 		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
 		
+        int checked = [db searchWithCommId:commId BoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
+
 		[m_arrayItems addObject:currItem];
 	}
 	
@@ -293,6 +319,11 @@
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<tr class=).*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
 	NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
 	NSMutableDictionary *currItem;
+    
+    // DB Interface
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
 	for (NSTextCheckingResult *match in matches) {
 		NSRange matchRange = [match range];
 		NSString *str2 = [str substringWithRange:matchRange];
@@ -319,12 +350,13 @@
         NSString *strLink = [Utils findStringRegex:strSubject regex:@"(?<=<a href=\\\").*?(?=\\\")"];
         // <a href="http://www.gongdong.or.kr/index.php?mid=ing&amp;page=2&amp;document_srl=326671">
         NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=wr_id=).*?(?=&)"];
+        NSString *boardId = [Utils findStringRegex:strLink regex:@"(?<=bo_table=).*?(?=&)"];
         [currItem setValue:boardNo forKey:@"boardNo"];
 
         NSString *strComment = [Utils findStringRegex:strSubject regex:@"(?<=<span class=\\\"cnt_cmt\\\">).*?(?=</span>)"];
         [currItem setValue:strComment forKey:@"comment"];
         
-        strSubject = [Utils replaceStringRegex:strSubject regex:@"(<span class=\\\"sound).*?(</span>)" replace:@""];
+        strSubject = [Utils replaceStringRegex:strSubject regex:@"(<span class=\\\"sound).*?(개</span>)" replace:@""];
 		strSubject = [Utils replaceStringHtmlTag:strSubject];
         strSubject = [strSubject stringByConvertingHTMLToPlainText];
 		[currItem setValue:strSubject forKey:@"subject"];
@@ -354,11 +386,19 @@
 		[currItem setValue:strDate forKey:@"date"];
 		
 		// Hit
-		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"td_num\\\">).*?(?=</td>)"];
+		NSString *strHit = [Utils findStringRegex:str2 regex:@"(?<=<td class=\\\"td_num\\\">)[0-9.]+(?=</td>)"];
 //		strHit = [Utils replaceStringHtmlTag:strHit];
 		[currItem setValue:strHit forKey:@"hit"];
 		
 		[currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
+        
+        NSString *commId = @"center";
+        int checked = [db searchWithCommId:commId BoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
 		
 		[m_arrayItems addObject:currItem];
 	}
@@ -375,6 +415,11 @@
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<tr class=).*?(</tr>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
     NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
     NSMutableDictionary *currItem;
+
+    // DB Interface
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+
     for (NSTextCheckingResult *match in matches) {
         NSRange matchRange = [match range];
         NSString *str2 = [str substringWithRange:matchRange];
@@ -405,6 +450,7 @@
         NSString *strLink = [Utils findStringRegex:strSubject regex:@"(?<=<a href=\\\").*?(?=\\\")"];
         // <a href="http://www.gongdong.or.kr/index.php?mid=ing&amp;page=2&amp;document_srl=326671">
         NSString *boardNo = [Utils findStringRegex:strLink regex:@"(?<=wr_id=).*?(?=&)"];
+        NSString *boardId = [Utils findStringRegex:strLink regex:@"(?<=bo_table=).*?(?=&)"];
         [currItem setValue:boardNo forKey:@"boardNo"];
         
         NSString *strComment = [Utils findStringRegex:strSubject regex:@"(?<=<span class=\\\"cnt_cmt\\\">).*?(?=</span>)"];
@@ -474,6 +520,14 @@
             
         [currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
         
+        NSString *commId = @"center";
+        int checked = [db searchWithCommId:commId BoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
+        
         [m_arrayItems addObject:currItem];
     }
     
@@ -486,6 +540,11 @@
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(<ul class=\\\"gall_con).*?(</ul>)" options:NSRegularExpressionDotMatchesLineSeparators|NSRegularExpressionCaseInsensitive error:&error];
     NSArray *matches = [regex matchesInString:str options:0 range:NSMakeRange(0, [str length])];
     NSMutableDictionary *currItem;
+    
+    // DB Interface
+    DBInterface *db;
+    db = [[DBInterface alloc] init];
+    
     for (NSTextCheckingResult *match in matches) {
         NSRange matchRange = [match range];
         NSString *str2 = [str substringWithRange:matchRange];
@@ -503,6 +562,7 @@
         
         // find link
         NSString *boardNo = [Utils findStringRegex:strSubject regex:@"(?<=wr_id=).*?(?=[&|\\\"])"];
+        NSString *boardId = [Utils findStringRegex:strSubject regex:@"(?<=bo_table=).*?(?=&)"];
         [currItem setValue:boardNo forKey:@"boardNo"];
         
         NSString *strComment = [Utils findStringRegex:strSubject regex:@"(?<=<span class=\\\"cnt_cmt\\\">).*?(?=</span>)"];
@@ -525,6 +585,14 @@
         
         [currItem setValue:[NSNumber numberWithInt:0] forKey:@"isRe"];
         
+        NSString *commId = @"center";
+        int checked = [db searchWithCommId:commId BoardId:boardId BoardNo:boardNo];
+        if (checked > 0) {
+            [currItem setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        } else {
+            [currItem setValue:[NSNumber numberWithInt:0] forKey:@"read"];
+        }
+
         [m_arrayItems addObject:currItem];
     }
 

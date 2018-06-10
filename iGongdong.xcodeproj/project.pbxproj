@@ -10,6 +10,8 @@
 		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
 		EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */; };
 		EC36786C20C2AFAE00B02EF0 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */; };
+		EC36787B20C3F49F00B02EF0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC36787A20C3F49F00B02EF0 /* libsqlite3.tbd */; };
+		EC36787E20C3F4C700B02EF0 /* DBInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36787C20C3F4C700B02EF0 /* DBInterface.m */; };
 		EC3AA62F1C990865006BFE5B /* MainData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA62E1C990865006BFE5B /* MainData.m */; };
 		EC3AA6321C992861006BFE5B /* BoardData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6311C992861006BFE5B /* BoardData.m */; };
 		EC3AA6351C993628006BFE5B /* ItemsData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC3AA6341C993628006BFE5B /* ItemsData.m */; };
@@ -62,6 +64,9 @@
 		EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		EC36786B20C2AFAE00B02EF0 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		EC36787A20C3F49F00B02EF0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		EC36787C20C3F4C700B02EF0 /* DBInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBInterface.m; sourceTree = "<group>"; };
+		EC36787D20C3F4C700B02EF0 /* DBInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBInterface.h; sourceTree = "<group>"; };
 		EC3AA62D1C990865006BFE5B /* MainData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainData.h; sourceTree = "<group>"; };
 		EC3AA62E1C990865006BFE5B /* MainData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainData.m; sourceTree = "<group>"; };
 		EC3AA6301C992861006BFE5B /* BoardData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoardData.h; sourceTree = "<group>"; };
@@ -122,6 +127,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC36787B20C3F49F00B02EF0 /* libsqlite3.tbd in Frameworks */,
 				EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,12 +149,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC36787920C3F49E00B02EF0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC36787A20C3F49F00B02EF0 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EC717E891C87C68800C1888B = {
 			isa = PBXGroup;
 			children = (
 				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
 				EC717E941C87C68800C1888B /* iGongdong */,
 				EC717E931C87C68800C1888B /* Products */,
+				EC36787920C3F49E00B02EF0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -182,6 +197,8 @@
 				EC717E9C1C87C68800C1888B /* BoardView.m */,
 				ECC846AC1C91588000CF47DA /* CommentWriteView.h */,
 				ECC846AD1C91588000CF47DA /* CommentWriteView.m */,
+				EC36787D20C3F4C700B02EF0 /* DBInterface.h */,
+				EC36787C20C3F4C700B02EF0 /* DBInterface.m */,
 				EC717F0E1C8811C500C1888B /* env.h */,
 				EC717F6D1C8AB6E600C1888B /* GoogleCalView.h */,
 				EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */,
@@ -381,6 +398,7 @@
 				EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */,
 				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,
 				EC36786C20C2AFAE00B02EF0 /* GTMNSString+HTML.m in Sources */,
+				EC36787E20C3F4C700B02EF0 /* DBInterface.m in Sources */,
 				ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */,
 				EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */,
 				EC717F2D1C882F3E00C1888B /* SetInfoStorage.m in Sources */,
