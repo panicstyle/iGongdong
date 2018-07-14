@@ -163,7 +163,11 @@
 //			imageView.contentMode = UIViewContentModeScaleAspectFit;
 			
 			UITextView *textSubject = (UITextView *)[cell viewWithTag:201];
-            NSRange range = [self visibleRangeOfTextView:textSubject];
+            if ([[item valueForKey:@"read"] intValue] == 1) {
+                [textSubject setTextColor:[UIColor grayColor]];
+            } else {
+                [textSubject setTextColor:[UIColor blackColor]];
+            }
             NSString *strSubject = [item valueForKey:@"subject"];
             if ([strSubject length] > 30) {
                 strSubject = [NSString stringWithFormat:@"%@...", [strSubject substringToIndex:30]];
@@ -171,12 +175,10 @@
 			textSubject.text = strSubject;
 			
 			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
+            [labelName setTextColor:[UIColor grayColor]];
 			NSString *strName = [item valueForKey:@"name"];
-//			NSString *strDate = [item valueForKey:@"date"];
-//			NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
 			
 			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strName];
-//			[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 			labelName.attributedText = textName;
 			
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
@@ -208,6 +210,7 @@
 				}
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:100];
+                [labelName setTextColor:[UIColor grayColor]];
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
@@ -217,6 +220,11 @@
 				labelName.attributedText = textName;
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
+                if ([[item valueForKey:@"read"] intValue] == 1) {
+                    [textSubject setTextColor:[UIColor grayColor]];
+                } else {
+                    [textSubject setTextColor:[UIColor blackColor]];
+                }
 				textSubject.text = [item valueForKey:@"subject"];
 				
 				//			CGFloat textViewWidth = viewComment.frame.size.width;
@@ -267,6 +275,7 @@
 				}
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:300];
+                [labelName setTextColor:[UIColor grayColor]];
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
@@ -276,6 +285,11 @@
 				labelName.attributedText = textName;
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:301];
+                if ([[item valueForKey:@"read"] intValue] == 1) {
+                    [textSubject setTextColor:[UIColor grayColor]];
+                } else {
+                    [textSubject setTextColor:[UIColor blackColor]];
+                }
 				textSubject.text = [item valueForKey:@"subject"];
 				
 				//			CGFloat textViewWidth = viewComment.frame.size.width;
@@ -327,13 +341,17 @@
 // Override to support row selection in the table view.
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ([indexPath row] == [m_arrayItems count]) {
-		// 더보기를 수행한다.
-		//		[arrayItems release];
 		m_nPage++;
-		
 		[m_itemsData fetchItems:m_nPage];
-	}
-	
+    } else {
+        NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
+        [item setValue:[NSNumber numberWithInt:1] forKey:@"read"];
+        
+        [tableView beginUpdates];
+        NSArray *array = [NSArray arrayWithObjects:indexPath, nil];
+        [tableView reloadRowsAtIndexPaths:array withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
+    }
 }
 
 #pragma mark - Navigation
