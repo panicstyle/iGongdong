@@ -10,6 +10,7 @@
 #import "Utils.h"
 #import "LoginToService.h"
 #import "ArticleView.h"
+#import "SetTokenDevice.h"
 
 @interface AppDelegate ()
 {
@@ -22,7 +23,7 @@
 @synthesize strDevice;
 @synthesize strUserId;
 @synthesize switchPush;
-
+@synthesize switchNotice;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Override point for customization after application launch.
@@ -81,6 +82,15 @@
 				 stringByReplacingOccurrencesOfString: @" " withString: @""];
 	NSLog(@"converted device Device Token (%@)", strDevice);
 	
+    // 입력된 id와 pwd를 저장한다.
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *myPath = [documentsDirectory stringByAppendingPathComponent:@"setToken.dat"];
+    ////NSLog(@"myPath = %@", myPath);
+    SetTokenDevice *storage = [[SetTokenDevice alloc] init];
+    storage.tokenDevice = strDevice;
+    [NSKeyedArchiver archiveRootObject:storage toFile:myPath];
+    
 	LoginToService *login = [[LoginToService alloc] init];
 	[login PushRegister];
 	

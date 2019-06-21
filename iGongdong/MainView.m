@@ -54,7 +54,7 @@
 
 	if (![setInfo CheckVersionInfo]) {
 		// 버전 업데이트 안내 다이얼로그 표시
-		NSString *NotiMessage = @"이미 읽은 글을 표시하는 기능이 추가되었습니다.";
+		NSString *NotiMessage = @"어린이집 게시판과 함께 공동육아 홈페이지 새글 알림 설정이 추가되있습니다. 로그인설정에서 알림 받기를 설정해서 새글 알림을 받아보세요.";
 		UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"알림"
 																	   message:NotiMessage
 																preferredStyle:UIAlertControllerStyleAlert];

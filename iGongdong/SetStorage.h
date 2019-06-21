@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface SetStorage : NSObject <NSCoding> {
-	NSString *userid;
-	NSString *userpwd;
+
 }
 
 @property (nonatomic, copy) NSString *userid;
 @property (nonatomic, copy) NSString *userpwd;
 @property (nonatomic, copy) NSNumber *switchPush;
+@property (nonatomic, copy) NSNumber *switchNotice;
 
 @end

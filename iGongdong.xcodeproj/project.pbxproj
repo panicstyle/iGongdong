@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC07BEF722BCB22000193885 /* SetTokenDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = EC07BEF622BCB22000193885 /* SetTokenDevice.m */; };
 		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
 		EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */; };
 		EC36786C20C2AFAE00B02EF0 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786A20C2AFAE00B02EF0 /* GTMNSString+HTML.m */; };
@@ -58,6 +59,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EC07BEF522BCB22000193885 /* SetTokenDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetTokenDevice.h; sourceTree = "<group>"; };
+		EC07BEF622BCB22000193885 /* SetTokenDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetTokenDevice.m; sourceTree = "<group>"; };
 		EC2080A11C954540006305A8 /* ArticleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleData.h; sourceTree = "<group>"; };
 		EC2080A21C954540006305A8 /* ArticleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleData.m; sourceTree = "<group>"; };
 		EC36786720C2AF7C00B02EF0 /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
@@ -230,6 +233,8 @@
 				EC717F261C882F3E00C1888B /* SetInfoStorage.m */,
 				EC717F271C882F3E00C1888B /* SetStorage.h */,
 				EC717F281C882F3E00C1888B /* SetStorage.m */,
+				EC07BEF522BCB22000193885 /* SetTokenDevice.h */,
+				EC07BEF622BCB22000193885 /* SetTokenDevice.m */,
 				EC717F291C882F3E00C1888B /* SetView.h */,
 				EC717F2A1C882F3E00C1888B /* SetView.m */,
 				EC717E951C87C68800C1888B /* Supporting Files */,
@@ -338,6 +343,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -394,6 +400,7 @@
 				EC717F531C89313400C1888B /* ItemsView.m in Sources */,
 				EC717F2F1C882F3E00C1888B /* SetView.m in Sources */,
 				ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */,
+				EC07BEF722BCB22000193885 /* SetTokenDevice.m in Sources */,
 				EC3AA6381C994623006BFE5B /* RecentData.m in Sources */,
 				EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */,
 				EC2080A31C954540006305A8 /* ArticleData.m in Sources */,

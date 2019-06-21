@@ -12,6 +12,9 @@
 @property (nonatomic, weak) IBOutlet UITextField *idField;
 @property (nonatomic, weak) IBOutlet UITextField *pwdField;
 @property (nonatomic, weak) IBOutlet UISwitch *switchPush;
+@property (nonatomic, weak) IBOutlet UISwitch *switchNotice;
+@property (nonatomic, weak) IBOutlet UILabel *labelNotice;
+@property (nonatomic, weak) IBOutlet UILabel *labelCommunity;
 @property (nonatomic, strong) id target;
 @property SEL selector;
 

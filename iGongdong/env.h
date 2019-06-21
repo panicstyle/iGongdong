@@ -56,4 +56,6 @@
 
 #define SCALE_SIZE		600
 
+#define PUSH_VER        @"2"
+
 #endif

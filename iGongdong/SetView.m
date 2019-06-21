@@ -16,6 +16,7 @@
 @synthesize idField;
 @synthesize pwdField;
 @synthesize switchPush;
+@synthesize switchNotice;
 @synthesize target;
 @synthesize selector;
 
@@ -40,11 +41,16 @@
 	
 	idField.text = storage.userid;
 	pwdField.text = storage.userpwd;
-	if (storage.switchPush == nil) {
-		[switchPush setOn:false];
-	} else {
-		[switchPush setOn:[storage.switchPush intValue]];
-	}
+    if (storage.switchPush == nil) {
+        [switchPush setOn:false];
+    } else {
+        [switchPush setOn:[storage.switchPush intValue]];
+    }
+    if (storage.switchNotice == nil) {
+        [switchNotice setOn:false];
+    } else {
+        [switchNotice setOn:[storage.switchNotice intValue]];
+    }
 
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
 											   initWithTitle:@"완료" 
@@ -63,7 +69,8 @@
 	SetStorage *storage = [[SetStorage alloc] init];
 	storage.userid = idField.text;
 	storage.userpwd = pwdField.text;
-	storage.switchPush = [NSNumber numberWithBool:switchPush.on];
+    storage.switchPush = [NSNumber numberWithBool:switchPush.on];
+    storage.switchNotice = [NSNumber numberWithBool:switchNotice.on];
 	[NSKeyedArchiver archiveRootObject:storage toFile:myPath];
 	
 	LoginToService *login = [[LoginToService alloc] init];
@@ -72,7 +79,7 @@
 	if (result) {
 
 		// Push 정보 업데이트
-		[login PushRegisterUpdate];
+		[login PushRegister];
 
 		[target performSelector:selector withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 	} else {

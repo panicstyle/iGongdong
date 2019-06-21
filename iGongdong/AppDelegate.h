@@ -11,6 +11,7 @@
 @property (strong, nonatomic) NSString *strDevice;
 @property (strong, nonatomic) NSString *strUserId;
 @property (strong, nonatomic) NSNumber *switchPush;
+@property (strong, nonatomic) NSNumber *switchNotice;
 
 -(void)moveToViewController;
 

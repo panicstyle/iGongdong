@@ -9,23 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface LoginToService : NSObject {
-//	NSString *respData;
-//	id target;
-//	SEL selector;
-//    HTTPRequest *httpRequest;
 	NSString *userid;
     NSString *userpwd;
-	NSNumber *switchPush;
+    NSNumber *switchPush;
+    NSNumber *switchNotice;
 }
 - (BOOL)LoginToService;
 - (void)Logout;
 - (void)PushRegister;
-- (void)PushRegisterUpdate;
-
-//- (void)setDelegate:(id)aTarget selector:(SEL)aSelector;
-//- (void)didReceiveFinished:(NSString *)result;
-
-//@property (nonatomic, assign) NSString *respData;
-//@property (nonatomic, assign) id target;
-//@property (nonatomic, assign) SEL selector;
 @end
