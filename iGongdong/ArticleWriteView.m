@@ -85,11 +85,6 @@
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
 
-	viewImage0.image = [UIImage imageNamed:@"ic_image_white_18pt"];
-	viewImage1.image = [UIImage imageNamed:@"ic_image_white_18pt"];
-	viewImage2.image = [UIImage imageNamed:@"ic_image_white_18pt"];
-	viewImage3.image = [UIImage imageNamed:@"ic_image_white_18pt"];
-	viewImage4.image = [UIImage imageNamed:@"ic_image_white_18pt"];
 	m_ImageStatus[0] = 0;
 	m_ImageStatus[1] = 0;
 	m_ImageStatus[2] = 0;

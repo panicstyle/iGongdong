@@ -227,7 +227,7 @@
 		[currItem setValue:strName forKey:@"name"];
 		
 		// Date
-		NSString *strDate = [Utils findStringRegex:s regex:@"(/ <span title=\").*?(</span>)"];
+		NSString *strDate = [Utils findStringRegex:s regex:@"(<span title=\").*?(</span>)"];
 		strDate = [Utils replaceStringHtmlTag:strDate];
 		strDate = [Utils replaceStringRegex:strDate regex:@"/ " replace:@""];
 		[currItem setValue:strDate forKey:@"date"];

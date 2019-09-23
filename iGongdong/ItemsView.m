@@ -166,7 +166,12 @@
             if ([[item valueForKey:@"read"] intValue] == 1) {
                 [textSubject setTextColor:[UIColor grayColor]];
             } else {
-                [textSubject setTextColor:[UIColor blackColor]];
+                if (@available(iOS 13.0, *)) {
+                    [textSubject setTextColor:[UIColor labelColor]];
+                } else {
+                    // Fallback on earlier versions
+                    [textSubject setTextColor:[UIColor blackColor]];
+                }
             }
             NSString *strSubject = [item valueForKey:@"subject"];
             if ([strSubject length] > 30) {
@@ -223,7 +228,12 @@
                 if ([[item valueForKey:@"read"] intValue] == 1) {
                     [textSubject setTextColor:[UIColor grayColor]];
                 } else {
-                    [textSubject setTextColor:[UIColor blackColor]];
+                    if (@available(iOS 13.0, *)) {
+                        [textSubject setTextColor:[UIColor labelColor]];
+                    } else {
+                        // Fallback on earlier versions
+                        [textSubject setTextColor:[UIColor blackColor]];
+                    }
                 }
 				textSubject.text = [item valueForKey:@"subject"];
 				
@@ -288,7 +298,12 @@
                 if ([[item valueForKey:@"read"] intValue] == 1) {
                     [textSubject setTextColor:[UIColor grayColor]];
                 } else {
-                    [textSubject setTextColor:[UIColor blackColor]];
+                    if (@available(iOS 13.0, *)) {
+                        [textSubject setTextColor:[UIColor labelColor]];
+                    } else {
+                        // Fallback on earlier versions
+                        [textSubject setTextColor:[UIColor blackColor]];
+                    }
                 }
 				textSubject.text = [item valueForKey:@"subject"];
 				

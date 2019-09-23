@@ -62,6 +62,7 @@
 
 @implementation ArticleView
 
+@synthesize tbView;
 @synthesize buttonArticleDelete;
 @synthesize m_isPNotice;
 @synthesize m_strCommId;
@@ -91,6 +92,9 @@
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
 	m_fTitleHeight = 77.0f;
+    
+    tbView.estimatedRowHeight = 150.0f;
+    tbView.rowHeight = UITableViewAutomaticDimension;
 
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
@@ -176,76 +180,29 @@
 	return fullScreenRect;
 }
 
-- (CGFloat)measureHeightOfUITextView:(UITextView *)textView
+- (void)textViewDidChange:(UITextView *)textView;
 {
-	if ([textView respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
-	{
-		// This is the code for iOS 7. contentSize no longer returns the correct value, so
-		// we have to calculate it.
-		//
-		// This is partly borrowed from HPGrowingTextView, but I've replaced the
-		// magic fudge factors with the calculated values (having worked out where
-		// they came from)
-		
-		CGRect frame = textView.bounds;
-		
-		// Take account of the padding added around the text.
-		
-		UIEdgeInsets textContainerInsets = textView.textContainerInset;
-		UIEdgeInsets contentInsets = textView.contentInset;
-		
-		CGFloat leftRightPadding = textContainerInsets.left + textContainerInsets.right + textView.textContainer.lineFragmentPadding * 2 + contentInsets.left + contentInsets.right;
-		CGFloat topBottomPadding = textContainerInsets.top + textContainerInsets.bottom + contentInsets.top + contentInsets.bottom;
-		
-		frame.size.width -= leftRightPadding;
-		frame.size.height -= topBottomPadding;
-		
-		NSString *textToMeasure = textView.text;
-		if ([textToMeasure hasSuffix:@"\n"])
-		{
-			textToMeasure = [NSString stringWithFormat:@"%@-", textView.text];
-		}
-		
-		// NSString class method: boundingRectWithSize:options:attributes:context is
-		// available only on ios7.0 sdk.
-		
-		NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-		[paragraphStyle setLineBreakMode:NSLineBreakByWordWrapping];
-		
-		NSDictionary *attributes = @{ NSFontAttributeName: textView.font, NSParagraphStyleAttributeName : paragraphStyle };
-		
-		CGRect size = [textToMeasure boundingRectWithSize:CGSizeMake(CGRectGetWidth(frame), MAXFLOAT)
-												  options:NSStringDrawingUsesLineFragmentOrigin
-											   attributes:attributes
-												  context:nil];
-		
-		CGFloat measuredHeight = ceilf(CGRectGetHeight(size) + topBottomPadding);
-		return measuredHeight;
-	}
-	else
-	{
-		return textView.contentSize.height;
-	}
+    [tbView beginUpdates];
+    [tbView endUpdates];
 }
 
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([indexPath section] == 0) {
-		if ([indexPath row] == 0) {
-			return m_fTitleHeight;
-		} else if ([indexPath row] == 1) {
-			return (float)m_lContentHeight;
-		} else {
-			return 40.0f;
-		}
-	} else {
-		NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-		NSNumber *height = [item valueForKey:@"height"];
-		return [height floatValue];
-	}
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == 0) {
+            return UITableViewAutomaticDimension;
+        } else if ([indexPath row] == 1) {
+            return (float)m_lContentHeight;
+        } else {
+            return UITableViewAutomaticDimension;
+        }
+    } else {
+        return UITableViewAutomaticDimension;
+    }
 }
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -306,39 +263,17 @@
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
 				textSubject.text = m_strTitle;
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 40;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 40;
-				}
-				
-				CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				m_fTitleHeight = (77 - 32) + (size.height);
+                [textSubject sizeToFit];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:100];
 				NSString *strNameDate;
-				NSMutableAttributedString *textName;
 				if (m_strName != nil) {
 					strNameDate = [NSString stringWithFormat:@"%@  %@  %@명 읽음", m_strName, m_strDate, m_strHit];
-					textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-					[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([m_strName length] + 2, [strNameDate length] - [m_strName length] - 2)];
 				} else {
 					strNameDate = @"";
-					textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
 				}
 				
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 			} else if (row == 1){		// Content Row
 				m_contentCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierContent];
 				if (m_contentCell == nil) {
@@ -358,39 +293,13 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 
 				UILabel *labelName = (UILabel *)[cell viewWithTag:200];
-				labelName.attributedText = textName;
-				
-				
+				labelName.text = strNameDate;
+								
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:202];
 				viewComment.text = [item valueForKey:@"comment"];
-
-	//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-	//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-
+                
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:211];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
 			} else {
@@ -402,37 +311,12 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
 				
 				UILabel *labelName = (UILabel *)[cell viewWithTag:300];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 				
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:302];
 				viewComment.text = [item valueForKey:@"comment"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 60 - 17;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 60 - 17;
-				}
-				
-				CGSize size = [viewComment sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				//			float height = [self measureHeightOfUITextView:viewComment];
-				// 37
-				float height = (120 - 34) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
 				
 				UIButton *buttonDelete = (UIButton *)[cell viewWithTag:311];
 				[buttonDelete addTarget:self action:@selector(DeleteCommentConfirm:) forControlEvents:UIControlEventTouchUpInside];
@@ -449,6 +333,8 @@
 	NSString *padding = @"document.body.style.padding='0px 8px 0px 8px';";
 	[sender stringByEvaluatingJavaScriptFromString:padding];
 	[self performSelector:@selector(calculateWebViewSize) withObject:nil afterDelay:0.1];
+    [tbView beginUpdates];
+    [tbView endUpdates];
 }
 
 -(BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -581,7 +467,8 @@
 		
 		m_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, m_contentCell.frame.size.width, m_contentCell.frame.size.height)];
 		m_webView.delegate = self;
-		m_webView.scrollView.scrollEnabled = YES;
+//        m_webView.scrollView.scrollEnabled = YES;
+        m_webView.scrollView.scrollEnabled = NO;
 		m_webView.scrollView.bounces = NO;
         m_webView.dataDetectorTypes = UIDataDetectorTypePhoneNumber | UIDataDetectorTypeLink;
 		if ([m_nMode intValue] == CAFE_TYPE_NORMAL) {
