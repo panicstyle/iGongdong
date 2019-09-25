@@ -235,12 +235,12 @@
 		if (isReply == 0) {
 			// Comment
 			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td style=\"padding:7pt;\">).*?(?=<div id=\"reply_)"];
-			strComm = [Utils replaceStringHtmlTag:strComm];
+			strComm = [Utils makeEditableContent:strComm];
 			[currItem setValue:strComm forKey:@"comment"];
 		} else {
 			// Comment
 			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td colspan=\"2\">).*?(?=</td>)"];
-			strComm = [Utils replaceStringHtmlTag:strComm];
+			strComm = [Utils makeEditableContent:strComm];
 			[currItem setValue:strComm forKey:@"comment"];
 		}
 		
@@ -249,7 +249,7 @@
 		[m_arrayItems addObject:currItem];
 	}
 
-	m_strEditableContent = [Utils replaceStringHtmlTag:strContent];
+	m_strEditableContent = [Utils makeEditableContent:strContent];
 	
 	NSMutableString *strHeader = [[NSMutableString alloc] init];
 	[strHeader appendString:@"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"];

@@ -19,5 +19,6 @@
 + (NSString *)replaceStringHtmlTag:(NSString *)content;
 + (NSString *)replaceSpecialString:(NSString *)content;
 + (NSString *)replaceOnlyHtmlTag:(NSString *)content;
++ (NSString *)makeEditableContent:(NSString *)content;
 
 @end

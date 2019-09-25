@@ -540,7 +540,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.22.0;
+				MARKETING_VERSION = 3.22.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -705,7 +705,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.22.0;
+				MARKETING_VERSION = 3.22.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -732,7 +732,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.22.0;
+				MARKETING_VERSION = 3.22.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

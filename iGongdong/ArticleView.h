@@ -14,8 +14,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tbView;
 @property (weak, nonatomic) IBOutlet GADBannerView *bannerView;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleModify;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleDelete;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *buttonArticleMenu;
 @property (strong, nonatomic) NSNumber *m_isPNotice;
 @property (strong, nonatomic) NSString *m_strCommId;
 @property (strong, nonatomic) NSString *m_strBoardId;

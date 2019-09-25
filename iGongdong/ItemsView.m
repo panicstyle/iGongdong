@@ -33,6 +33,7 @@
 
 @implementation ItemsView
 
+@synthesize tbView;
 @synthesize m_strCommId;
 @synthesize m_strBoardId;
 @synthesize m_strBoardName;
@@ -50,6 +51,9 @@
 
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 	
+    tbView.estimatedRowHeight = 100.0f;
+    tbView.rowHeight = UITableViewAutomaticDimension;
+    
 	// Replace this ad unit ID with your own ad unit ID.
 	self.bannerView.adUnitID = kSampleAdUnitID;
 	self.bannerView.rootViewController = self;
@@ -82,6 +86,12 @@
 	
 }
 
+- (void)textViewDidChange:(UITextView *)textView;
+{
+    [tbView beginUpdates];
+    [tbView endUpdates];
+}
+
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -108,9 +118,7 @@
 		if ([m_nItemMode intValue] == PictureItems || [m_nMode intValue] == CAFE_TYPE_ING) {
 			return 100.0f;
 		} else {
-			NSMutableDictionary *item = [m_arrayItems objectAtIndex:[indexPath row]];
-			NSNumber *height = [item valueForKey:@"height"];
-			return [height floatValue];
+        return UITableViewAutomaticDimension;
 		}
 	}
 }
@@ -182,9 +190,7 @@
 			UILabel *labelName = (UILabel *)[cell viewWithTag:202];
             [labelName setTextColor:[UIColor grayColor]];
 			NSString *strName = [item valueForKey:@"name"];
-			
-			NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strName];
-			labelName.attributedText = textName;
+			labelName.text = strName;
 			
 			UILabel *labelComment = (UILabel *)[cell viewWithTag:203];
 			NSString *strComment = [item valueForKey:@"comment"];
@@ -219,10 +225,7 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:101];
                 if ([[item valueForKey:@"read"] intValue] == 1) {
@@ -236,28 +239,7 @@
                     }
                 }
 				textSubject.text = [item valueForKey:@"subject"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 32 - 20;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 32 - 20;
-				}
-				
-				CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				float height = (77 - 32) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-				
+								
 				UILabel *labelComment = (UILabel *)[cell viewWithTag:103];
 				NSString *strComment = [item valueForKey:@"comment"];
 				if ([strComment isEqualToString:@""]) {
@@ -289,10 +271,7 @@
 				NSString *strName = [item valueForKey:@"name"];
 				NSString *strDate = [item valueForKey:@"date"];
 				NSString *strNameDate = [NSString stringWithFormat:@"%@  %@", strName, strDate];
-				
-				NSMutableAttributedString *textName = [[NSMutableAttributedString alloc] initWithString:strNameDate];
-				[textName addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange([strName length] + 2, [strDate length])];
-				labelName.attributedText = textName;
+				labelName.text = strNameDate;
 				
 				UITextView *textSubject = (UITextView *)[cell viewWithTag:301];
                 if ([[item valueForKey:@"read"] intValue] == 1) {
@@ -306,28 +285,7 @@
                     }
                 }
 				textSubject.text = [item valueForKey:@"subject"];
-				
-				//			CGFloat textViewWidth = viewComment.frame.size.width;
-				UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-				CGFloat textViewWidth;
-				switch (orientation) {
-					case UIDeviceOrientationUnknown:
-					case UIDeviceOrientationPortrait:
-					case UIDeviceOrientationPortraitUpsideDown:
-					case UIDeviceOrientationFaceUp:
-					case UIDeviceOrientationFaceDown:
-						textViewWidth = m_rectScreen.size.width - 64 - 20;
-						break;
-					case UIDeviceOrientationLandscapeLeft:
-					case UIDeviceOrientationLandscapeRight:
-						textViewWidth = m_rectScreen.size.height - 64 - 20;
-				}
-				
-				CGSize size = [textSubject sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-				float height = (77 - 32) + (size.height);
-				[item setObject:[NSNumber numberWithFloat:height] forKey:@"height"];
-				NSLog(@"row = %ld, width=%f, height=%f", (long)[indexPath row], textViewWidth, height);
-				
+								
 				UILabel *labelComment = (UILabel *)[cell viewWithTag:303];
 				NSString *strComment = [item valueForKey:@"comment"];
 				if ([strComment isEqualToString:@""]) {

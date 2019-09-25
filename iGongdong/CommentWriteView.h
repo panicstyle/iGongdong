@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CommentWriteView : UIViewController
+@interface CommentWriteView : UIViewController <UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITextView *m_textView;
 @property (nonatomic, strong) NSNumber *m_nModify;
 @property (nonatomic, strong) NSNumber *m_nMode;
