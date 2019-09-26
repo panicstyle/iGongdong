@@ -46,7 +46,7 @@
                              @"교사교육", @"교사교육", @CAFE_TYPE_APPLY,
                              @"부모교육", @"부모교육", @CAFE_TYPE_APPLY,
                              @"운영진교육", @"운영진교육", @CAFE_TYPE_APPLY,
-                             @"열린교육", @"열린교육", @CAFE_TYPE_APPLY,
+                             @"시민교육", @"시민교육", @CAFE_TYPE_APPLY,
 							 ];
 
 		

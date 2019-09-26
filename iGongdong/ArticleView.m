@@ -85,6 +85,10 @@
 	[lblTitle sizeToFit];
 	self.navigationItem.titleView = lblTitle;
 
+    if ([m_nMode intValue] == CAFE_TYPE_APPLY) {
+        buttonArticleMenu.enabled = NO;
+    }
+
     buttonArticleMenu.target = self;
     buttonArticleMenu.action = @selector(ArticleMenu);
 	
