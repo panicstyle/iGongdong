@@ -236,11 +236,17 @@
 			// Comment
 			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td style=\"padding:7pt;\">).*?(?=<div id=\"reply_)"];
 			strComm = [Utils makeEditableContent:strComm];
+            if ([strComm hasSuffix:@"\n"]) {
+                strComm = [strComm substringWithRange:NSMakeRange(0, [strComm length]-1)];
+            }
 			[currItem setValue:strComm forKey:@"comment"];
 		} else {
 			// Comment
 			NSString *strComm = [Utils findStringRegex:s regex:@"(?<=<td colspan=\"2\">).*?(?=</td>)"];
 			strComm = [Utils makeEditableContent:strComm];
+            if ([strComm hasSuffix:@"\n"]) {
+                strComm = [strComm substringWithRange:NSMakeRange(0, [strComm length]-1)];
+            }
 			[currItem setValue:strComm forKey:@"comment"];
 		}
 		

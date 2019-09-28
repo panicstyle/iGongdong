@@ -97,7 +97,7 @@
 	
 	m_fTitleHeight = 77.0f;
     
-    tbView.estimatedRowHeight = 150.0f;
+    tbView.estimatedRowHeight = 58.0f;
     tbView.rowHeight = UITableViewAutomaticDimension;
 
 	// Replace this ad unit ID with your own ad unit ID.
