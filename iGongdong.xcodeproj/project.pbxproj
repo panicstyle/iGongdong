@@ -529,6 +529,7 @@
 				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -694,6 +695,7 @@
 				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -721,6 +723,7 @@
 				CODE_SIGN_ENTITLEMENTS = iGongdong/iGongdong.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 8PG9C7Q5V8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
