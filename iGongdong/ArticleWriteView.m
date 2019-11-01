@@ -106,8 +106,15 @@
 }
 
 - (void)keyboardDidHide: (NSNotification *) notif{
-	// Do something here
-	[self animateTextView:notif up:NO];
+    /*
+     키보드가 한번 올라온 다음에 사진첨부를 클릭하여 키보드가 내려간후, 사진 선택 후 다시 돌아오면,
+     다시 키보드가 올라오면서 텍스트 사이즈가 줄어야 하는데 줄어들지 않는다.
+     이유는 확인 안됨.
+     하지만, 키보드가 올라오면 다시 입력을 완료하기 전까지는 키보드를 내릴 일이 없기 때문에
+     키보드가 보이지 않는 경우를 산정할 일이 없다.
+     그래서 아래 키보드 hidden 코드는 코멘트 처리 한다.
+     */
+    //[self animateTextView:notif up:NO];
 }
 
 -(void)animateTextView:(NSNotification *)notif up:(BOOL)up
