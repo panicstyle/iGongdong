@@ -12,6 +12,7 @@
 #import "ArticleView.h"
 #import "ArticleWriteView.h"
 #import "ItemsData.h"
+@import GoogleMobileAds;
 
 @interface ItemsView ()
 {
@@ -55,18 +56,10 @@
     tbView.estimatedRowHeight = 100.0f;
     tbView.rowHeight = UITableViewAutomaticDimension;
     
-	// Replace this ad unit ID with your own ad unit ID.
-	self.bannerView.adUnitID = kSampleAdUnitID;
-	self.bannerView.rootViewController = self;
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    // Replace this ad unit ID with your own ad unit ID.
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 	
 	if ([m_nMode intValue] != CAFE_TYPE_NORMAL && [m_nMode intValue] != CAFE_TYPE_CENTER ) {
 		// 커뮤니티 게시판이 아니면 "새글" 버튼을 동작하지 않게 한다.

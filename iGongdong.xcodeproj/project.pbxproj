@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05C03200EA2E42D14B120099 /* Pods_iGongdong.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002FA30EF52FCCD0D0E9EB02 /* Pods_iGongdong.framework */; };
 		EC07BEF722BCB22000193885 /* SetTokenDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = EC07BEF622BCB22000193885 /* SetTokenDevice.m */; };
 		EC2080A31C954540006305A8 /* ArticleData.m in Sources */ = {isa = PBXBuildFile; fileRef = EC2080A21C954540006305A8 /* ArticleData.m */; };
 		EC36786920C2AF7D00B02EF0 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = EC36786820C2AF7C00B02EF0 /* NSString+HTML.m */; };
@@ -34,31 +35,17 @@
 		EC717F691C8AA71500C1888B /* RecentView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F641C8AA71500C1888B /* RecentView.m */; };
 		EC717F6F1C8AB6E600C1888B /* GoogleCalView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */; };
 		EC717F721C8ACD6E00C1888B /* ArticleWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */; };
-		EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */; };
 		EC938BC41C90534E006BEF9E /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = EC938BC31C90534E006BEF9E /* Utils.m */; };
 		ECC846AE1C91588000CF47DA /* CommentWriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECC846AD1C91588000CF47DA /* CommentWriteView.m */; };
 		ECC846B11C915F3700CF47DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECC846AF1C915F3700CF47DA /* Main.storyboard */; };
 		ECE8A0241D44E4F900D2680A /* WebLinkView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECE8A0231D44E4F900D2680A /* WebLinkView.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		EC717EAC1C87C68800C1888B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EC717E8A1C87C68800C1888B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EC717E911C87C68800C1888B;
-			remoteInfo = iGongdong;
-		};
-		EC717EB71C87C68800C1888B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EC717E8A1C87C68800C1888B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = EC717E911C87C68800C1888B;
-			remoteInfo = iGongdong;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
+		002FA30EF52FCCD0D0E9EB02 /* Pods_iGongdong.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iGongdong.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DB6CF7B85BC2A01CF369648 /* Pods-iGongdong.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iGongdong.release.xcconfig"; path = "Target Support Files/Pods-iGongdong/Pods-iGongdong.release.xcconfig"; sourceTree = "<group>"; };
+		2A54DD6400206A479EEE0E3A /* Pods-iGongdong.distribution.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iGongdong.distribution.xcconfig"; path = "Target Support Files/Pods-iGongdong/Pods-iGongdong.distribution.xcconfig"; sourceTree = "<group>"; };
+		408BBF5E1925F0D103FBB374 /* Pods-iGongdong.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iGongdong.debug.xcconfig"; path = "Target Support Files/Pods-iGongdong/Pods-iGongdong.debug.xcconfig"; sourceTree = "<group>"; };
 		EC07BEF522BCB22000193885 /* SetTokenDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetTokenDevice.h; sourceTree = "<group>"; };
 		EC07BEF622BCB22000193885 /* SetTokenDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetTokenDevice.m; sourceTree = "<group>"; };
 		EC2080A11C954540006305A8 /* ArticleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleData.h; sourceTree = "<group>"; };
@@ -87,8 +74,6 @@
 		EC717EA11C87C68800C1888B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC717EA41C87C68800C1888B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EC717EA61C87C68800C1888B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EC717EAB1C87C68800C1888B /* iGongdongTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iGongdongTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC717EB61C87C68800C1888B /* iGongdongUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iGongdongUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC717F0E1C8811C500C1888B /* env.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = env.h; sourceTree = "<group>"; };
 		EC717F0F1C8811C500C1888B /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
 		EC717F101C8811C500C1888B /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
@@ -114,7 +99,6 @@
 		EC717F6E1C8AB6E600C1888B /* GoogleCalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleCalView.m; sourceTree = "<group>"; };
 		EC717F701C8ACD6E00C1888B /* ArticleWriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleWriteView.h; sourceTree = "<group>"; };
 		EC717F711C8ACD6E00C1888B /* ArticleWriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleWriteView.m; sourceTree = "<group>"; };
-		EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		EC8AA5591DB0DD1500604C5A /* iGongdong.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iGongdong.entitlements; sourceTree = "<group>"; };
 		EC938BC21C90534E006BEF9E /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		EC938BC31C90534E006BEF9E /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
@@ -131,21 +115,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC36787B20C3F49F00B02EF0 /* libsqlite3.tbd in Frameworks */,
-				EC81F6FF1C884CED0012D779 /* GoogleMobileAds.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EA81C87C68800C1888B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB31C87C68800C1888B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				05C03200EA2E42D14B120099 /* Pods_iGongdong.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				EC36787A20C3F49F00B02EF0 /* libsqlite3.tbd */,
+				002FA30EF52FCCD0D0E9EB02 /* Pods_iGongdong.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -163,10 +134,10 @@
 		EC717E891C87C68800C1888B = {
 			isa = PBXGroup;
 			children = (
-				EC81F6FE1C884CED0012D779 /* GoogleMobileAds.framework */,
 				EC717E941C87C68800C1888B /* iGongdong */,
 				EC717E931C87C68800C1888B /* Products */,
 				EC36787920C3F49E00B02EF0 /* Frameworks */,
+				FB66BAF6211D9DD0FDEBDAFD /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -174,8 +145,6 @@
 			isa = PBXGroup;
 			children = (
 				EC717E921C87C68800C1888B /* iGongdong.app */,
-				EC717EAB1C87C68800C1888B /* iGongdongTests.xctest */,
-				EC717EB61C87C68800C1888B /* iGongdongUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -254,6 +223,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FB66BAF6211D9DD0FDEBDAFD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				408BBF5E1925F0D103FBB374 /* Pods-iGongdong.debug.xcconfig */,
+				1DB6CF7B85BC2A01CF369648 /* Pods-iGongdong.release.xcconfig */,
+				2A54DD6400206A479EEE0E3A /* Pods-iGongdong.distribution.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -261,9 +241,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EC717EBF1C87C68800C1888B /* Build configuration list for PBXNativeTarget "iGongdong" */;
 			buildPhases = (
+				FA718CBF3AB97EBC4935A939 /* [CP] Check Pods Manifest.lock */,
 				EC717E8E1C87C68800C1888B /* Sources */,
 				EC717E8F1C87C68800C1888B /* Frameworks */,
 				EC717E901C87C68800C1888B /* Resources */,
+				A5E431622994A376F4AEBCF6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -273,42 +255,6 @@
 			productName = iGongdong;
 			productReference = EC717E921C87C68800C1888B /* iGongdong.app */;
 			productType = "com.apple.product-type.application";
-		};
-		EC717EAA1C87C68800C1888B /* iGongdongTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EC717EC21C87C68800C1888B /* Build configuration list for PBXNativeTarget "iGongdongTests" */;
-			buildPhases = (
-				EC717EA71C87C68800C1888B /* Sources */,
-				EC717EA81C87C68800C1888B /* Frameworks */,
-				EC717EA91C87C68800C1888B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EC717EAD1C87C68800C1888B /* PBXTargetDependency */,
-			);
-			name = iGongdongTests;
-			productName = iGongdongTests;
-			productReference = EC717EAB1C87C68800C1888B /* iGongdongTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		EC717EB51C87C68800C1888B /* iGongdongUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EC717EC51C87C68800C1888B /* Build configuration list for PBXNativeTarget "iGongdongUITests" */;
-			buildPhases = (
-				EC717EB21C87C68800C1888B /* Sources */,
-				EC717EB31C87C68800C1888B /* Frameworks */,
-				EC717EB41C87C68800C1888B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				EC717EB81C87C68800C1888B /* PBXTargetDependency */,
-			);
-			name = iGongdongUITests;
-			productName = iGongdongUITests;
-			productReference = EC717EB61C87C68800C1888B /* iGongdongUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -328,14 +274,6 @@
 							};
 						};
 					};
-					EC717EAA1C87C68800C1888B = {
-						CreatedOnToolsVersion = 7.2.1;
-						TestTargetID = EC717E911C87C68800C1888B;
-					};
-					EC717EB51C87C68800C1888B = {
-						CreatedOnToolsVersion = 7.2.1;
-						TestTargetID = EC717E911C87C68800C1888B;
-					};
 				};
 			};
 			buildConfigurationList = EC717E8D1C87C68800C1888B /* Build configuration list for PBXProject "iGongdong" */;
@@ -353,8 +291,6 @@
 			projectRoot = "";
 			targets = (
 				EC717E911C87C68800C1888B /* iGongdong */,
-				EC717EAA1C87C68800C1888B /* iGongdongTests */,
-				EC717EB51C87C68800C1888B /* iGongdongUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -370,21 +306,49 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC717EA91C87C68800C1888B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB41C87C68800C1888B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A5E431622994A376F4AEBCF6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iGongdong/Pods-iGongdong-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iGongdong/Pods-iGongdong-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iGongdong/Pods-iGongdong-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA718CBF3AB97EBC4935A939 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iGongdong-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EC717E8E1C87C68800C1888B /* Sources */ = {
@@ -421,34 +385,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC717EA71C87C68800C1888B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EC717EB21C87C68800C1888B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EC717EAD1C87C68800C1888B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EC717E911C87C68800C1888B /* iGongdong */;
-			targetProxy = EC717EAC1C87C68800C1888B /* PBXContainerItemProxy */;
-		};
-		EC717EB81C87C68800C1888B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = EC717E911C87C68800C1888B /* iGongdong */;
-			targetProxy = EC717EB71C87C68800C1888B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		EC717EA31C87C68800C1888B /* LaunchScreen.storyboard */ = {
@@ -523,6 +460,7 @@
 		};
 		EC3AA63A1C9A7139006BFE5B /* Distribution */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A54DD6400206A479EEE0E3A /* Pods-iGongdong.distribution.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
@@ -546,38 +484,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Distribution;
-		};
-		EC3AA63B1C9A7139006BFE5B /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = iGongdongTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iGongdong.app/iGongdong";
-			};
-			name = Distribution;
-		};
-		EC3AA63C1C9A7139006BFE5B /* Distribution */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = iGongdongUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iGongdong;
-				USES_XCTRUNNER = YES;
 			};
 			name = Distribution;
 		};
@@ -689,6 +595,7 @@
 		};
 		EC717EC01C87C68800C1888B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 408BBF5E1925F0D103FBB374 /* Pods-iGongdong.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
@@ -717,6 +624,7 @@
 		};
 		EC717EC11C87C68800C1888B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1DB6CF7B85BC2A01CF369648 /* Pods-iGongdong.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
@@ -743,70 +651,6 @@
 			};
 			name = Release;
 		};
-		EC717EC31C87C68800C1888B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = iGongdongTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iGongdong.app/iGongdong";
-			};
-			name = Debug;
-		};
-		EC717EC41C87C68800C1888B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = iGongdongTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iGongdong.app/iGongdong";
-			};
-			name = Release;
-		};
-		EC717EC61C87C68800C1888B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = iGongdongUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iGongdong;
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		EC717EC71C87C68800C1888B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = iGongdongUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.panicstyle.iGongdongUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = iGongdong;
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -826,26 +670,6 @@
 				EC717EC01C87C68800C1888B /* Debug */,
 				EC717EC11C87C68800C1888B /* Release */,
 				EC3AA63A1C9A7139006BFE5B /* Distribution */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EC717EC21C87C68800C1888B /* Build configuration list for PBXNativeTarget "iGongdongTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EC717EC31C87C68800C1888B /* Debug */,
-				EC717EC41C87C68800C1888B /* Release */,
-				EC3AA63B1C9A7139006BFE5B /* Distribution */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EC717EC51C87C68800C1888B /* Build configuration list for PBXNativeTarget "iGongdongUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EC717EC61C87C68800C1888B /* Debug */,
-				EC717EC71C87C68800C1888B /* Release */,
-				EC3AA63C1C9A7139006BFE5B /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

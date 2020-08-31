@@ -15,6 +15,7 @@
 #import "env.h"
 #import "MainData.h"
 #import "DBInterface.h"
+@import GoogleMobileAds;
 
 @interface MainView ()
 {
@@ -31,24 +32,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-	UILabel *lblTitle = [[UILabel alloc] init];
-	lblTitle.text = @"공동육아";
-	lblTitle.backgroundColor = [UIColor clearColor];
-	[lblTitle sizeToFit];
-	self.navigationItem.titleView = lblTitle;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
+    [self setTitle];
 
-	// Replace this ad unit ID with your own ad unit ID.
-	self.bannerView.adUnitID = kSampleAdUnitID;
-	self.bannerView.rootViewController = self;
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    // Replace this ad unit ID with your own ad unit ID.
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 
 	SetInfo *setInfo = [[SetInfo alloc] init];
 
@@ -101,11 +95,37 @@
 	}
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    [self setTitle];
+    [self.tbView reloadData];
+}
+
+- (void)setTitle {
+    UILabel *lblTitle = [[UILabel alloc] init];
+    lblTitle.text = @"공동육아";
+    lblTitle.backgroundColor = [UIColor clearColor];
+    lblTitle.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.navigationItem.titleView = lblTitle;
+}
+
 #pragma mark - Table view data source
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    CGFloat cellHeight = 30.0 - 17.0 + titleFont.pointSize;
+    return cellHeight;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 44.0f;
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    CGFloat cellHeight = 44.0 - 17.0 + titleFont.pointSize;
+	return cellHeight;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -150,15 +170,20 @@
 									  reuseIdentifier:CellIdentifier];
 	}
 	NSMutableDictionary *item;
+    
 	switch (section) {
 		case 0 :
 			item = [m_arrayMain objectAtIndex:[indexPath row]];
+            cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 			cell.textLabel.text = [item valueForKey:@"title"];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            NSLog(@" = %@", [UIFont preferredFontForTextStyle:UIFontTextStyleBody]);
+//            NSLog(@" = %@", [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote]);
 			break;
 		case 1:
 			// Configure the cell...
 			item = [m_arrayItems objectAtIndex:[indexPath row]];
+            cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 			cell.textLabel.text = [item valueForKey:@"title"];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			break;

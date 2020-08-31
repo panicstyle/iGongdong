@@ -11,6 +11,7 @@
 #import "LoginToService.h"
 #import "ArticleView.h"
 #import "RecentData.h"
+@import GoogleMobileAds;
 
 @interface RecentView ()
 {
@@ -42,18 +43,10 @@
 	
 	m_rectScreen = [self getScreenFrameForCurrentOrientation];
 
-	// Replace this ad unit ID with your own ad unit ID.
-	self.bannerView.adUnitID = kSampleAdUnitID;
-	self.bannerView.rootViewController = self;
-	
-	GADRequest *request = [GADRequest request];
-	// Requests test ads on devices you specify. Your test device ID is printed to the console when
-	// an ad request is made. GADBannerView automatically returns test ads when running on a
-	// simulator.
-	request.testDevices = @[
-							@"2077ef9a63d2b398840261c8221a0c9a"  // Eric's iPod Touch
-							];
-	[self.bannerView loadRequest:request];
+    // Replace this ad unit ID with your own ad unit ID.
+    self.bannerView.adUnitID = kSampleAdUnitID;
+    self.bannerView.rootViewController = self;
+    [self.bannerView loadRequest:[GADRequest request]];
 	
 	m_arrayItems = [[NSMutableArray alloc] init];
 	

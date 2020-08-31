@@ -11,6 +11,7 @@
 #import "LoginToService.h"
 #import "ArticleView.h"
 #import "SetTokenDevice.h"
+@import GoogleMobileAds;
 
 @interface AppDelegate ()
 {
@@ -53,6 +54,7 @@
 		}
 	}
 	
+    [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
 	return YES;
 }
 
