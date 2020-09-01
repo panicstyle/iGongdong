@@ -74,6 +74,11 @@
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
     UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     
     m_textView.font = titleFont;

@@ -355,7 +355,7 @@
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:202];
 				viewComment.text = [item valueForKey:@"comment"];
                 [labelName setFont:subFont];
-                [viewComment setFont:subFont];
+                [viewComment setFont:titleFont];
 			} else {
 				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierReReply];
 				if (cell == nil) {
@@ -372,7 +372,7 @@
 				UITextView *viewComment = (UITextView *)[cell viewWithTag:302];
 				viewComment.text = [item valueForKey:@"comment"];
                 [labelName setFont:subFont];
-                [viewComment setFont:subFont];
+                [viewComment setFont:titleFont];
 			}
 				
 			break;
