@@ -243,8 +243,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HRa-vo-njJ">
-                                <rect key="frame" x="101" y="60" width="293" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HRa-vo-njJ">
+                                <rect key="frame" x="144" y="60" width="250" height="30"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="XCI-Ad-t8n"/>
@@ -253,16 +253,16 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="비밀번호" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JfG-Ps-xK4">
-                                <rect key="frame" x="20" y="98" width="69" height="30"/>
+                                <rect key="frame" x="20" y="98" width="116" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Did-4D-8EY"/>
-                                    <constraint firstAttribute="width" constant="69" id="vPH-xQ-W4d"/>
+                                    <constraint firstAttribute="width" constant="116" id="vPH-xQ-W4d"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4mx-m9-RZR">
-                                <rect key="frame" x="101" y="98" width="293" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4mx-m9-RZR">
+                                <rect key="frame" x="144" y="98" width="250" height="30"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="jwA-yP-2G5"/>
@@ -271,19 +271,19 @@
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="아이디" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fAc-cZ-aLs">
-                                <rect key="frame" x="20" y="60" width="69" height="30"/>
+                                <rect key="frame" x="20" y="60" width="116" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="fkb-lT-wA0"/>
-                                    <constraint firstAttribute="width" constant="69" id="mdL-fe-4Or"/>
+                                    <constraint firstAttribute="width" constant="116" id="mdL-fe-4Or"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="알림 설정" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uys-TK-ZZz">
-                                <rect key="frame" x="20" y="136" width="98" height="32"/>
+                                <rect key="frame" x="20" y="136" width="116" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="32" id="WQ9-YF-5rZ"/>
-                                    <constraint firstAttribute="width" constant="98" id="YsI-dC-oiP"/>
+                                    <constraint firstAttribute="width" constant="116" id="YsI-dC-oiP"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -304,9 +304,9 @@
                                 </constraints>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="공동육아 홈페이지 새글 알림" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Y1-vh-Br7">
-                                <rect key="frame" x="107" y="180" width="214" height="21"/>
+                                <rect key="frame" x="20" y="180" width="301" height="21"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="214" id="Xgt-yB-vmu"/>
+                                    <constraint firstAttribute="width" constant="301" id="Xgt-yB-vmu"/>
                                     <constraint firstAttribute="height" constant="21" id="zbe-Xw-vcg"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -314,10 +314,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="어린이집 게시판 새글 알림" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bp4-Dj-Oqx">
-                                <rect key="frame" x="107" y="219" width="214" height="21"/>
+                                <rect key="frame" x="20" y="219" width="301" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="HWB-Wu-e2e"/>
-                                    <constraint firstAttribute="width" constant="214" id="KgV-SD-mOO"/>
+                                    <constraint firstAttribute="width" constant="301" id="KgV-SD-mOO"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -357,7 +357,10 @@
                     <connections>
                         <outlet property="idField" destination="HRa-vo-njJ" id="BQa-9W-Wpx"/>
                         <outlet property="labelCommunity" destination="bp4-Dj-Oqx" id="aw4-te-Cvx"/>
+                        <outlet property="labelId" destination="fAc-cZ-aLs" id="UTI-MJ-2dW"/>
                         <outlet property="labelNotice" destination="9Y1-vh-Br7" id="emp-0b-gLv"/>
+                        <outlet property="labelNoticeSet" destination="Uys-TK-ZZz" id="Rq3-PX-fwy"/>
+                        <outlet property="labelPwd" destination="JfG-Ps-xK4" id="0wi-04-A6v"/>
                         <outlet property="pwdField" destination="4mx-m9-RZR" id="19h-Pa-CMi"/>
                         <outlet property="switchNotice" destination="AWh-hk-pFI" id="thG-Q0-gAn"/>
                         <outlet property="switchPush" destination="UeW-2O-Ncu" id="1oo-S4-EH3"/>

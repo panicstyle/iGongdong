@@ -84,12 +84,33 @@
 											 selector:@selector(keyboardDidHide:)
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(contentSizeCategoryDidChangeNotification)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
 
 	m_ImageStatus[0] = 0;
 	m_ImageStatus[1] = 0;
 	m_ImageStatus[2] = 0;
 	m_ImageStatus[3] = 0;
 	m_ImageStatus[4] = 0;
+    
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
+    viewTitle.font = titleFont;
+    viewContent.font = titleFont;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
+    viewTitle.font = titleFont;
+    viewContent.font = titleFont;
 }
 
 /*

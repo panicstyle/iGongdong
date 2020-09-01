@@ -37,7 +37,12 @@
                                                  name:UIContentSizeCategoryDidChangeNotification
                                                object:nil];
     
-    [self setTitle];
+    UILabel *lblTitle = [[UILabel alloc] init];
+    lblTitle.text = @"공동육아";
+    lblTitle.backgroundColor = [UIColor clearColor];
+    [lblTitle sizeToFit];
+    self.navigationItem.titleView = lblTitle;
+
 
     // Replace this ad unit ID with your own ad unit ID.
     self.bannerView.adUnitID = kSampleAdUnitID;
@@ -100,16 +105,7 @@
 }
 
 - (void)contentSizeCategoryDidChangeNotification {
-    [self setTitle];
     [self.tbView reloadData];
-}
-
-- (void)setTitle {
-    UILabel *lblTitle = [[UILabel alloc] init];
-    lblTitle.text = @"공동육아";
-    lblTitle.backgroundColor = [UIColor clearColor];
-    lblTitle.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.navigationItem.titleView = lblTitle;
 }
 
 #pragma mark - Table view data source
@@ -174,20 +170,17 @@
 	switch (section) {
 		case 0 :
 			item = [m_arrayMain objectAtIndex:[indexPath row]];
-            cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 			cell.textLabel.text = [item valueForKey:@"title"];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//            NSLog(@" = %@", [UIFont preferredFontForTextStyle:UIFontTextStyleBody]);
-//            NSLog(@" = %@", [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote]);
 			break;
 		case 1:
 			// Configure the cell...
 			item = [m_arrayItems objectAtIndex:[indexPath row]];
-            cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 			cell.textLabel.text = [item valueForKey:@"title"];
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			break;
 	}
+    cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	return cell;
 }
 

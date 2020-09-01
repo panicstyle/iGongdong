@@ -73,6 +73,20 @@
 											 selector:@selector(keyboardDidHide:)
 												 name:UIKeyboardDidHideNotification
 											   object:nil];
+    
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
+    m_textView.font = titleFont;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)contentSizeCategoryDidChangeNotification {
+    UIFont *titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    
+    m_textView.font = titleFont;
 }
 
 - (void)keyboardDidShow: (NSNotification *) notif{
